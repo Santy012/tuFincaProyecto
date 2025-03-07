@@ -2,7 +2,7 @@
 
 1: Descargar github:
 
-- git clone https://github.com/TU_USUARIO/NOMBRE_DEL_REPO.git
+- git clone git@github.com:Catapultaa/tuFincaProyecto.git
   
 - cd NOMBRE_DEL_REPO
 
@@ -13,6 +13,7 @@
 - Abre Workbench y ve a "Server" > "Data Import".
 
 - Selecciona el archivo .sql descargado y dale a "Start Import".
+
 
 
 3. En mysqul workbech ejecuta:
