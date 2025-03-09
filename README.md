@@ -4,9 +4,9 @@
 
 Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas:
 
-## Backend (Java 17 - Spring)
+## Backend (Java 21 - Spring)
 
-- 🔹 **Java 17** – Requerido para ejecutar el backend con Spring Boot.
+- 🔹 **Java 21** – Requerido para ejecutar el backend con Spring Boot.
 
 - 🔹 **MySQL Server** – Necesario para importar la base de datos.
 
@@ -55,14 +55,12 @@ SHOW TABLES;
 ### 📌 Debes ver las siguientes tablas en la base de datos:
 
 - administrador
-
-- mensaje
-
+- administradormensaje
 - etiqueta
-
 - media
-
+- mensaje
 - propiedad
+- propiedadetiqueta
 
 - propiedadetiqueta
 ## 📤 3. Exportar el esquema de la base de datos
@@ -83,7 +81,23 @@ Para exportar el esquema en MySQL Workbench:
 
 8. Inicia la exportación 
 
-## 2: Instalar dependencias de Spring Boot
+## 2:🔨 Instalar dependencias de Spring Boot
+### Dependencias del proyecto Spring
+Al generar el proyecto en Spring Initializr, se seleccionaron las siguientes dependencias:
+
+1. ✅ Spring Web → Para construir API RESTful.
+   
+3. ✅ Spring Boot DevTools → Para recarga en caliente durante el desarrollo.
+   
+4. ✅ Lombok → Para reducir el código repetitivo en las clases.
+   
+5. ✅ Spring Data JPA → Para interactuar con la base de datos.
+   
+6. ✅ MySQL Driver → Para conectarte a MySQL.
+    
+7. ✅ Spring Security → Para manejo de autenticación y roles.
+    
+8. ✅ Spring Boot Actuator → Para ver métricas, información del sistema, estado de la aplicación y más.
 
 ## 3: Instalar depencias de React
 
