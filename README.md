@@ -99,6 +99,51 @@ Al generar el proyecto en Spring Initializr, se seleccionaron las siguientes dep
     
 8. ✅ Spring Boot Actuator → Para ver métricas, información del sistema, estado de la aplicación y más.
 
+## Configuración del proyecto
+1. **Luego de clonar el proyecto, deberias ver una carpeta llamada .\backend\ en donde encontraras otra carpeta llamada ./tufinca/ a la cual vas a acceder.**
+```bash
+cd ./backend/tufinca/
+```
+2. El proyecto ya es un entorno de Spring Boot con Maven por lo que deberias ver un pom.xml en la raiz del proyecto.
+   
+   ![Mi Imagen](https://drive.google.com/uc?export=view&id=1kLtjpx2oh2kN9jwDCzvPLpsHn4d_4md6)
+
+4. **Construir el proyecto con Maven.**
+Ejecuta el siguiente comando en la terminal dentro del directorio del proyecto:
+```bash
+./mvnw clean install
+```
+Si estás en Windows, usa:
+```bash
+mvnw.cmd clean install
+```
+Esto descargará las dependencias y compilará el código.
+Si tienes Maven instalado globalmente, también puedes ejecutar:
+```bash
+mvn clean install
+```
+
+5. **Abrir el Proyecto en tu IDE (IntelliJ o VSCode)**
+   
+**Si usas IntelliJ IDEA:**
+
+- Abre IntelliJ.
+- Ve a "File" > "Open" y selecciona la carpeta del proyecto clonado.
+- IntelliJ detectará que es un proyecto Maven y descargará las dependencias automáticamente.
+
+**Si usas VSCode:**
+
+- Asegúrate de tener la extensión "Java Extension Pack" instalada.
+- Abre la carpeta del proyecto con "File" > "Open Folder".
+- Usa la terminal integrada para ejecutar los comandos de Maven.
+
+6. **Verificar que todo funciona**
+
+Si la aplicación Spring Boot se ejecuta correctamente, deberías ver logs en la terminal indicando que está corriendo en el puerto 8080. Puedes probarlo abriendo un navegador y visitando:
+```bash
+http://localhost:8080
+```
+Si ves una pagina de login es que todo esta corriendo bien :).
 ## 3: Instalar depencias de React
 
 
