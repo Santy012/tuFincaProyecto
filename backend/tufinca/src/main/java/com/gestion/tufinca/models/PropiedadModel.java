@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Entity
 @Builder
-
 @Table(name = "propiedad")
 public class PropiedadModel {
     @Id
@@ -45,15 +45,19 @@ public class PropiedadModel {
     @Column(nullable = false)
     private EstadoPropiedad estado;
 
+    /**
+     * Indica que la columna en la tabla propiedad que almacena la clave foránea de administrador se llama "administrador_id".
+     * Define el nombre de la restricción de clave foránea en la base de datos.
+     */
     @ManyToOne
     @JoinColumn(name = "administrador_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_propiedad_administrador"))
-    private Administrador administrador;
+    private AdministradorModel administrador;
 
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Media> medias = new ArrayList<>();
+    private List<MediaModel> medias = new ArrayList<>();
 
-    @OneToOne(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Mensaje> mensajes = new ArrayList<>();
+    @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MensajeModel> mensajes = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -61,5 +65,5 @@ public class PropiedadModel {
             joinColumns = @JoinColumn(name = "propiedad_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "etiqueta_id", referencedColumnName = "id")
     )
-    private List<Etiqueta> etiquetas = new ArrayList<>();
+    private List<EtiquetaModel> etiquetas = new ArrayList<>();
 }
