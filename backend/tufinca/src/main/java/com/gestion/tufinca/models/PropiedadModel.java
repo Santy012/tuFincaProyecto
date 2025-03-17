@@ -32,7 +32,7 @@ public class PropiedadModel {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "areaTotal")
     private Float areaTotal;
 
     @Column(name = "areaConst")

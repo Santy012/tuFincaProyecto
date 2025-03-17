@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface IPropiedadEtiquetaRepository extends JpaRepository<PropiedadEtiquetaModel, Long> {
 
     // Guardar una propiedad-etiqueta (heredado de JpaRepository)
-    void deleteByPrimary(Long primary);
     void delete(PropiedadEtiquetaModel propiedadEtiqueta);
 }

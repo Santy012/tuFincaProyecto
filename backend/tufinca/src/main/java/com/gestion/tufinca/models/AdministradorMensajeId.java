@@ -12,6 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor   // Constructor sin argumentos
 @Builder
 public class AdministradorMensajeId implements Serializable {
-    private Integer administrador;
-    private Integer mensaje;
+    private Long administrador;
+    private Long mensaje;
 }

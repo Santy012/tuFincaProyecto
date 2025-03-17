@@ -17,14 +17,14 @@ import lombok.NoArgsConstructor;
 public class MediaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String url;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Tipo tipo;
+    private  Tipo tipo;
 
     @ManyToOne
     @JoinColumn(name = "propiedad_id", foreignKey = @ForeignKey(name = "fk_media_propiedad"))

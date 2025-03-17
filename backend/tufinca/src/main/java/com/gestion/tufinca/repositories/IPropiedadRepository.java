@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Long> {
 
     // Guardar una propiedad (ya lo hereda de JpaRepository, no es necesario definirlo)
-    Optional<PropiedadModel> findByCodigo(String codigo);
+    Optional<PropiedadModel> findByCodigo(Integer codigo);
     List<PropiedadModel> findAllByEstado(String estado);
-    void deleteByCodigo(String codigo);
+    void deleteByCodigo(Integer codigo);
 }

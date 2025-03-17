@@ -1,6 +1,6 @@
 package com.gestion.tufinca.models;
 
-import com.gestion.tufinca.models.enums.Gestion;
+import com.gestion.tufinca.models.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import java.util.List;
 public class MensajeModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String nombreCliente;
@@ -42,5 +42,5 @@ public class MensajeModel {
     private PropiedadModel propiedad;
 
     @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AdministradorMensaje> administradorMensajes = new ArrayList<>();
+    private List<AdministradorMensajeModel> administradorMensajes = new ArrayList<>();
 }
