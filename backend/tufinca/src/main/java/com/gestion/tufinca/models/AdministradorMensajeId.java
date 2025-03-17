@@ -6,12 +6,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-@Data  // Genera getters, setters, equals(), hashCode() y toString()
 @AllArgsConstructor  // Constructor con todos los argumentos
 @NoArgsConstructor   // Constructor sin argumentos
 @Builder
 public class AdministradorMensajeId implements Serializable {
-    private Long administrador;
-    private Long mensaje;
+    private Integer administrador;
+    private Integer mensaje;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AdministradorMensajeId that = (AdministradorMensajeId) o;
+        return Objects.equals(administrador, that.administrador) &&
+                Objects.equals(mensaje, that.mensaje);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(administrador, mensaje);
+    }
 }

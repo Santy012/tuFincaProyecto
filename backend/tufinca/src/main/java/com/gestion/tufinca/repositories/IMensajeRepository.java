@@ -8,10 +8,5 @@ import java.util.List;
 
 @Repository
 public interface IMensajeRepository extends JpaRepository<MensajeModel, Long> {
-
-    // Guardar un mensaje (ya lo hereda JpaRepository con save)
-    long count();
     List<MensajeModel> findAllByGestion(String gestion);
-    void delete(MensajeModel mensaje);
-    void deleteAll(Iterable<? extends MensajeModel> mensajes);
 }

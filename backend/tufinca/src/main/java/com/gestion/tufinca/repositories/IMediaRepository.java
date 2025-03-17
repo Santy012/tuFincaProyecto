@@ -8,10 +8,4 @@ import java.util.List;
 
 @Repository
 public interface IMediaRepository extends JpaRepository<MediaModel, Long> {
-
-    // Guardar un solo objeto Media (ya heredado de JpaRepository)
-    <S extends MediaModel> List<S> saveAll(Iterable<S> entities);
-    void delete(MediaModel media);
-    void deleteAll(Iterable<? extends MediaModel> media);
-    long count();
 }

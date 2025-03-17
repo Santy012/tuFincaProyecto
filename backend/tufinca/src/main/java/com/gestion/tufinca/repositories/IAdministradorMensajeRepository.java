@@ -9,6 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface IAdministradorMensajeRepository extends JpaRepository<AdministradorMensajeModel, Long> {
-
     void deleteByMensajeId(Long mensajeId);
 }

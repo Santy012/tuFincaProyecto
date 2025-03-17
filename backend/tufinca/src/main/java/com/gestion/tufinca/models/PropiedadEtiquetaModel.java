@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 //Indica que la clave primaria es compuesta y está definida en la clase PropiedadEtiquetaId.
 @IdClass(PropiedadEtiquetaId.class)
-@Table(name = "propiedad_etiqueta")
+@Table(name = "propiedadetiqueta")
 public class PropiedadEtiquetaModel {
     @Id
     @ManyToOne

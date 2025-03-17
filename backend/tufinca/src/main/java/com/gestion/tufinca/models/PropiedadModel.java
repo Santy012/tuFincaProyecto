@@ -21,7 +21,7 @@ public class PropiedadModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 255)
     private String titulo;
@@ -29,7 +29,7 @@ public class PropiedadModel {
     @Column(nullable = false, unique = true)
     private Integer codigo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descripción")
     private String descripcion;
 
     @Column(name = "areaTotal")
@@ -38,7 +38,7 @@ public class PropiedadModel {
     @Column(name = "areaConst")
     private Float areaConst;
 
-    @Column(length = 255)
+    @Column(name = "ubicación", length = 255)
     private String ubicacion;
 
     @Enumerated(EnumType.STRING)
@@ -61,7 +61,7 @@ public class PropiedadModel {
 
     @ManyToMany
     @JoinTable(
-            name = "propiedad_etiqueta",
+            name = "propiedadetiqueta",
             joinColumns = @JoinColumn(name = "propiedad_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "etiqueta_id", referencedColumnName = "id")
     )
