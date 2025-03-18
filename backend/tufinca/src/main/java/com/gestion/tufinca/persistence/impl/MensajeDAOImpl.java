@@ -1,6 +1,8 @@
 package com.gestion.tufinca.persistence.impl;
 
 import com.gestion.tufinca.models.MensajeModel;
+import com.gestion.tufinca.models.enums.Gestion;
+
 import com.gestion.tufinca.persistence.IMensajeDAO;
 import com.gestion.tufinca.repositories.IMensajeRepository;
 
@@ -25,7 +27,7 @@ public class MensajeDAOImpl implements IMensajeDAO {
     }
 
     @Override
-    public Optional<MensajeModel> getMensajeById(Long id) {
+    public Optional<MensajeModel> getMensajeById(Integer id) {
         return mensajeRepository.findById(id);
     }
 
@@ -35,17 +37,17 @@ public class MensajeDAOImpl implements IMensajeDAO {
     }
 
     @Override
-    public void deleteMensajeById(Long id) {
+    public void deleteMensajeById(Integer id) {
         mensajeRepository.deleteById(id);
     }
 
     @Override
-    public Optional<MensajeModel> getMensajeByGestion(String gestion) {
-        return mensajeRepository.findByGestion(gestion);
+    public List<MensajeModel> getMensajeByGestion(String gestion) {
+        return mensajeRepository.findAllByGestion(gestion);
     }
 
     @Override
-    public Optional<MensajeModel> getMensajeByNombre(String nombre) {
-        return mensajeRepository.findByNombre(nombre);
+    public List<MensajeModel> getMensajeByNombre(String nombreCliente) {
+        return mensajeRepository.findAllByNombreCliente(nombreCliente);
     }
 }

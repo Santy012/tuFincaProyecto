@@ -26,7 +26,7 @@ public class EtiquetaDAOImpl implements IEtiquetaDAO {
     }
 
     @Override
-    public Optional<EtiquetaModel> getEtiquetaById(Long id) {
+    public Optional<EtiquetaModel> getEtiquetaById(Integer id) {
         return etiquetaRepository.findById(id);
     }
 
@@ -36,7 +36,7 @@ public class EtiquetaDAOImpl implements IEtiquetaDAO {
     }
 
     @Override
-    public void deleteEtiquetaById(Long id) {
+    public void deleteEtiquetaById(Integer id) {
         etiquetaRepository.deleteById(id);
     }
 }

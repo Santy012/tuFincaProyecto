@@ -26,7 +26,7 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
     }
 
     @Override
-    public Optional<AdministradorModel> getAdministradorById(Long id) {
+    public Optional<AdministradorModel> getAdministradorById(Integer id) {
         return administradorRepository.findById(id);
     }
 
@@ -36,7 +36,7 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
     }
 
     @Override
-    public void deleteAdministradorById(Long id) {
+    public void deleteAdministradorById(Integer id) {
         administradorRepository.deleteById(id);
     }
 }

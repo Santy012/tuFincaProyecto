@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IMediaRepository extends JpaRepository<MediaModel, Long> {
+public interface IMediaRepository extends JpaRepository<MediaModel, Integer> {
 }

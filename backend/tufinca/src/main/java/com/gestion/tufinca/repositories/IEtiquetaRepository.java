@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IEtiquetaRepository extends JpaRepository<EtiquetaModel, Long> {
+public interface IEtiquetaRepository extends JpaRepository<EtiquetaModel, Integer> {
     void deleteByNombre(String nombre);
 
     List<EtiquetaModel> findAllByNombre(String nombre);

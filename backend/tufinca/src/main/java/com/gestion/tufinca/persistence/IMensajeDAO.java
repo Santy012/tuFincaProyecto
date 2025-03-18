@@ -1,6 +1,8 @@
 package com.gestion.tufinca.persistence;
 
 import com.gestion.tufinca.models.MensajeModel;
+import com.gestion.tufinca.models.enums.Gestion;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +17,8 @@ public interface IMensajeDAO {
 
     void deleteMensajeById(Integer id);
 
-    Optional<MensajeModel> getMensajeByGestion(String gestion);
+    List<MensajeModel> getMensajeByGestion(String gestion);
 
-    Optional<MensajeModel> getMensajeByNombre(String nombre);
+    List<MensajeModel> getMensajeByNombre(String nombreCliente);
 
 }
