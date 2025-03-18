@@ -11,5 +11,5 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class MensajeDAOImpl implements IMensajeDAO{
+public class MensajeDAOImpl implements IMensajeDAO {
 }

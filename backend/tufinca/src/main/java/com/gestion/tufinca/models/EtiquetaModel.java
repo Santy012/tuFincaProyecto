@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +31,6 @@ public class EtiquetaModel {
      * El nombre de la variable es al que se le hace referencia en el mappedBy, en este caso se referencia a "etiquetas".
      */
     @ManyToMany(mappedBy = "etiquetas")
+    @JsonIgnore
     private List<PropiedadModel> propiedades = new ArrayList<>();
 }

@@ -11,5 +11,5 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class EtiquetaDAOImpl implements IEtiquetaDAO{
+public class EtiquetaDAOImpl implements IEtiquetaDAO {
 }

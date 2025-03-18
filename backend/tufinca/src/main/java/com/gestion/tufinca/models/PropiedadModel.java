@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,12 +52,15 @@ public class PropiedadModel {
      */
     @ManyToOne
     @JoinColumn(name = "administrador_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_propiedad_administrador"))
+    @JsonIgnore
     private AdministradorModel administrador;
 
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<MediaModel> medias = new ArrayList<>();
 
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<MensajeModel> mensajes = new ArrayList<>();
 
     @ManyToMany
@@ -65,5 +69,6 @@ public class PropiedadModel {
             joinColumns = @JoinColumn(name = "propiedad_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "etiqueta_id", referencedColumnName = "id")
     )
+    @JsonIgnore
     private List<EtiquetaModel> etiquetas = new ArrayList<>();
 }

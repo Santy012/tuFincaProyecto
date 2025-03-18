@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface IEtiquetaRepository extends JpaRepository<EtiquetaModel, Long> {
     void deleteByNombre(String nombre);
+
     List<EtiquetaModel> findAllByNombre(String nombre);
 }

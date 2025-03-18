@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +35,10 @@ public class AdministradorModel {
     private String contraseña;
 
     @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<PropiedadModel> propiedades = new ArrayList<>();
 
     @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<AdministradorMensajeModel> administradorMensajes = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gestion.tufinca.models.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Entity
 @Table(name = "mensaje")
 public class MensajeModel {
     @Id
@@ -39,8 +40,10 @@ public class MensajeModel {
 
     @ManyToOne
     @JoinColumn(name = "propiedad_id", foreignKey = @ForeignKey(name = "fk_mensaje_propiedad"))
+    @JsonIgnore
     private PropiedadModel propiedad;
 
     @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<AdministradorMensajeModel> administradorMensajes = new ArrayList<>();
 }

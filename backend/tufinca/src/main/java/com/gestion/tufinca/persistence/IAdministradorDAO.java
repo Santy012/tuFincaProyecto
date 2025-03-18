@@ -1,4 +1,5 @@
 package com.gestion.tufinca.persistence;
+
 import com.gestion.tufinca.models.AdministradorModel;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gestion.tufinca.models.enums.Tipo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
@@ -11,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Entity
 @Table(name = "media")
 public class MediaModel {
     @Id
@@ -24,9 +25,10 @@ public class MediaModel {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private  Tipo tipo;
+    private Tipo tipo;
 
     @ManyToOne
     @JoinColumn(name = "propiedad_id", foreignKey = @ForeignKey(name = "fk_media_propiedad"))
+    @JsonIgnore
     private PropiedadModel propiedad;
 }

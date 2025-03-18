@@ -1,5 +1,6 @@
 package com.gestion.tufinca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +20,16 @@ public class AdministradorMensajeModel {
     @Id
     @ManyToOne
     @JoinColumn(name = "administrador_id")
+    @JsonIgnore
     private AdministradorModel administrador;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "mensaje_id")
+    @JsonIgnore
     private MensajeModel mensaje;
 
     @Column(name = "fecha_lectura", nullable = false)
+    @JsonIgnore
     private LocalDateTime fechaLectura;
 }
