@@ -123,6 +123,16 @@ Si tienes Maven instalado globalmente, también puedes ejecutar:
 sudo mvn clean install
 ```
 
+En caso de que envíe error en properties application, agregar al archivo pom, en la sección build, antes de plugins:
+```bash
+<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering> 
+            </resource>
+        </resources>
+```
+
 5. **Abrir el Proyecto en tu IDE (IntelliJ o VSCode)**
    
 **Si usas IntelliJ IDEA:**
