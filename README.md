@@ -120,7 +120,7 @@ mvnw.cmd clean install
 Esto descargará las dependencias y compilará el código.
 Si tienes Maven instalado globalmente, también puedes ejecutar:
 ```bash
-mvn clean install
+sudo mvn clean install
 ```
 
 5. **Abrir el Proyecto en tu IDE (IntelliJ o VSCode)**
@@ -136,6 +136,11 @@ mvn clean install
 - Asegúrate de tener la extensión "Java Extension Pack" instalada.
 - Abre la carpeta del proyecto con "File" > "Open Folder".
 - Usa la terminal integrada para ejecutar los comandos de Maven.
+
+**Para ejecutarlo por comandos linux:**
+```bash
+sudo mvn spring-boot:run
+```
 
 6. **Verificar que todo funciona**
 
