@@ -12,4 +12,31 @@ import java.util.Optional;
 
 @Component
 public class AdministradorDAOImpl implements IAdministradorDAO {
+
+    private final IAdministradorRepository administradorRepository;
+
+    @Autowired
+    public AdministradorDAOImpl(IAdministradorRepository administradorRepository) {
+        this.administradorRepository = administradorRepository;
+    }
+
+    @Override
+    public List<AdministradorModel> getAdministradores() {
+        return administradorRepository.findAll();
+    }
+
+    @Override
+    public Optional<AdministradorModel> getAdministradorById(Integer id) {
+        return administradorRepository.findById(id);
+    }
+
+    @Override
+    public void saveAdministrador(AdministradorModel administrador) {
+        administradorRepository.save(administrador);
+    }
+
+    @Override
+    public void deleteAdministradorById(Integer id) {
+        administradorRepository.deleteById(id);
+    }
 }

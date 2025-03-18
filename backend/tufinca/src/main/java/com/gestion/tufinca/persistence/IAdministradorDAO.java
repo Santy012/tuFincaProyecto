@@ -7,4 +7,11 @@ import java.util.Optional;
 
 public interface IAdministradorDAO {
 
+    List<AdministradorModel> getAdministradores();
+
+    Optional<AdministradorModel> getAdministradorById(Integer id);
+
+    void saveAdministrador(AdministradorModel administrador);
+
+    void deleteAdministradorById(Integer id);
 }
