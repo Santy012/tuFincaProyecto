@@ -12,4 +12,31 @@ import java.util.Optional;
 
 @Component
 public class EtiquetaDAOImpl implements IEtiquetaDAO {
+
+    private final IEtiquetaRepository etiquetaRepository;
+
+    @Autowired
+    public EtiquetaDAOImpl(IEtiquetaRepository etiquetaRepository) {
+        this.etiquetaRepository = etiquetaRepository;
+    }
+
+    @Override
+    public List<EtiquetaModel> getEtiquetas() {
+        return etiquetaRepository.findAll();
+    }
+
+    @Override
+    public Optional<EtiquetaModel> getEtiquetaById(Long id) {
+        return etiquetaRepository.findById(id);
+    }
+
+    @Override
+    public void saveEtiqueta(EtiquetaModel etiqueta) {
+        etiquetaRepository.save(etiqueta);
+    }
+
+    @Override
+    public void deleteEtiquetaById(Long id) {
+        etiquetaRepository.deleteById(id);
+    }
 }

@@ -8,8 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class MediaDAOImpl implements IMediaDAO {
+
+    private final IMediaRepository mediaRepository;
+
+    @Autowired
+    public MediaDAOImpl(IMediaRepository mediaRepository) {
+        this.mediaRepository = mediaRepository;
+    }
+
+    @Override
+    public List<MediaModel> getMedia() {
+        return mediaRepository.findAll();
+    }
+
+    @Override
+    public void saveMedia(MediaModel media) {
+        mediaRepository.save(media);
+    }
+
+    @Override
+    public void deleteMedia(MediaModel media) {
+        mediaRepository.delete(media);
+    }
+
 }

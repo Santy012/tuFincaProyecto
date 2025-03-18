@@ -7,4 +7,9 @@ import java.util.Optional;
 
 public interface IMediaDAO {
 
+    List<MediaModel> getMedia();
+
+    void saveMedia(MediaModel media);
+
+    void deleteMedia(MediaModel media);
 }

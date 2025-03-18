@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface IMensajeRepository extends JpaRepository<MensajeModel, Long> {
     List<MensajeModel> findAllByGestion(String gestion);
+    List<MensajeModel> findAllByCliente(String cliente);
 }

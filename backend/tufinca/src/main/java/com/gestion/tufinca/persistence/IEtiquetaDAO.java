@@ -7,4 +7,12 @@ import java.util.Optional;
 
 public interface IEtiquetaDAO {
 
+    List<EtiquetaModel> getEtiquetas();
+
+    Optional<EtiquetaModel> getEtiquetaById(Integer id);
+
+    void saveEtiqueta(EtiquetaModel etiqueta);
+
+    void deleteEtiquetaById(Integer id);
+
 }
