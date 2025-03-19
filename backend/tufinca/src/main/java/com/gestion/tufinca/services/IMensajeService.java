@@ -14,8 +14,8 @@ public interface IMensajeService {
 
     void deleteMensajeById(Integer id);
 
-    List<MensajeModel> getMensajeByGestion(String gestion);
+    List<MensajeModel> getMensajesByGestion(String gestion);
 
-    List<MensajeModel> getMensajeByNombre(String nombreCliente);
+    List<MensajeModel> getMensajesByNombre(String nombreCliente);
 
 }
