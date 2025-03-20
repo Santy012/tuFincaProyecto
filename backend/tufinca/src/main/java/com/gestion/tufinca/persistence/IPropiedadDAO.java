@@ -37,4 +37,5 @@ public interface IPropiedadDAO {
 
     void deletePropiedadByCodigo(Integer codigo);
 
+
 }
