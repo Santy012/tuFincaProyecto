@@ -63,8 +63,8 @@ public class PropiedadServiceImpl implements IPropiedadService {
     }
 
     @Override
-    public List<PropiedadModel> getPropiedadesByEtiqueta(EtiquetaModel etiqueta) {
-        return propiedadDAO.getPropiedadesByEtiqueta(etiqueta);
+    public List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id) {
+        return propiedadDAO.getPropiedadesByEtiquetaId(id);
     }
 
     @Override

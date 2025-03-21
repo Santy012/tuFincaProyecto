@@ -58,8 +58,8 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     }
 
     @Override
-    public List<PropiedadModel> getPropiedadesByEtiqueta(EtiquetaModel etiqueta) {
-        return propiedadRepository.findAllByEtiqueta(etiqueta);
+    public List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id) {
+        return propiedadRepository.findAllByEtiquetaId(id);
     }
 
     @Override

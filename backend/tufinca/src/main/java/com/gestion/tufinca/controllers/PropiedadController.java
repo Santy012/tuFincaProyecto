@@ -93,9 +93,9 @@ public class PropiedadController {
         return ResponseEntity.ok(propiedadList); // Siempre devuelve 200 OK con la lista
     }
 
-    @GetMapping("/etiqueta/{etiqueta}")
-    public ResponseEntity<List<PropiedadDTO>> getPropiedadesByEtiqueta(@PathVariable EtiquetaModel etiqueta) {
-        List<PropiedadDTO> propiedadList = propiedadService.getPropiedadesByEtiqueta(etiqueta)
+    @GetMapping("/etiqueta/{id}")
+    public ResponseEntity<List<PropiedadDTO>> getPropiedadesByEtiquetaId(@PathVariable Integer id) {
+        List<PropiedadDTO> propiedadList = propiedadService.getPropiedadesByEtiquetaId(id)
                 .stream()
                 .map(this::buildPropiedadDTO)
                 .toList();

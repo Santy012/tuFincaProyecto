@@ -34,7 +34,7 @@ public interface IPropiedadDAO {
 
     List<PropiedadModel> getPropiedadesByUbicacion(String ubicacion);
 
-    List<PropiedadModel> getPropiedadesByEtiqueta(EtiquetaModel etiqueta);
+    List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id);
 
     void deletePropiedadByCodigo(Integer codigo);
 

@@ -34,8 +34,8 @@ public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Inte
 
     List<PropiedadModel> findAllByUbicacion(String ubicacion);
 
-    @Query("SELECT p FROM PropiedadModel p JOIN p.etiquetas e WHERE e = :etiqueta")
-    List<PropiedadModel> findAllByEtiqueta(@Param("etiqueta") EtiquetaModel etiqueta);
+    @Query("SELECT p FROM PropiedadModel p JOIN p.etiquetas e WHERE e.id = :etiquetaId")
+    List<PropiedadModel> findAllByEtiquetaId(@Param("etiquetaId") Integer etiquetaId);
 
     void deleteByCodigo(Integer codigo);
 }
