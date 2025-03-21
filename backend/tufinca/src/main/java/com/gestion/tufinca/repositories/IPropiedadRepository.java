@@ -2,6 +2,7 @@ package com.gestion.tufinca.repositories;
 
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ import java.util.Optional;
 public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Integer> {
     Optional<PropiedadModel> findByCodigo(Integer codigo);
 
-    List<PropiedadModel> findAllByEstado(String estado);
+    List<PropiedadModel> findAllByEstado(EstadoPropiedad estado);
 
     List<PropiedadModel> findAllByUbicacion(String ubicacion);
 

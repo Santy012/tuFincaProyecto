@@ -2,8 +2,10 @@ package com.gestion.tufinca.services.impl;
 
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.persistence.IPropiedadDAO;
 import com.gestion.tufinca.services.IPropiedadService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +53,7 @@ public class PropiedadServiceImpl implements IPropiedadService {
     }
 
     @Override
-    public List<PropiedadModel> getPropiedadesByEstado(String estado) {
+    public List<PropiedadModel> getPropiedadesByEstado(EstadoPropiedad estado) {
         return propiedadDAO.getPropiedadesByEstado(estado);
     }
 
@@ -66,6 +68,7 @@ public class PropiedadServiceImpl implements IPropiedadService {
     }
 
     @Override
+    @Transactional
     public void deletePropiedadByCodigo(Integer codigo) {
         propiedadDAO.deletePropiedadByCodigo(codigo);
     }

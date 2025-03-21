@@ -1,7 +1,9 @@
 package com.gestion.tufinca.controllers;
 
 import com.gestion.tufinca.controllers.dto.PropiedadDTO;
+import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.services.IPropiedadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,9 +62,51 @@ public class PropiedadController {
 
     @DeleteMapping(path="/delete/{id}")
     public ResponseEntity<?> deletePropiedadById(@PathVariable Integer id){
-        if(id==null){
+        if(id!=null){
             propiedadService.deletePropiedadById(id);
             return ResponseEntity.ok("Propiedad con id " + id + " eliminada exitosamente");
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/codigo/{codigo}")
+    public ResponseEntity<Optional<PropiedadDTO>> getPropiedadByCodigo(@PathVariable Integer codigo){
+        Optional<PropiedadModel> propiedadOptional = propiedadService.getPropiedadByCodigo(codigo);
+        return createPropiedadResponseEntity(propiedadOptional);
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<PropiedadDTO>> getPropiedadesByEstado(@PathVariable EstadoPropiedad estado) {
+        List<PropiedadDTO> propiedadList = propiedadService.getPropiedadesByEstado(estado)
+                .stream()
+                .map(this::buildPropiedadDTO)
+                .toList();
+        return ResponseEntity.ok(propiedadList); // Siempre devuelve 200 OK con la lista
+    }
+
+    @GetMapping("/ubicacion/{ubicacion}")
+    public ResponseEntity<List<PropiedadDTO>> getPropiedadesByUbicacion(@PathVariable String ubicacion) {
+        List<PropiedadDTO> propiedadList = propiedadService.getPropiedadesByUbicacion(ubicacion)
+                .stream()
+                .map(this::buildPropiedadDTO)
+                .toList();
+        return ResponseEntity.ok(propiedadList); // Siempre devuelve 200 OK con la lista
+    }
+
+    @GetMapping("/etiqueta/{etiqueta}")
+    public ResponseEntity<List<PropiedadDTO>> getPropiedadesByEtiqueta(@PathVariable EtiquetaModel etiqueta) {
+        List<PropiedadDTO> propiedadList = propiedadService.getPropiedadesByEtiqueta(etiqueta)
+                .stream()
+                .map(this::buildPropiedadDTO)
+                .toList();
+        return ResponseEntity.ok(propiedadList); // Siempre devuelve 200 OK con la lista
+    }
+
+    @DeleteMapping(path="/delete/codigo/{codigo}")
+    public ResponseEntity<?> deletePropiedadByCodigo(@PathVariable Integer codigo){
+        if(codigo!=null){
+            propiedadService.deletePropiedadByCodigo(codigo);
+            return ResponseEntity.ok("Propiedad con codigo " + codigo + " eliminada exitosamente");
         }
         return ResponseEntity.badRequest().build();
     }
@@ -76,9 +120,12 @@ public class PropiedadController {
         propiedadToUpdate.setAreaTotal(propiedadDTO.getAreaTotal());
         propiedadToUpdate.setAdministrador(propiedadDTO.getAdministrador());
         propiedadToUpdate.setAreaConst(propiedadDTO.getAreaConst());
-        propiedadToUpdate.setMedias(propiedadDTO.getMedias());
-        propiedadToUpdate.setMensajes(propiedadDTO.getMensajes());
-        propiedadToUpdate.setEtiquetas(propiedadDTO.getEtiquetas());
+        propiedadToUpdate.getMedias().clear();
+        propiedadToUpdate.getMedias().addAll(propiedadDTO.getMedias());
+        propiedadToUpdate.getMensajes().clear();
+        propiedadToUpdate.getMensajes().addAll(propiedadDTO.getMensajes());
+        propiedadToUpdate.getEtiquetas().clear();
+        propiedadToUpdate.getEtiquetas().addAll(propiedadDTO.getEtiquetas());
 
         return propiedadToUpdate;
     }

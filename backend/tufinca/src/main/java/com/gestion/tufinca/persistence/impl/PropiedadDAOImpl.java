@@ -2,6 +2,7 @@ package com.gestion.tufinca.persistence.impl;
 
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.persistence.IPropiedadDAO;
 import com.gestion.tufinca.repositories.IPropiedadRepository;
 
@@ -47,7 +48,7 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     }
 
     @Override
-    public List<PropiedadModel> getPropiedadesByEstado(String estado) {
+    public List<PropiedadModel> getPropiedadesByEstado(EstadoPropiedad estado) {
         return propiedadRepository.findAllByEstado(estado);
     }
 

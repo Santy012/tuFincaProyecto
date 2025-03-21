@@ -2,6 +2,7 @@ package com.gestion.tufinca.services;
 
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public interface IPropiedadService {
 
     Optional<PropiedadModel> getPropiedadByCodigo(Integer codigo);
 
-    List<PropiedadModel> getPropiedadesByEstado(String estado);
+    List<PropiedadModel> getPropiedadesByEstado(EstadoPropiedad estado);
 
     List<PropiedadModel> getPropiedadesByUbicacion(String ubicacion);
 
