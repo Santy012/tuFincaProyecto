@@ -29,7 +29,4 @@ public class AdministradorMensajeModel {
     @JsonIgnore
     private MensajeModel mensaje;
 
-    @Column(name = "fecha_lectura", nullable = false)
-    @JsonIgnore
-    private LocalDateTime fechaLectura;
 }
