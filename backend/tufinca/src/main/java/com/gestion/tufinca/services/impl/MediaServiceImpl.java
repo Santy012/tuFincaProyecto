@@ -40,7 +40,7 @@ public class MediaServiceImpl implements IMediaService {
     }
 
     @Override
-    public void deleteMedia(MediaModel media) {
-        MediaDAO.deleteMedia(media);
+    public void deleteMediaById(Integer id) {
+        MediaDAO.deleteMediaById(id);
     }
 }

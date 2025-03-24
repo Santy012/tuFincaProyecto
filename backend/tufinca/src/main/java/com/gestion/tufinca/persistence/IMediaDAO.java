@@ -9,7 +9,9 @@ public interface IMediaDAO {
 
     List<MediaModel> getMedia();
 
+    Optional<MediaModel> getMediaById(Integer id);
+
     void saveMedia(MediaModel media);
 
-    void deleteMedia(MediaModel media);
+    void deleteMediaById(Integer id);
 }

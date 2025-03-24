@@ -11,5 +11,5 @@ public interface IMediaService {
 
     void saveMedia(MediaModel Media);
 
-    void deleteMedia(MediaModel media);
+    void deleteMediaById(Integer id);
 }
