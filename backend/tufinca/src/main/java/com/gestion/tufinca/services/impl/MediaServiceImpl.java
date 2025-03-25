@@ -31,7 +31,7 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public Optional<MediaModel> getMediaById(Integer id) {
-        return Optional.empty();
+        return MediaDAO.getMediaById(id);
     }
 
     @Override

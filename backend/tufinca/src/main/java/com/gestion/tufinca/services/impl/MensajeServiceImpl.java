@@ -5,6 +5,7 @@ import com.gestion.tufinca.persistence.IMensajeDAO;
 import com.gestion.tufinca.services.IMensajeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.gestion.tufinca.models.enums.Gestion;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class MensajeServiceImpl implements IMensajeService {
     }
 
     @Override
-    public List<MensajeModel> getMensajesByGestion(String gestion) {
+    public List<MensajeModel> getMensajesByGestion(Gestion gestion) {
         return MensajeDAO.getMensajesByGestion(gestion);
     }
 

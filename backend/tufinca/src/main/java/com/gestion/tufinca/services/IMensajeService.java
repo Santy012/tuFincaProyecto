@@ -1,6 +1,7 @@
 package com.gestion.tufinca.services;
 
 import com.gestion.tufinca.models.MensajeModel;
+import com.gestion.tufinca.models.enums.Gestion;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface IMensajeService {
 
     void deleteMensajeById(Integer id);
 
-    List<MensajeModel> getMensajesByGestion(String gestion);
+    List<MensajeModel> getMensajesByGestion(Gestion gestion);
 
     List<MensajeModel> getMensajesByNombre(String nombreCliente);
 

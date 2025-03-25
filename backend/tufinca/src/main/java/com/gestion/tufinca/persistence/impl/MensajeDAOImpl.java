@@ -42,7 +42,7 @@ public class MensajeDAOImpl implements IMensajeDAO {
     }
 
     @Override
-    public List<MensajeModel> getMensajesByGestion(String gestion) {
+    public List<MensajeModel> getMensajesByGestion(Gestion gestion) {
         return mensajeRepository.findAllByGestion(gestion);
     }
 
