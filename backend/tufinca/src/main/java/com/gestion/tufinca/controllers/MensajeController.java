@@ -20,10 +20,12 @@ import java.util.Optional;
 public class MensajeController {
 
     private final IMensajeService mensajeService;
+    private final IAdministradorService administradorService;
 
     @Autowired
-    public MensajeController(IMensajeService mensajeService) {
+    public MensajeController(IMensajeService mensajeService, IAdministradorService administradorService) {
         this.mensajeService = mensajeService;
+        this.administradorService = administradorService;
     }
 
     @GetMapping("/all")
@@ -54,8 +56,8 @@ public class MensajeController {
         if (mensajeOptional.isPresent()) {
             MensajeModel mensajeToUpdate = mensajeOptional.get();
             mensajeToUpdate = setMensajeUpdateValues(request, mensajeToUpdate);
-            //Optional<AdministradorModel> nuevoAdmin = administradorService.getAdministradorById(administradorId);
-            //nuevoAdmin.ifPresent(mensajeToUpdate::setAdministrador);
+            Optional<AdministradorModel> nuevoAdmin = administradorService.getAdministradorById(administradorId);
+            nuevoAdmin.ifPresent(mensajeToUpdate::setAdministrador);
             // Guardar los cambios en la base de datos
             mensajeService.saveMensaje(mensajeToUpdate);
 
