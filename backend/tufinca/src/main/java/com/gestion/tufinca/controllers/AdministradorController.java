@@ -59,6 +59,8 @@ public class AdministradorController {
         administradorToUpdate.setUsuario(administradorDTO.getUsuario());
         administradorToUpdate.setCorreo(administradorDTO.getCorreo());
         administradorToUpdate.setContraseña(administradorDTO.getContraseña());
+        administradorToUpdate.getMensajes().clear();
+        administradorToUpdate.getMensajes().addAll(administradorDTO.getMensajes());
         return administradorToUpdate;
     }
 
@@ -69,6 +71,7 @@ public class AdministradorController {
                 .usuario(administradorDTO.getUsuario())
                 .correo(administradorDTO.getCorreo())
                 .contraseña(administradorDTO.getContraseña())
+                .mensajes(administradorDTO.getMensajes())
                 .build();
     }
 
@@ -87,6 +90,7 @@ public class AdministradorController {
                 .usuario(administrador.getUsuario())
                 .correo(administrador.getCorreo())
                 .contraseña(administrador.getContraseña())
+                .mensajes(administrador.getMensajes())
                 .build();
     }
 }

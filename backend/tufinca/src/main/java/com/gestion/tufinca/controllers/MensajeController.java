@@ -1,8 +1,10 @@
 package com.gestion.tufinca.controllers;
 
 import com.gestion.tufinca.controllers.dto.MensajeDTO;
+import com.gestion.tufinca.models.AdministradorModel;
 import com.gestion.tufinca.models.MensajeModel;
 import com.gestion.tufinca.models.enums.Gestion;
+import com.gestion.tufinca.services.IAdministradorService;
 import com.gestion.tufinca.services.IMensajeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,25 @@ public class MensajeController {
         return ResponseEntity.created(new URI("api/mensajes/save")).build();
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateMensajeById( @RequestBody MensajeDTO request, @PathVariable Integer id, @RequestParam Integer administradorId) {
+        Optional<MensajeModel> mensajeOptional = mensajeService.getMensajeById(id);
+
+        if (mensajeOptional.isPresent()) {
+            MensajeModel mensajeToUpdate = mensajeOptional.get();
+            mensajeToUpdate = setMensajeUpdateValues(request, mensajeToUpdate);
+            //Optional<AdministradorModel> nuevoAdmin = administradorService.getAdministradorById(administradorId);
+            //nuevoAdmin.ifPresent(mensajeToUpdate::setAdministrador);
+            // Guardar los cambios en la base de datos
+            mensajeService.saveMensaje(mensajeToUpdate);
+
+            return ResponseEntity.ok("Mensaje con id " + id + " actualizado exitosamente.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @DeleteMapping(path="/delete/{id}")
     public ResponseEntity<?> deleteMensajeById(@PathVariable Integer id){
         if(id!=null){
@@ -79,6 +100,9 @@ public class MensajeController {
         mensajeToUpdate.setCorreo(mensajeDTO.getCorreo());
         mensajeToUpdate.setDetalle(mensajeDTO.getDetalle());
         mensajeToUpdate.setGestion(mensajeDTO.getGestion());
+        if (!mensajeDTO.getGestion().equals(mensajeToUpdate.getGestion())) {
+            mensajeToUpdate.setGestion(mensajeDTO.getGestion());
+        }
         return mensajeToUpdate;
     }
 
