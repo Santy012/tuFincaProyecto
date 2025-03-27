@@ -1,36 +1,16 @@
 import { useState } from "react";
+import { useGlobalContext } from "../../../context/GlobalContext";
 import PropiedadCard from "./components/PropiedadCard";
 import PopUpDetalles from "./components/PopUpDetalles";
 
 const ListaPropiedades = () => {
+  const { propiedades, etiquetas } = useGlobalContext(); // Obtiene propiedades y etiquetas del contexto
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
 
-  const propiedades = [
-    {
-      id: 1,
-      titulo: "Casa en la Playa",
-      codigo: "0001",
-      descripcion: "Casa espectacular en la playa con muchas lindas vistas",
-      areaTotal: 25.0,
-      areaConstruida: null,
-      ubicacion: "Cancún, México",
-      estado: "Disponible",
-      imagenes: ["https://picsum.photos/300/200?random=1", "https://picsum.photos/300/200?random=2"],
-      etiquetas: ["3 habitaciones", "2 baños", "Cerca del mar"],
-    },
-    {
-      id: 2,
-      titulo: "Departamento en CDMX",
-      codigo: "0002",
-      descripcion: "Lindo Departamento en la ciudad de mexico",
-      areaTotal: 25.0,
-      areaConstruida: 30.0,
-      ubicacion: "Ciudad de México, México",
-      estado: "En venta",
-      imagenes: ["https://picsum.photos/300/200?random=3", "https://picsum.photos/300/200?random=4", "https://picsum.photos/300/200?random=5"],
-      etiquetas: ["2 habitaciones", "1 baño", "Cerca del metro"],
-    },
-  ];
+  // Función para convertir los IDs de etiquetas en sus nombres
+  const obtenerNombresEtiquetas = (ids) => {
+    return ids.map((id) => etiquetas.find((etiqueta) => etiqueta.id === id)?.nombre).filter(Boolean);
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -43,7 +23,7 @@ const ListaPropiedades = () => {
           {propiedades.map((propiedad) => (
             <PropiedadCard
               key={propiedad.id}
-              propiedad={propiedad}
+              propiedad={{ ...propiedad, etiquetas: obtenerNombresEtiquetas(propiedad.etiquetas) }}
               onClick={() => setPropiedadSeleccionada(propiedad)}
             />
           ))}
@@ -55,6 +35,7 @@ const ListaPropiedades = () => {
         <PopUpDetalles
           propiedadSeleccionada={propiedadSeleccionada}
           setPropiedadSeleccionada={setPropiedadSeleccionada}
+          obtenerNombresEtiquetas={obtenerNombresEtiquetas}
         />
       )}
     </div>

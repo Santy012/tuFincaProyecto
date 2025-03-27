@@ -6,7 +6,11 @@ import ListaEtiquetas from "../subcomponents/ListaEtiquetas";
 import Carrusel from "../subcomponents/Carrusel";
 import Indicadores from "../subcomponents/Indicadores";
 
-const PopUpDetalles = ({ propiedadSeleccionada, setPropiedadSeleccionada }) => {
+const PopUpDetalles = ({
+  propiedadSeleccionada,
+  setPropiedadSeleccionada,
+  obtenerNombresEtiquetas,
+}) => {
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
@@ -31,8 +35,15 @@ const PopUpDetalles = ({ propiedadSeleccionada, setPropiedadSeleccionada }) => {
           <X size={24} />
         </button>
 
-        <Carrusel propiedadSeleccionada={propiedad} imagenActual={imagenActual} setImagenActual={setImagenActual} />
-        <Indicadores propiedadSeleccionada={propiedad} imagenActual={imagenActual} />
+        <Carrusel
+          propiedadSeleccionada={propiedad}
+          imagenActual={imagenActual}
+          setImagenActual={setImagenActual}
+        />
+        <Indicadores
+          propiedadSeleccionada={propiedad}
+          imagenActual={imagenActual}
+        />
 
         <CampoEditable
           label="Título"
@@ -76,7 +87,9 @@ const PopUpDetalles = ({ propiedadSeleccionada, setPropiedadSeleccionada }) => {
           <CampoEditable
             label="Área Construida (m²)"
             value={propiedad.areaConstruida}
-            onChange={(val) => setPropiedad({ ...propiedad, areaConstruida: val })}
+            onChange={(val) =>
+              setPropiedad({ ...propiedad, areaConstruida: val })
+            }
             editando={editando}
             type="number"
           />
@@ -91,8 +104,13 @@ const PopUpDetalles = ({ propiedadSeleccionada, setPropiedadSeleccionada }) => {
         />
 
         <ListaEtiquetas
-          etiquetas={propiedad.etiquetas}
-          setEtiquetas={(nuevasEtiquetas) => setPropiedad({ ...propiedad, etiquetas: nuevasEtiquetas })}
+          etiquetas={obtenerNombresEtiquetas(propiedad.etiquetas)} // <-- Aplicando la conversión
+          setEtiquetas={(nuevasEtiquetas) =>
+            setPropiedad({
+              ...propiedad,
+              etiquetas: obtenerNombresEtiquetas(nuevasEtiquetas),
+            })
+          }
           editando={editando}
         />
 
