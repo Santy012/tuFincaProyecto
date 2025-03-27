@@ -43,7 +43,8 @@ public class MensajeModel {
     @JsonIgnore
     private PropiedadModel propiedad;
 
-    @OneToMany(mappedBy = "mensaje", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "administrador_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_propiedad_administrador"))
     @JsonIgnore
-    private List<AdministradorMensajeModel> administradorMensajes = new ArrayList<>();
+    private AdministradorModel administrador;
 }

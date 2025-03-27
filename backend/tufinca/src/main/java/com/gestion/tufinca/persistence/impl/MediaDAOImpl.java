@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MediaDAOImpl implements IMediaDAO {
@@ -25,13 +26,18 @@ public class MediaDAOImpl implements IMediaDAO {
     }
 
     @Override
+    public Optional<MediaModel> getMediaById(Integer id) {
+        return mediaRepository.findById(id);
+    }
+
+    @Override
     public void saveMedia(MediaModel media) {
         mediaRepository.save(media);
     }
 
     @Override
-    public void deleteMedia(MediaModel media) {
-        mediaRepository.delete(media);
+    public void deleteMediaById(Integer id) {
+        mediaRepository.deleteById(id);
     }
 
 }

@@ -17,8 +17,8 @@ public interface IMensajeDAO {
 
     void deleteMensajeById(Integer id);
 
-    List<MensajeModel> getMensajeByGestion(String gestion);
+    List<MensajeModel> getMensajesByGestion(Gestion gestion);
 
-    List<MensajeModel> getMensajeByNombre(String nombreCliente);
+    List<MensajeModel> getMensajesByNombre(String nombreCliente);
 
 }

@@ -2,6 +2,7 @@ package com.gestion.tufinca.persistence;
 
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
+import com.gestion.tufinca.models.enums.EstadoPropiedad;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +30,13 @@ public interface IPropiedadDAO {
 
     Optional<PropiedadModel> getPropiedadByCodigo(Integer codigo);
 
-    List<PropiedadModel> getPropiedadesByEstado(String estado);
+    List<PropiedadModel> getPropiedadesByEstado(EstadoPropiedad estado);
 
     List<PropiedadModel> getPropiedadesByUbicacion(String ubicacion);
 
-    List<PropiedadModel> getPropiedadesByEtiqueta(EtiquetaModel etiqueta);
+    List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id);
 
     void deletePropiedadByCodigo(Integer codigo);
+
 
 }
