@@ -95,18 +95,23 @@ public class MensajeController {
         return ResponseEntity.ok(mensajeList); // Siempre devuelve 200 OK con la lista
     }
 
-    public MensajeModel setMensajeUpdateValues(MensajeDTO mensajeDTO, MensajeModel mensajeToUpdate){
+    public MensajeModel setMensajeUpdateValues(MensajeDTO mensajeDTO, MensajeModel mensajeToUpdate) {
         mensajeToUpdate.setNombreCliente(mensajeDTO.getNombreCliente());
         mensajeToUpdate.setApellidoCliente(mensajeDTO.getApellidoCliente());
         mensajeToUpdate.setCelular(mensajeDTO.getCelular());
         mensajeToUpdate.setCorreo(mensajeDTO.getCorreo());
         mensajeToUpdate.setDetalle(mensajeDTO.getDetalle());
-        mensajeToUpdate.setGestion(mensajeDTO.getGestion());
-        if (!mensajeDTO.getGestion().equals(mensajeToUpdate.getGestion())) {
-            mensajeToUpdate.setGestion(mensajeDTO.getGestion());
+
+        // SIEMPRE cambiar la gestión a la opuesta
+        if (mensajeToUpdate.getGestion() == Gestion.realizado) {
+            mensajeToUpdate.setGestion(Gestion.porLeer);
+        } else {
+            mensajeToUpdate.setGestion(Gestion.realizado);
         }
+
         return mensajeToUpdate;
     }
+
 
     public MensajeModel buildMensaje(MensajeDTO mensajeDTO){
         return MensajeModel.builder()
