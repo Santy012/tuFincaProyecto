@@ -7,6 +7,7 @@ import Carrusel from "../subcomponents/Carrusel";
 import Indicadores from "../subcomponents/Indicadores";
 import PopupImages from "./PopupImages";
 
+
 const PopUpDetalles = ({
   propiedadSeleccionada,
   setPropiedadSeleccionada,
@@ -16,6 +17,27 @@ const PopUpDetalles = ({
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
   const [mostrarGaleria, setMostrarGaleria] = useState(false);
+  const AgregarMedia = (archivo) => {
+    if (archivo) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPropiedad((prev) => ({
+          ...prev,
+          imagenes: [...prev.imagenes, e.target.result],
+        }));
+      };
+      reader.readAsDataURL(archivo);
+    }
+  };
+  const handleRemoveImage = (index) => {
+    setPropiedad((prev) => ({
+      ...prev,
+      imagenes: prev.imagenes.filter((_, i) => i !== index),
+    }));
+  };
+  
+  
+  
 
   useEffect(() => {
     setPropiedad(propiedadSeleccionada);
@@ -132,6 +154,8 @@ const PopUpDetalles = ({
         <PopupImages
           imagenes={propiedad.imagenes}
           onClose={() => setMostrarGaleria(false)} // Cierra la galería al hacer clic en "X"
+          onAddImage={AgregarMedia}
+          onRemoveImage={handleRemoveImage}
         />
       )}
     </div>

@@ -12,7 +12,7 @@ export const GlobalProvider = ({ children }) => {
       areaTotal: 25.0,
       ubicacion: "Cancún, México",
       estado: "Disponible",
-      imagenes: ["https://picsum.photos/300/200?random=1", "https://picsum.photos/300/200?random=2"],
+      imagenes: ["https://picsum.photos/300/200?random=1", "https://picsum.photos/300/200?random=2", "https://picsum.photos/300/200?random=1", "https://picsum.photos/300/200?random=2", "https://picsum.photos/300/200?random=2"],
       etiquetas: [1, 2, 3],
     },
     {

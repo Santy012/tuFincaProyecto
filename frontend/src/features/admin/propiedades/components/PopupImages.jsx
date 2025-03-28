@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
+import { useState } from "react";
 
-const PopupImages = ({ imagenes, onClose }) => {
+const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
+  const [hoverIndex, setHoverIndex] = useState(null);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-50 p-4">
       <motion.div
@@ -19,18 +22,38 @@ const PopupImages = ({ imagenes, onClose }) => {
         </button>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {imagenes && imagenes.length > 0 ? (
+          {imagenes.length > 0 ? (
             imagenes.map((imagen, index) => (
-              <img
-                key={index}
-                src={imagen}
-                alt={`Imagen ${index + 1}`}
-                className="w-full h-40 object-cover rounded-lg shadow"
-              />
+              <div key={index} className="relative group">
+                <img
+                  src={imagen}
+                  alt={`Imagen ${index + 1}`}
+                  className="w-full h-40 object-cover rounded-lg shadow"
+                />
+                <button
+                  onClick={() => onRemoveImage(index)}
+                  className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                >
+                  <X size={16} />
+                </button>
+              </div>
             ))
           ) : (
-            <p className="col-span-full text-center text-gray-500">No hay imágenes disponibles</p>
+            <p className="col-span-full text-center text-gray-500">
+              No hay imágenes disponibles
+            </p>
           )}
+
+          {/* Botón para subir imágenes */}
+          <label className="w-full h-40 flex items-center justify-center border-2 border-dashed border-gray-400 text-gray-600 rounded-lg shadow hover:bg-gray-100 transition cursor-pointer">
+            <Plus size={40} />
+            <input
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              onChange={(e) => onAddImage(e.target.files[0])}
+            />
+          </label>
         </div>
       </motion.div>
     </div>
