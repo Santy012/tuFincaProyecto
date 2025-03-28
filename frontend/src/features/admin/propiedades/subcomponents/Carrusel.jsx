@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
-const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual }) => {
+
+const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMostrarGaleria }) => {
   const [direccion, setDireccion] = useState(1);
 
   const siguienteImagen = () => {
@@ -17,6 +18,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual }) => {
       prev === 0 ? propiedadSeleccionada.imagenes.length - 1 : prev - 1
     );
   };
+
   return (
     <div className="relative w-full h-64 overflow-hidden rounded-lg shadow-md">
       <AnimatePresence initial={false} custom={direccion}>
@@ -24,11 +26,12 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual }) => {
           key={imagenActual}
           src={propiedadSeleccionada.imagenes[imagenActual]}
           alt={propiedadSeleccionada.titulo}
-          className="absolute w-full h-64 object-cover rounded-lg"
+          className="absolute w-full h-64 object-cover rounded-lg cursor-pointer"
           initial={{ x: direccion * 300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -direccion * 300, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
+          onClick={() => setMostrarGaleria(true)}
         />
       </AnimatePresence>
       <button

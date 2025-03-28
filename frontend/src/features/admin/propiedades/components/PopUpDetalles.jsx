@@ -5,6 +5,7 @@ import CampoEditable from "../subcomponents/CampoEditable";
 import ListaEtiquetas from "../subcomponents/ListaEtiquetas";
 import Carrusel from "../subcomponents/Carrusel";
 import Indicadores from "../subcomponents/Indicadores";
+import PopupImages from "./PopupImages";
 
 const PopUpDetalles = ({
   propiedadSeleccionada,
@@ -14,6 +15,7 @@ const PopUpDetalles = ({
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
+  const [mostrarGaleria, setMostrarGaleria] = useState(false);
 
   useEffect(() => {
     setPropiedad(propiedadSeleccionada);
@@ -35,11 +37,14 @@ const PopUpDetalles = ({
           <X size={24} />
         </button>
 
-        <Carrusel
-          propiedadSeleccionada={propiedad}
-          imagenActual={imagenActual}
-          setImagenActual={setImagenActual}
-        />
+        {/* Carrusel ahora abre la galería al hacer clic */}
+        <div className="cursor-pointer">
+          <Carrusel propiedadSeleccionada={propiedad} 
+          imagenActual={imagenActual} 
+          setImagenActual={setImagenActual} 
+          setMostrarGaleria={setMostrarGaleria}/>
+        </div>
+        
         <Indicadores
           propiedadSeleccionada={propiedad}
           imagenActual={imagenActual}
@@ -121,6 +126,14 @@ const PopUpDetalles = ({
           {editando ? "Guardar Cambios" : "Editar Propiedad"}
         </button>
       </motion.div>
+
+      {/* Galería de Imágenes: Se muestra cuando `mostrarGaleria` es true */}
+      {mostrarGaleria && (
+        <PopupImages
+          imagenes={propiedad.imagenes}
+          onClose={() => setMostrarGaleria(false)} // Cierra la galería al hacer clic en "X"
+        />
+      )}
     </div>
   );
 };
