@@ -14,6 +14,7 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="relative bg-white p-6 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-y-auto"
       >
+        {/* Botón de cierre en la esquina superior derecha */}
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 cursor-pointer z-10 transition"
@@ -21,6 +22,7 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
           <X size={24} />
         </button>
 
+        {/* Grid de imágenes */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {imagenes.length > 0 ? (
             imagenes.map((imagen, index) => (
@@ -54,6 +56,16 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
               onChange={(e) => onAddImage(e.target.files[0])}
             />
           </label>
+        </div>
+
+        {/* Botón de Guardar al final del Popup */}
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={onClose} // Misma funcionalidad que la "X"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+          >
+            Guardar
+          </button>
         </div>
       </motion.div>
     </div>

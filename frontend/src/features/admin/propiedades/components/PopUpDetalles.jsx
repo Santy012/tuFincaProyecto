@@ -7,7 +7,6 @@ import Carrusel from "../subcomponents/Carrusel";
 import Indicadores from "../subcomponents/Indicadores";
 import PopupImages from "./PopupImages";
 
-
 const PopUpDetalles = ({
   propiedadSeleccionada,
   setPropiedadSeleccionada,
@@ -17,6 +16,7 @@ const PopUpDetalles = ({
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
   const [mostrarGaleria, setMostrarGaleria] = useState(false);
+
   const AgregarMedia = (archivo) => {
     if (archivo) {
       const reader = new FileReader();
@@ -29,19 +29,21 @@ const PopUpDetalles = ({
       reader.readAsDataURL(archivo);
     }
   };
+
   const handleRemoveImage = (index) => {
-    setPropiedad((prev) => ({
-      ...prev,
-      imagenes: prev.imagenes.filter((_, i) => i !== index),
-    }));
+    setPropiedad((prev) => {
+      const nuevasImagenes = prev.imagenes.filter((_, i) => i !== index);
+  
+      return {
+        ...prev,
+        imagenes: nuevasImagenes,
+      };
+    });
+  
+    // Ajustar índice de imagen actual si se elimina la última imagen
+    setImagenActual((prevIndex) => Math.max(0, prevIndex - 1));
   };
   
-  
-  
-
-  useEffect(() => {
-    setPropiedad(propiedadSeleccionada);
-  }, [propiedadSeleccionada]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50 p-4">
@@ -59,18 +61,26 @@ const PopUpDetalles = ({
           <X size={24} />
         </button>
 
-        {/* Carrusel ahora abre la galería al hacer clic */}
-        <div className="cursor-pointer">
-          <Carrusel propiedadSeleccionada={propiedad} 
-          imagenActual={imagenActual} 
-          setImagenActual={setImagenActual} 
-          setMostrarGaleria={setMostrarGaleria}/>
+        {/* Contenedor del carrusel con efecto de edición */}
+        <div className="relative cursor-pointer">
+          <div
+            className={`absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg transition-opacity duration-300 rounded-lg ${
+              editando ? "opacity-0 hover:opacity-100" : "hidden"
+            }`}
+          >
+            Editar
+          </div>
+          <Carrusel 
+            propiedadSeleccionada={propiedad} 
+            imagenActual={imagenActual} 
+            setImagenActual={setImagenActual} 
+            setMostrarGaleria={() => {
+              if (editando) setMostrarGaleria(true); // Solo abre la galería si está en edición
+            }} 
+          />
         </div>
-        
-        <Indicadores
-          propiedadSeleccionada={propiedad}
-          imagenActual={imagenActual}
-        />
+
+        <Indicadores propiedadSeleccionada={propiedad} imagenActual={imagenActual} />
 
         <CampoEditable
           label="Título"
@@ -114,9 +124,7 @@ const PopUpDetalles = ({
           <CampoEditable
             label="Área Construida (m²)"
             value={propiedad.areaConstruida}
-            onChange={(val) =>
-              setPropiedad({ ...propiedad, areaConstruida: val })
-            }
+            onChange={(val) => setPropiedad({ ...propiedad, areaConstruida: val })}
             editando={editando}
             type="number"
           />
@@ -131,7 +139,7 @@ const PopUpDetalles = ({
         />
 
         <ListaEtiquetas
-          etiquetas={obtenerNombresEtiquetas(propiedad.etiquetas)} // <-- Aplicando la conversión
+          etiquetas={obtenerNombresEtiquetas(propiedad.etiquetas)}
           setEtiquetas={(nuevasEtiquetas) =>
             setPropiedad({
               ...propiedad,
@@ -149,11 +157,11 @@ const PopUpDetalles = ({
         </button>
       </motion.div>
 
-      {/* Galería de Imágenes: Se muestra cuando `mostrarGaleria` es true */}
-      {mostrarGaleria && (
+      {/* Popup de imágenes solo se muestra cuando está en modo edición */}
+      {editando && mostrarGaleria && (
         <PopupImages
           imagenes={propiedad.imagenes}
-          onClose={() => setMostrarGaleria(false)} // Cierra la galería al hacer clic en "X"
+          onClose={() => setMostrarGaleria(false)}
           onAddImage={AgregarMedia}
           onRemoveImage={handleRemoveImage}
         />
