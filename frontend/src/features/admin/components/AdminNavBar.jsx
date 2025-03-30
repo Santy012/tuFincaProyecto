@@ -105,14 +105,6 @@ const NavContent = ({ onSectionChange }) => {
           <FaPlus className="mr-3" /> Mi Perfil
         </button>
 
-
-        {/* Botón de Cerrar Sesión */}
-        <a
-          href="#"
-          className="flex items-center text-gray-700 hover:text-blue-800"
-        >
-          <FaUserSlash className="mr-3" /> Cierre De Sesión
-        </a>
       </nav>
     </div>
   );
