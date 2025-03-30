@@ -19,19 +19,19 @@ const ListaMensajes = () => {
       {/* Filtros */}
       <div className="flex space-x-4 mb-6">
         <button
-          className={`px-4 py-2 rounded-lg ${filtro === "todos" ? "bg-yellow-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded-lg ${filtro === "todos" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
           onClick={() => setFiltro("todos")}
         >
           Todos
         </button>
         <button
-          className={`px-4 py-2 rounded-lg ${filtro === "porLeer" ? "bg-yellow-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded-lg ${filtro === "porLeer" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
           onClick={() => setFiltro("porLeer")}
         >
           Por Leer
         </button>
         <button
-          className={`px-4 py-2 rounded-lg ${filtro === "realizado" ? "bg-yellow-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded-lg ${filtro === "realizado" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
           onClick={() => setFiltro("realizado")}
         >
           Realizado
