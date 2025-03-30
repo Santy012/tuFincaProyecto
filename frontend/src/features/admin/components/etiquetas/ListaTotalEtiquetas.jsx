@@ -1,20 +1,8 @@
-
-//AL LLAMAR AL POP UP DE ETIQUETA, NO ESTA GUARDANDO AÚN LA ETIQUETA
-
 import { useState } from "react";
 import PopUpEtiqueta from "./PopUpEtiqueta";
 
-const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta }) => {
+const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta, agregarNuevaEtiqueta }) => {
   const [mostrarPopup, setMostrarPopup] = useState(false);
-  const [etiquetas, setEtiquetas] = useState(etiquetasDisponibles); // Manejo local de etiquetas
-
-  const guardarEtiqueta = (nombre) => {
-    const nuevaEtiqueta = {
-      id: etiquetas.length + 1, // Genera un ID único (temporal)
-      nombre,
-    };
-    setEtiquetas([...etiquetas, nuevaEtiqueta]); // Agregar al estado local
-  };
 
   return (
     <div className="mt-4">
@@ -31,7 +19,6 @@ const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta }) => {
         ))}
       </div>
 
-      {/* Botón para crear nueva etiqueta */}
       <button
         onClick={() => setMostrarPopup(true)}
         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
@@ -39,8 +26,12 @@ const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta }) => {
         Crear Nueva
       </button>
 
-      {/* Popup para agregar nueva etiqueta */}
-      {mostrarPopup && <PopUpEtiqueta cerrar={() => setMostrarPopup(false)} guardarEtiqueta={guardarEtiqueta} />}
+      {mostrarPopup && (
+        <PopUpEtiqueta 
+          cerrar={() => setMostrarPopup(false)} 
+          guardarEtiqueta={agregarNuevaEtiqueta} 
+        />
+      )}
     </div>
   );
 };

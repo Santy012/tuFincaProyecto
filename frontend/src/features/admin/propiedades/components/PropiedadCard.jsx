@@ -1,4 +1,4 @@
-import Etiqueta from "../subcomponents/Etiqueta";
+import Etiqueta from "../../components/etiquetas/Etiqueta";
 const PropiedadCard = ({ propiedad, onClick }) => {
   return (
     <div

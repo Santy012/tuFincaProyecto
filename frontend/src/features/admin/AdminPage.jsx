@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminHeader from "./components/AdminHeader";
-import PropiedadForm from "./forms/PropiedadForm";
+import PropiedadForm from "../admin/forms/PropiedadForm";
 import Navbar from "./components/AdminNavBar";
 import ListaPropiedades from "../admin/propiedades/ListaPropiedades";
 import ListaMensajes from "../admin/msjs/ListaMensajes";
