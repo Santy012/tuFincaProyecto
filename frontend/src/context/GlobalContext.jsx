@@ -58,8 +58,36 @@ export const GlobalProvider = ({ children }) => {
     );
   };
 
+  // Función para agregar una nueva etiqueta globalmente
+  const agregarNuevaEtiquetaGlobal = (nombreEtiqueta) => {
+    // Validar que no exista ya
+    if (etiquetas.some(e => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase())) {
+      return { error: "Esta etiqueta ya existe" };
+    }
+
+    // Crear nueva etiqueta con ID único
+    const nuevaId = Math.max(...etiquetas.map(e => e.id), 0) + 1;
+    const nuevaEtiqueta = { id: nuevaId, nombre: nombreEtiqueta };
+    
+    // Actualizar el estado global
+    setEtiquetas(prev => [...prev, nuevaEtiqueta]);
+    
+    return nuevaEtiqueta;
+  };
+
   return (
-    <GlobalContext.Provider value={{ propiedades, setPropiedades, etiquetas, setEtiquetas, actualizarPropiedad, mensajes, setMensajes, admin, setAdmin }}>
+    <GlobalContext.Provider value={{ 
+      propiedades, 
+      setPropiedades, 
+      etiquetas, 
+      setEtiquetas, 
+      actualizarPropiedad, 
+      mensajes, 
+      setMensajes, 
+      admin, 
+      setAdmin,
+      agregarNuevaEtiquetaGlobal // Añadir esta función al contexto
+    }}>
       {children}
     </GlobalContext.Provider>
   );

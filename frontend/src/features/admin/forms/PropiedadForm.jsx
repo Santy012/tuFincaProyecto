@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TituloForm from "./TituloForm";
 import UbicacionForm from "./UbicacionForm";
 import EtiquetasEstadoForm from "./EtiquetaEstadoForm";
 import MultimediaForm from "./MultiMediaForm";
 import ResumenForm from "./ResumenForm";
+import { useGlobalContext } from "../../../context/GlobalContext";
 
 const steps = [
   "Título y Descripción",
@@ -15,6 +16,7 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const { setPropiedades } = useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
     descripcion: "",
@@ -30,11 +32,47 @@ const PropiedadForm = () => {
   };
 
   const prevStep = () => {
-    setActiveStep((prev) => Math.max(prev - 1, 0)); // Evita que baje de 0
+    setActiveStep((prev) => Math.max(prev - 1, 0));
   };
 
   const handleChange = (campo, valor) => {
     setPropiedadData((prev) => ({ ...prev, [campo]: valor }));
+  };
+
+  const guardarPropiedad = () => {
+    // Validación básica de campos requeridos
+    if (!propiedadData.titulo || !propiedadData.descripcion || !propiedadData.codigo) {
+      alert("Por favor complete los campos obligatorios (Título, Descripción y Código)");
+      setActiveStep(0); // Regresa al primer paso
+      return;
+    }
+
+    // Crear objeto de propiedad con todos los datos
+    const nuevaPropiedad = {
+      ...propiedadData,
+      id: Date.now(), // ID temporal basado en timestamp
+      imagenes: propiedadData.archivos.map(file => 
+        typeof file === 'string' ? file : URL.createObjectURL(file)
+      ),
+      areaTotal: 0, // Puedes agregar un campo para esto en el formulario
+      estado: propiedadData.estado || "Disponible",
+    };
+
+    // Agregar al contexto global
+    setPropiedades(prev => [...prev, nuevaPropiedad]);
+    
+    // Resetear el formulario
+    alert("Propiedad guardada exitosamente!");
+    setActiveStep(0);
+    setPropiedadData({
+      titulo: "",
+      descripcion: "",
+      codigo: "",
+      ubicacion: "",
+      estado: "",
+      etiquetas: [],
+      archivos: [],
+    });
   };
 
   return (
@@ -46,7 +84,9 @@ const PropiedadForm = () => {
             key={index}
             onClick={() => setActiveStep(index)}
             className={`py-2 px-3 rounded-md transition-all ${
-              activeStep === index ? "bg-blue-800 font-semibold text-white" : "hover:bg-gray-200 font-medium cursor-pointer"
+              activeStep === index 
+                ? "bg-blue-800 font-semibold text-white" 
+                : "hover:bg-gray-200 font-medium cursor-pointer"
             }`}
           >
             {step}
@@ -56,38 +96,65 @@ const PropiedadForm = () => {
 
       {/* Contenido dinámico */}
       <div className="bg-white p-6 mt-4 rounded-lg shadow-md">
-        {activeStep === 0 && <TituloForm propiedadData={propiedadData} handleChange={handleChange} />}
-        {activeStep === 1 && <UbicacionForm propiedadData={propiedadData} handleChange={handleChange} />}
-        {activeStep === 2 && <EtiquetasEstadoForm propiedadData={propiedadData} handleChange={handleChange} />}
-        {activeStep === 3 && <MultimediaForm propiedadData={propiedadData} handleChange={handleChange} />}
-        {activeStep === 4 && (<ResumenForm propiedadData={propiedadData}/>)}
-
-      <div className="flex justify-between mt-4">
-        {/* Botón Anterior */}
-        {activeStep > 0 && (
-          <button
-            onClick={prevStep}
-            className="bg-gray-400 text-white px-6 py-3 rounded-md hover:bg-gray-500 cursor-pointer transition-all"
-          >
-            Anterior
-          </button>
+        {activeStep === 0 && (
+          <TituloForm 
+            propiedadData={propiedadData} 
+            handleChange={handleChange} 
+          />
+        )}
+        {activeStep === 1 && (
+          <UbicacionForm 
+            propiedadData={propiedadData} 
+            handleChange={handleChange} 
+          />
+        )}
+        {activeStep === 2 && (
+          <EtiquetasEstadoForm 
+            propiedadData={propiedadData} 
+            handleChange={handleChange} 
+          />
+        )}
+        {activeStep === 3 && (
+          <MultimediaForm 
+            propiedadData={propiedadData} 
+            handleChange={handleChange} 
+          />
+        )}
+        {activeStep === 4 && (
+          <ResumenForm 
+            propiedadData={propiedadData} 
+          />
         )}
 
-        {/* Botón Siguiente o Guardar */}
-        {activeStep < 4 ? (
-          <button
-            onClick={nextStep}
-            className="bg-blue-800 text-white px-6 py-3 rounded-md hover:bg-blue-400 cursor-pointer transition-all"
-          >
-            Siguiente
-          </button>
-        ) : (
-          <button
-            //onClick={} // Aquí llamas a la función para guardar los datos
-            className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-500 cursor-pointer transition-all"
-          >
-            Guardar Propiedad
-          </button>
+        <div className="flex justify-between mt-4">
+          {/* Botón Anterior */}
+          {activeStep > 0 && (
+            <button
+              onClick={prevStep}
+              className="bg-gray-400 text-white px-6 py-3 rounded-md hover:bg-gray-500 cursor-pointer transition-all"
+            >
+              Anterior
+            </button>
+          )}
+
+          {/* Espacio vacío para mantener el layout cuando no hay botón anterior */}
+          {activeStep === 0 && <div></div>}
+
+          {/* Botón Siguiente o Guardar */}
+          {activeStep < steps.length - 1 ? (
+            <button
+              onClick={nextStep}
+              className="bg-blue-800 text-white px-6 py-3 rounded-md hover:bg-blue-400 cursor-pointer transition-all"
+            >
+              Siguiente
+            </button>
+          ) : (
+            <button
+              onClick={guardarPropiedad}
+              className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-500 cursor-pointer transition-all"
+            >
+              Guardar Propiedad
+            </button>
           )}
         </div>
       </div>

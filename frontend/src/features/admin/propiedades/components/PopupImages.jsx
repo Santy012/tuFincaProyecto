@@ -3,7 +3,6 @@ import { X, Plus } from "lucide-react";
 import { useState } from "react";
 
 const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
-  const [hoverIndex, setHoverIndex] = useState(null);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-50 p-4">

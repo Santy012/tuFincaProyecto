@@ -4,11 +4,20 @@ import { X } from "lucide-react";
 
 const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
   const [nombreEtiqueta, setNombreEtiqueta] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   const handleGuardar = () => {
-    if (!nombreEtiqueta.trim()) return; // No permitir etiquetas vacías
-    guardarEtiqueta(nombreEtiqueta);
-    cerrar(); // Cierra el popup después de guardar
+    if (!nombreEtiqueta.trim()) {
+      alert("Por favor ingrese un nombre válido");
+      return;
+    }
+  
+    const exito = guardarEtiqueta(nombreEtiqueta);
+    console.log("Resultado de guardarEtiqueta:", exito); // Para depuración
+    
+    if (exito) {
+      cerrar();
+    }
   };
 
   return (
@@ -49,9 +58,10 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
           </button>
           <button
             onClick={handleGuardar}
-            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            disabled={guardando}
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
           >
-            Guardar
+            {guardando ? "Guardando..." : "Guardar"}
           </button>
         </div>
       </motion.div>
