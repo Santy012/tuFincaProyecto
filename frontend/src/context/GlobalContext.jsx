@@ -36,6 +36,13 @@ export const GlobalProvider = ({ children }) => {
     { id: 5, nombre: "Cerca del metro" },
   ]);
 
+  const [mensajes, setMensajes] = useState([
+    { id: 1, nombreCliente: "santi", apellidoCliente: "gay", celular: "123", correo: "q@gay", detalle: "aaaaaaaa aaaaa aaaaaaaaaaaaa aa aaaaa aaaaaa", gestion: "porLeer" },
+    { id: 2, nombreCliente: "cata", apellidoCliente: "linda", celular: "123", correo: "aa@gay", detalle: "bb bbb aaaaa aaaaaaaaaaaaa aa aaaaa aaaaaa", gestion: "porLeer" },
+    { id: 3, nombreCliente: "millis", apellidoCliente: "gay", celular: "123", correo: "cc@gay", detalle: "aaaa aaaaa aaaaaaaaaaaaa aa aaaaa aaaaaa", gestion: "realizado" },
+    { id: 1, nombreCliente: "nicooo", apellidoCliente: "pro", celular: "123", correo: "q@gay", detalle: "aaaaaaaa aaaaa aaaa zzzz zzz aaaaaaaaa aa aaaaa aaaaaa", gestion: "realizado" },
+  ]);
+
   const actualizarPropiedad = (id, nuevaPropiedad) => {
     setPropiedades((prev) =>
       prev.map((prop) => (prop.id === id ? { ...prop, ...nuevaPropiedad } : prop))
@@ -43,7 +50,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   return (
-    <GlobalContext.Provider value={{ propiedades, setPropiedades, etiquetas, setEtiquetas, actualizarPropiedad }}>
+    <GlobalContext.Provider value={{ propiedades, setPropiedades, etiquetas, setEtiquetas, actualizarPropiedad, mensajes, setMensajes }}>
       {children}
     </GlobalContext.Provider>
   );

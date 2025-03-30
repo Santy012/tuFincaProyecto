@@ -4,6 +4,7 @@ import AdminHeader from "./components/AdminHeader";
 import PropiedadForm from "./forms/PropiedadForm";
 import Navbar from "./components/AdminNavBar";
 import ListaPropiedades from "../admin/propiedades/ListaPropiedades";
+import ListaMensajes from "../admin/msjs/ListaMensajes";
 
 const AdminPage = () => {
   const [selectedSection, setSelectedSection] = useState("propiedades");
@@ -57,7 +58,8 @@ const AdminPage = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <TituloSeccion titulo={"Comentarios"} />
+                <TituloSeccion titulo={"Mensajes / Comentarios"} />
+                <ListaMensajes /> 
                 
               </motion.section>
             )}
