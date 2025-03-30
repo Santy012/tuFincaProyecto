@@ -1,4 +1,8 @@
-const Indicadores = ({propiedadSeleccionada, imagenActual, setImagenActual}) => {
+const Indicadores = ({ propiedadSeleccionada, imagenActual, setImagenActual }) => {
+  if (!propiedadSeleccionada || !Array.isArray(propiedadSeleccionada.imagenes) || propiedadSeleccionada.imagenes.length === 0) {
+    return null; // No renderiza nada si no hay imágenes
+  }
+
   return (
     <div className="flex justify-center mt-3 space-x-2">
       {propiedadSeleccionada.imagenes.map((_, index) => (

@@ -6,14 +6,17 @@ import FiltroEtiquetas from "./components/FiltroEtiquetas";
 
 const ListaPropiedades = () => {
   // Aseguramos que 'etiquetas' siempre tenga un valor predeterminado (un array vacío)
-  const { propiedades, etiquetas = [] } = useGlobalContext(); 
+  const { propiedades, etiquetas = [] } = useGlobalContext() || { propiedades: [], etiquetas: [] };
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
 
-  // Función para convertir los IDs de etiquetas en sus nombres
-  const obtenerNombresEtiquetas = (ids) => {
-    return ids.map((id) => etiquetas.find((etiqueta) => etiqueta.id === id)?.nombre).filter(Boolean);
-  };
+  const obtenerNombresEtiquetas = (ids = []) => {
+    if (!Array.isArray(ids) || !Array.isArray(etiquetas)) return []; // Asegurar que ambos sean arrays
+    return ids
+      .map((id) => etiquetas.find((etiqueta) => etiqueta?.id === id)?.nombre)
+      .filter(Boolean);
+  };  
+  
 
   // Filtrar propiedades según etiquetas seleccionadas
   const propiedadesFiltradas = etiquetasSeleccionadas.length
@@ -24,13 +27,13 @@ const ListaPropiedades = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Lista de Propiedades</h1>
 
       {/* Filtro de etiquetas */}
       <FiltroEtiquetas
         etiquetas={etiquetas}
         etiquetasSeleccionadas={etiquetasSeleccionadas}
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
+        propiedades={propiedades}
       />
 
       {propiedadesFiltradas.length === 0 ? (
@@ -40,7 +43,10 @@ const ListaPropiedades = () => {
           {propiedadesFiltradas.map((propiedad) => (
             <PropiedadCard
               key={propiedad.id}
-              propiedad={{ ...propiedad, etiquetas: obtenerNombresEtiquetas(propiedad.etiquetas) }}
+              propiedad={{ 
+                ...propiedad, 
+                etiquetas: obtenerNombresEtiquetas(propiedad.etiquetas || []) // Asegurar que sea un array
+              }}
               onClick={() => setPropiedadSeleccionada(propiedad)}
             />
           ))}

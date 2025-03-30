@@ -5,6 +5,10 @@ import { useState } from "react";
 const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMostrarGaleria }) => {
   const [direccion, setDireccion] = useState(1);
 
+  if (!propiedadSeleccionada || !Array.isArray(propiedadSeleccionada.imagenes) || propiedadSeleccionada.imagenes.length === 0) {
+    return <p className="text-gray-500">No hay imágenes disponibles.</p>;
+  }
+
   const siguienteImagen = () => {
     setDireccion(1);
     setImagenActual((prev) =>
@@ -25,7 +29,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
         <motion.img
           key={imagenActual}
           src={propiedadSeleccionada.imagenes[imagenActual]}
-          alt={propiedadSeleccionada.titulo}
+          alt={propiedadSeleccionada.titulo || "Imagen de la propiedad"}
           className="absolute w-full h-64 object-cover rounded-lg cursor-pointer"
           initial={{ x: direccion * 300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
