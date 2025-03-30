@@ -34,6 +34,7 @@ const ListaPropiedades = () => {
         etiquetasSeleccionadas={etiquetasSeleccionadas}
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
         propiedades={propiedades}
+        setPropiedadesFiltradas={setPropiedadSeleccionada}
       />
 
       {propiedadesFiltradas.length === 0 ? (

@@ -1,8 +1,7 @@
-// FiltroEtiquetas.js
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
-const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSeleccionadas, propiedades}) => {
+const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSeleccionadas, propiedades, setPropiedadesFiltradas }) => {
   const [pestanaActiva, setPestanaActiva] = useState("tags");
   const [busquedas, setBusquedas] = useState({ nombre: "", codigo: "", estado: "" });
 
@@ -16,10 +15,12 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
 
   const buscarPorCodigo = () => {
     const resultado = propiedades.filter((propiedad) => propiedad.codigo === busquedas.codigo);
+    setPropiedadesFiltradas(resultado);
   };
 
   const buscarPorEstado = (estado) => {
     const resultado = propiedades.filter((propiedad) => propiedad.estado === estado);
+    setPropiedadesFiltradas(resultado);
   };
 
   return (
@@ -77,7 +78,7 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
               value={busquedas.codigo}
               onChange={(e) => setBusquedas({ ...busquedas, codigo: e.target.value })}
             />
-            <button className="text-blue-500" onClick={buscarPorCodigo()}>
+            <button className="text-blue-500" onClick={buscarPorCodigo}>
               <FaSearch />
             </button>
           </div>
