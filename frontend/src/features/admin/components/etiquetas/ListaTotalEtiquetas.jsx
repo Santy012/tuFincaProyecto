@@ -1,9 +1,4 @@
-import { useState } from "react";
-import PopUpEtiqueta from "./PopUpEtiqueta";
-
-const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta, agregarNuevaEtiqueta }) => {
-  const [mostrarPopup, setMostrarPopup] = useState(false);
-
+const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta, onAgregarNueva }) => {
   return (
     <div className="mt-4">
       <p className="text-gray-600">Click sobre la etiqueta a agregar:</p>
@@ -20,18 +15,11 @@ const ListaTotalEtiquetas = ({ etiquetasDisponibles, agregarEtiqueta, agregarNue
       </div>
 
       <button
-        onClick={() => setMostrarPopup(true)}
+        onClick={onAgregarNueva}
         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
       >
         Crear Nueva
       </button>
-
-      {mostrarPopup && (
-        <PopUpEtiqueta 
-          cerrar={() => setMostrarPopup(false)} 
-          guardarEtiqueta={agregarNuevaEtiqueta} 
-        />
-      )}
     </div>
   );
 };
