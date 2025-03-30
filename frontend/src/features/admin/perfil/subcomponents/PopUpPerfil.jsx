@@ -1,7 +1,25 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import CampoEditable from "../../propiedades/subcomponents/CampoEditable";
 
-const PopUpPerfil = ({ admin, onClose }) => {
+const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
+  const [editando, setEditando] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: admin.nombre,
+    correo: admin.correo,
+    usuario: admin.usuario,
+  });
+
+  const handleChange = (campo, valor) => {
+    setFormData((prev) => ({ ...prev, [campo]: valor }));
+  };
+
+  const handleGuardar = () => {
+    setAdmin((prev) => ({ ...prev, ...formData }));
+    setEditando(false);
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50 p-4">
       <motion.div
@@ -21,19 +39,42 @@ const PopUpPerfil = ({ admin, onClose }) => {
 
         {/* Contenido del perfil */}
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Perfil del Administrador</h2>
-        <div className="space-y-3">
-          <p><span className="font-semibold">Nombre:</span> {admin.nombre}</p>
-          <p><span className="font-semibold">Correo:</span> {admin.email}</p>
-          <p><span className="font-semibold">Rol:</span> {admin.rol}</p>
-        </div>
 
-        {/* Botón para eliminar cuenta */}
-        <button
-          className="mt-4 w-full bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-500 transition"
-          onClick={admin.onDelete}
-        >
-          Eliminar Cuenta
-        </button>
+        <CampoEditable 
+          label="Nombre" 
+          value={formData.nombre} 
+          onChange={(valor) => handleChange("nombre", valor)} 
+          editando={editando} 
+        />
+        <CampoEditable 
+          label="Correo" 
+          value={formData.correo} 
+          onChange={(valor) => handleChange("correo", valor)} 
+          editando={editando} 
+          type="email" 
+        />
+        <CampoEditable 
+          label="Usuario" 
+          value={formData.usuario} 
+          onChange={(valor) => handleChange("usuario", valor)} 
+          editando={editando} 
+        />
+
+        {editando ? (
+          <button
+            onClick={handleGuardar}
+            className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-500 transition"
+          >
+            Guardar Cambios
+          </button>
+        ) : (
+          <button
+            onClick={() => setEditando(true)}
+            className="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-500 transition"
+          >
+            Editar Perfil
+          </button>
+        )}
       </motion.div>
     </div>
   );

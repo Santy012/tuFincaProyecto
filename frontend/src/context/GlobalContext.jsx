@@ -43,9 +43,14 @@ export const GlobalProvider = ({ children }) => {
     { id: 1, nombreCliente: "nicooo", apellidoCliente: "pro", celular: "123", correo: "q@gay", detalle: "aaaaaaaa aaaaa aaaa zzzz zzz aaaaaaaaa aa aaaaa aaaaaa", gestion: "realizado" },
   ]);
 
-  const [admin, setAdmin] = useState([
-    { id: 1, contraseña: "123", correo: "q@gay", nombre: "user", usuario: "tu_usuario"},
-    ]);
+  const [admin, setAdmin] = useState({
+    id: 1,
+    contraseña: "123",
+    correo: "q@gay",
+    nombre: "user",
+    usuario: "tu_usuario",
+  });
+  
 
   const actualizarPropiedad = (id, nuevaPropiedad) => {
     setPropiedades((prev) =>
