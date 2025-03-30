@@ -58,33 +58,34 @@ const SelectorEtiquetas = ({
   const manejarGuardarEtiqueta = (nombreEtiqueta) => {
     if (!nombreEtiqueta.trim()) return false;
     if (
-      etiquetas.some((e) => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase().trim())
+      etiquetas.some(
+        (e) => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase().trim()
+      )
     ) {
       alert("Esta etiqueta ya existe");
       return false;
     }
-  
+
     // Cerrar el popup antes de actualizar el estado
     setMostrarPopupNuevaEtiqueta(false);
-  
-    setTimeout(() => { // 🔥 IMPORTANTE: Usamos un pequeño delay para evitar el doble render
+
+    setTimeout(() => {
+      // 🔥 IMPORTANTE: Usamos un pequeño delay para evitar el doble render
       // Crear nueva etiqueta
       const nuevaEtiqueta = {
         id: Math.max(0, ...etiquetas.map((e) => e.id)) + 1,
         nombre: nombreEtiqueta.trim(),
       };
-  
+
       setEtiquetas((prev) => [...prev, nuevaEtiqueta]);
       setPropiedad((prev) => ({
         ...prev,
         etiquetas: [...prev.etiquetas, nuevaEtiqueta.id],
       }));
     }, 0); // 🔥 Esto fuerza a React a primero cerrar el popup y luego actualizar el estado
-  
+
     return true;
   };
-  
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50 p-4">
@@ -109,7 +110,7 @@ const SelectorEtiquetas = ({
         <ListaTotalEtiquetas
           etiquetasDisponibles={etiquetasDisponibles}
           agregarEtiqueta={agregarEtiqueta}
-          agregarNuevaEtiqueta={() => setMostrarPopupNuevaEtiqueta(true)}
+          onAgregarNueva={() => setMostrarPopupNuevaEtiqueta(true)} // Cambiado de agregarNuevaEtiqueta
         />
 
         {/* Etiquetas seleccionadas */}
