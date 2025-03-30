@@ -97,12 +97,15 @@ const NavContent = ({ onSectionChange }) => {
       </h2>
       <nav className="flex flex-col space-y-4 mb-4">
         {/* Botón de ver cuenta */}
-        <a
-          href="#"
-          className="flex items-center text-gray-700 hover:text-emerald-600"
+
+        <button
+          onClick={() => onSectionChange("Mi Perfil")}
+          className={navItemClass}
         >
-          <FaRegUser className="mr-3" /> Mi Perfil
-        </a>
+          <FaPlus className="mr-3" /> Mi Perfil
+        </button>
+
+
         {/* Botón de Cerrar Sesión */}
         <a
           href="#"

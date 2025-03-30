@@ -5,6 +5,7 @@ import PropiedadForm from "./forms/PropiedadForm";
 import Navbar from "./components/AdminNavBar";
 import ListaPropiedades from "../admin/propiedades/ListaPropiedades";
 import ListaMensajes from "../admin/msjs/ListaMensajes";
+import PerfilAdminPage from "./perfil/PerfilAdminPage";
 
 const AdminPage = () => {
   const [selectedSection, setSelectedSection] = useState("propiedades");
@@ -61,6 +62,18 @@ const AdminPage = () => {
                 <TituloSeccion titulo={"Mensajes / Comentarios"} />
                 <ListaMensajes /> 
                 
+              </motion.section>
+            )}
+            {selectedSection === "Mi Perfil" && (
+              <motion.section
+                key="miPerfil"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <TituloSeccion titulo={"Mi perfil"} />
+                <PerfilAdminPage/>   
               </motion.section>
             )}
           </AnimatePresence>
