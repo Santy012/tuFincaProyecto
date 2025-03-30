@@ -1,69 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import ListaTotalEtiquetas from "../propiedades/subcomponents/ListaTotalEtiquetas";
+import ListaEtiquetas from "../propiedades/subcomponents/ListaEtiquetas";
 
 const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
-  const etiquetasDisponibles = ["En Venta", "En Arriendo", "Cerca del centro", "Piscina", "Jardín"];
-  
-  // Estados locales para manejar el estado y las etiquetas seleccionadas
-  const [estado, setEstado] = useState(propiedadData.estado || "");
-  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState(propiedadData.etiquetas || []);
+  const etiquetasDisponibles = [
+    "3 habitaciones", "2 baños", "Cerca del mar", "En Venta", "En Arriendo"
+  ];
 
-  // Sincronizar cambios en propiedadData
-  useEffect(() => {
-    handleChange("estado", estado);
-  }, [estado]);
+  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
 
-  useEffect(() => {
-    handleChange("etiquetas", etiquetasSeleccionadas);
-  }, [etiquetasSeleccionadas]);
-
-  // Manejar cambio de estado
-  const handleEstadoChange = (e) => {
-    setEstado(e.target.value);
-  };
-
-  // Manejar selección/deselección de etiquetas
-  const toggleEtiqueta = (etiqueta) => {
-    setEtiquetasSeleccionadas((prev) =>
-      prev.includes(etiqueta)
-        ? prev.filter((e) => e !== etiqueta) // Quitar si ya está seleccionada
-        : [...prev, etiqueta] // Agregar si no está seleccionada
+  const agregarEtiqueta = (etiqueta) => {
+    setEtiquetasSeleccionadas((prev) => 
+      prev.includes(etiqueta) ? prev : [...prev, etiqueta]
     );
   };
 
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-semibold">Estado y Etiquetas</h2>
-      <p className="text-gray-600 mt-2">Selecciona el estado y etiquetas de la propiedad.</p>
+      <h2 className="text-xl font-semibold">Etiquetas</h2>
+      
+      {/* Nuevo componente para mostrar y agregar etiquetas */}
+      <ListaTotalEtiquetas 
+        etiquetasDisponibles={etiquetasDisponibles.filter((e) => !etiquetasSeleccionadas.includes(e))} 
+        agregarEtiqueta={agregarEtiqueta} 
+      />
 
-      {/* Estado de la Propiedad */}
-      <label className="block mt-4 text-gray-700">Estado</label>
-      <select
-        className="w-full border border-gray-300 px-4 py-2 rounded-md mt-1"
-        value={estado}
-        onChange={handleEstadoChange}
-        required
-      >
-        <option value="" disabled>Selecciona el estado</option>
-        <option value="vendido">Vendido</option>
-        <option value="disponible">Disponible</option>
-      </select>
-
-      {/* Etiquetas */}
-      <label className="block mt-4 text-gray-700">Etiquetas</label>
-      <div className="mt-2">
-        {etiquetasDisponibles.map((etiqueta) => (
-          <div key={etiqueta} className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id={etiqueta}
-              className="mr-2"
-              checked={etiquetasSeleccionadas.includes(etiqueta)}
-              onChange={() => toggleEtiqueta(etiqueta)}
-            />
-            <label htmlFor={etiqueta} className="text-gray-700">{etiqueta}</label>
-          </div>
-        ))}
-      </div>
+      {/* Sección de etiquetas seleccionadas */}
+      <h3 className="text-lg font-semibold mt-4"></h3>    
+      <ListaEtiquetas etiquetas={etiquetasSeleccionadas} setEtiquetas={setEtiquetasSeleccionadas} editando={true} mostrarAgregar={false} />
     </div>
   );
 };

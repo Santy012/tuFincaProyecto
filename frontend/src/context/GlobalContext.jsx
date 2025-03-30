@@ -36,8 +36,14 @@ export const GlobalProvider = ({ children }) => {
     { id: 5, nombre: "Cerca del metro" },
   ]);
 
+  const actualizarPropiedad = (id, nuevaPropiedad) => {
+    setPropiedades((prev) =>
+      prev.map((prop) => (prop.id === id ? { ...prop, ...nuevaPropiedad } : prop))
+    );
+  };
+
   return (
-    <GlobalContext.Provider value={{ propiedades, setPropiedades, etiquetas, setEtiquetas }}>
+    <GlobalContext.Provider value={{ propiedades, setPropiedades, etiquetas, setEtiquetas, actualizarPropiedad }}>
       {children}
     </GlobalContext.Provider>
   );

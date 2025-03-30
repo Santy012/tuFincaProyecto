@@ -1,69 +1,65 @@
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
+import ListaTotalEtiquetas from "./ListaTotalEtiquetas";
 
-const ListaEtiquetas = ({ etiquetas, setEtiquetas, editando }) => {
-  const [nuevaEtiqueta, setNuevaEtiqueta] = useState("");
-  const [agregando, setAgregando] = useState(false);
+const ListaEtiquetas = ({ etiquetas, setEtiquetas, editando, mostrarAgregar = true }) => {
+  const [mostrarPopup, setMostrarPopup] = useState(false);
 
-  const handleEtiquetaAdd = () => {
-    if (nuevaEtiqueta.trim()) {
-      setEtiquetas([...etiquetas, nuevaEtiqueta.trim()]);
-    }
-    setNuevaEtiqueta("");
-    setAgregando(false);
+  const handleEtiquetaRemove = (etiqueta) => {
+    setEtiquetas((prev) => prev.filter((e) => e !== etiqueta));
   };
 
-  const handleEtiquetaRemove = (index) => {
-    setEtiquetas(etiquetas.filter((_, i) => i !== index));
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleEtiquetaAdd();
-    } else if (e.key === "Escape") {
-      // Si presiona Escape, cancela la acción
-      setNuevaEtiqueta("");
-      setAgregando(false);
+  const agregarEtiqueta = (etiqueta) => {
+    if (!etiquetas.includes(etiqueta)) {
+      setEtiquetas([...etiquetas, etiqueta]);
     }
+    setMostrarPopup(false);
   };
 
   return (
     <div className="mt-4">
-      <p className="text-sm font-semibold mb-2">Etiquetas:</p>
+      <p className="text-sm font-semibold mb-2">Etiquetas Seleccionadas:</p>
       <div className="flex flex-wrap gap-2">
-        {etiquetas.map((etiqueta, index) => (
-          <div key={index} className="flex items-center gap-2 border px-2 py-1 rounded bg-gray-800 text-white">
+        {etiquetas.map((etiqueta) => (
+          <div key={etiqueta} className="flex items-center gap-2 border px-2 py-1 rounded bg-gray-800 text-white">
             <span className="text-sm">{etiqueta}</span>
             {editando && (
-              <button onClick={() => handleEtiquetaRemove(index)} className="text-red-500 text-sm cursor-pointer">
+              <button onClick={() => handleEtiquetaRemove(etiqueta)} className="text-red-500 text-sm cursor-pointer">
                 <X size={12} />
               </button>
             )}
           </div>
         ))}
 
-        {/* Input inline para agregar etiquetas */}
-        {editando && agregando ? (
-          <input
-            type="text"
-            value={nuevaEtiqueta}
-            onChange={(e) => setNuevaEtiqueta(e.target.value)}
-            onBlur={handleEtiquetaAdd} // Guarda cuando pierde el foco
-            onKeyDown={handleKeyDown} // Maneja Enter y Escape
-            className="border px-2 py-1 rounded bg-gray-800 text-white text-sm focus:outline-none w-[100px]"
-            autoFocus
-          />
-        ) : (
-          editando && (
-            <button
-              onClick={() => setAgregando(true)}
-              className="flex items-center gap-1 text-blue-500 text-sm cursor-pointer"
-            >
-              <Plus size={14} /> Agregar
-            </button>
-          )
+        {/* Botón para abrir popup de selección de etiquetas */}
+        {editando && mostrarAgregar && (
+          <button
+            onClick={() => setMostrarPopup(true)}
+            className="flex items-center gap-1 text-blue-500 text-sm cursor-pointer"
+          >
+            <Plus size={14} /> Agregar
+          </button>
         )}
       </div>
+
+      {/* Popup con ListaTotalEtiquetas */}
+      {mostrarPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow-lg">
+            <h2 className="text-lg font-bold mb-2">Seleccionar Etiquetas</h2>
+            <ListaTotalEtiquetas 
+              etiquetasDisponibles={["3 habitaciones", "2 baños", "Cerca del mar", "En Venta", "En Arriendo"]} 
+              agregarEtiqueta={agregarEtiqueta} 
+            />
+            <button 
+              onClick={() => setMostrarPopup(false)} 
+              className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

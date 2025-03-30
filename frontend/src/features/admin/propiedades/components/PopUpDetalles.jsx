@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useGlobalContext } from "../../../../context/GlobalContext"; // Asegúrate de la ruta correcta
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import CampoEditable from "../subcomponents/CampoEditable";
@@ -12,10 +13,16 @@ const PopUpDetalles = ({
   setPropiedadSeleccionada,
   obtenerNombresEtiquetas,
 }) => {
+  const { actualizarPropiedad } = useGlobalContext();
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
   const [mostrarGaleria, setMostrarGaleria] = useState(false);
+
+  const guardarCambios = () => {
+    actualizarPropiedad(propiedad.id, propiedad);
+    setEditando(false);
+  };
 
   const AgregarMedia = (archivo) => {
     if (archivo) {
@@ -54,12 +61,16 @@ const PopUpDetalles = ({
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="relative bg-white p-6 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
       >
-        <button
-          onClick={() => setPropiedadSeleccionada(null)}
-          className="absolute top-1 right-0 text-gray-600 hover:text-gray-900 cursor-pointer z-10 transition"
-        >
-          <X size={24} />
-        </button>
+        
+        {/* Contenedor sticky para mantener la "X" fija en la parte superior derecha sin fondo */}
+        <div className="sticky top-0 flex justify-end z-20 pointer-events-none">
+          <button
+            onClick={() => setPropiedadSeleccionada(null)}
+            className="text-gray-600 hover:text-gray-900 cursor-pointer transition bg-white rounded-full p-2 shadow-md pointer-events-auto"
+          >
+            <X size={24} />
+          </button>
+        </div>
 
         {/* Contenedor del carrusel con efecto de edición */}
         <div className="relative cursor-pointer">
@@ -138,23 +149,34 @@ const PopUpDetalles = ({
           type="text"
         />
 
+
         <ListaEtiquetas
           etiquetas={obtenerNombresEtiquetas(propiedad.etiquetas)}
-          setEtiquetas={(nuevasEtiquetas) =>
-            setPropiedad({
-              ...propiedad,
-              etiquetas: obtenerNombresEtiquetas(nuevasEtiquetas),
-            })
-          }
+          setEtiquetas={(nuevasEtiquetas) => {
+            if (!Array.isArray(nuevasEtiquetas)) return; 
+            setPropiedad((prev) => ({
+              ...prev,
+              etiquetas: nuevasEtiquetas, // Debe asignar el array filtrado correctamente
+            }));
+          }}
           editando={editando}
+          mostrarAgregar={true}
         />
 
+
         <button
-          onClick={() => setEditando(!editando)}
+          onClick={() => {
+            if (editando) {
+              guardarCambios(); // Guarda los cambios antes de salir del modo edición
+            } else {
+              setEditando(true); // Activa el modo edición
+            }
+          }}
           className="mt-4 w-full bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
         >
           {editando ? "Guardar Cambios" : "Editar Propiedad"}
         </button>
+
       </motion.div>
 
       {/* Popup de imágenes solo se muestra cuando está en modo edición */}
