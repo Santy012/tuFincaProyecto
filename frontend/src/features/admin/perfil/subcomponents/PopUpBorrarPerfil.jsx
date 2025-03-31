@@ -27,7 +27,7 @@ const PopUpBorrarPerfil = ({ admin, onCancel }) => {
       // Aquí llamamos a la API del backend para eliminar el perfil
       // await deleteProfile(admin.id);
       // TODO: Aquí se debe cerrar la sesión y limpiar el contexto de admin
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Error al eliminar el perfil", error);
       setIsDeleting(false);

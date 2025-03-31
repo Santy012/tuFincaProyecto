@@ -43,13 +43,13 @@ export const GlobalProvider = ({ children }) => {
     { id: 1, nombreCliente: "nicooo", apellidoCliente: "pro", celular: "123", correo: "q@gay", detalle: "aaaaaaaa aaaaa aaaa zzzz zzz aaaaaaaaa aa aaaaa aaaaaa", gestion: "realizado" },
   ]);
 
-  const [admin, setAdmin] = useState({
-    id: 1,
-    contraseña: "123",
-    correo: "q@gay",
-    nombre: "user",
-    usuario: "tu_usuario",
-  });
+  const [admin, setAdmin] = useState(null); 
+
+  const [administradores, setAdministradores] = useState([
+    {id: 1, contraseña: "123", correo: "q@gay", nombre: "user", usuario: "tu_usuario"},
+    {id: 2, contraseña: "123", correo: "xxs@xd", nombre: "cata", usuario: "cata"},
+    {id: 3, contraseña: "123", correo: "camiloesgay@xd", nombre: "camilo", usuario: "camilo"}
+  ]);
   
 
   const actualizarPropiedad = (id, nuevaPropiedad) => {
@@ -86,6 +86,8 @@ export const GlobalProvider = ({ children }) => {
       setMensajes, 
       admin, 
       setAdmin,
+      administradores, // Añade esto
+      setAdministradores, // Añade esto
       agregarNuevaEtiquetaGlobal // Añadir esta función al contexto
     }}>
       {children}

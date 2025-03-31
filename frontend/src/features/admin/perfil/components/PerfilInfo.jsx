@@ -14,7 +14,7 @@ const PerfilInfo = ({ admin, onEdit }) => {
     setIsLoggingOut(true);
     try {
       // TODO: Cerrar la sesión y limpiar el contexto de admin
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Error al cerrar sesión", error);
     } finally {
