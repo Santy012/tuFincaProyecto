@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
-const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSeleccionadas, propiedades, setPropiedadesFiltradas }) => {
+const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSeleccionadas, busquedas, setBusquedas }) => {
   const [pestanaActiva, setPestanaActiva] = useState("tags");
-  const [busquedas, setBusquedas] = useState({ nombre: "", codigo: "", estado: "" });
+  const [valoresInput, setValoresInput] = useState({
+    nombre: '',
+    codigo: ''
+  });
 
   const toggleEtiqueta = (id) => {
     setEtiquetasSeleccionadas((prevSeleccionadas) =>
@@ -13,19 +16,34 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
     );
   };
 
-  const buscarPorCodigo = () => {
-    const resultado = propiedades.filter((propiedad) => propiedad.codigo === busquedas.codigo);
-    setPropiedadesFiltradas(resultado);
+  const handleInputChange = (e, campo) => {
+    setValoresInput(prev => ({
+      ...prev,
+      [campo]: e.target.value
+    }));
   };
 
-  const buscarPorEstado = (estado) => {
-    const resultado = propiedades.filter((propiedad) => propiedad.estado === estado);
-    setPropiedadesFiltradas(resultado);
+  const aplicarFiltro = (campo) => {
+    if (valoresInput[campo].trim() === '') return;
+    setBusquedas(prev => ({
+      ...prev,
+      [campo]: valoresInput[campo]
+    }));
+  };
+
+  const limpiarFiltro = (campo) => {
+    setValoresInput(prev => ({
+      ...prev,
+      [campo]: ''
+    }));
+    setBusquedas(prev => ({
+      ...prev,
+      [campo]: ''
+    }));
   };
 
   return (
     <div className="w-full mb-6">
-      {/* Pestañas */}
       <div className="flex border-b mb-4">
         <button
           className={`px-4 py-2 text-lg font-bold transition-colors duration-200 ${
@@ -45,7 +63,6 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
         </button>
       </div>
 
-      {/* Contenido de las pestañas */}
       {pestanaActiva === "tags" ? (
         <div className="flex flex-wrap gap-2">
           {etiquetasSeleccionadas.length > 0 && (
@@ -69,30 +86,65 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
           ))}
         </div>
       ) : (
-        <div className="flex gap-4">
-          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md">
+        <div className="flex flex-row gap-4 items-center">
+          {/* Filtro por Nombre */}
+          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
             <input
               type="text"
-              className="bg-transparent focus:outline-none"
-              placeholder="Por Código"
-              value={busquedas.codigo}
-              onChange={(e) => setBusquedas({ ...busquedas, codigo: e.target.value })}
+              className="bg-transparent focus:outline-none w-full"
+              placeholder="Por Nombre"
+              value={valoresInput.nombre}
+              onChange={(e) => handleInputChange(e, 'nombre')}
+              onKeyPress={(e) => e.key === 'Enter' && aplicarFiltro('nombre')}
             />
-            <button className="text-blue-500" onClick={buscarPorCodigo}>
-              <FaSearch />
-            </button>
+            {busquedas.nombre ? (
+              <FaTimes 
+                className="text-blue-500 cursor-pointer" 
+                onClick={() => limpiarFiltro('nombre')}
+              />
+            ) : (
+              <FaSearch 
+                className="text-blue-500 cursor-pointer" 
+                onClick={() => aplicarFiltro('nombre')}
+              />
+            )}
           </div>
-          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md">
-            <label className="text-gray-500">Seleccionar Estado</label>
+
+          {/* Filtro por Código */}
+          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
+            <input
+              type="text"
+              className="bg-transparent focus:outline-none w-full"
+              placeholder="Por Código"
+              value={valoresInput.codigo}
+              onChange={(e) => handleInputChange(e, 'codigo')}
+              onKeyPress={(e) => e.key === 'Enter' && aplicarFiltro('codigo')}
+            />
+            {busquedas.codigo ? (
+              <FaTimes 
+                className="text-blue-500 cursor-pointer" 
+                onClick={() => limpiarFiltro('codigo')}
+              />
+            ) : (
+              <FaSearch 
+                className="text-blue-500 cursor-pointer" 
+                onClick={() => aplicarFiltro('codigo')}
+              />
+            )}
+          </div>
+
+          {/* Filtro por Estado */}
+          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
             <select
-              className="bg-transparent focus:outline-none"
+              className="bg-transparent focus:outline-none w-full text-gray-500"
               value={busquedas.estado}
-              onChange={(e) => buscarPorEstado(e.target.value)}
+              onChange={(e) => setBusquedas(prev => ({ ...prev, estado: e.target.value }))}
             >
-              <option value="">Seleccionar...</option>
-              <option value="En Venta">En Venta</option>
+              <option value="">Seleccionar Estado</option>
+              <option value="En venta">En venta</option>
               <option value="Disponible">Disponible</option>
             </select>
+        
           </div>
         </div>
       )}

@@ -7,11 +7,11 @@ const PropiedadCard = ({ propiedad, onClick }) => {
     >
       <img
         src={propiedad.imagenes[0]}
-        alt={propiedad.nombre}
+        alt={propiedad.titulo}
         className="w-full h-64 object-cover"
       />
       <div className="p-4">
-        <h2 className="text-lg font-semibold">{propiedad.nombre}</h2>
+        <h2 className="text-lg font-semibold">{propiedad.titulo}</h2>
         <p className="text-gray-600">{propiedad.ubicacion}</p>
         <p className="text-black text-sm">{propiedad.estado}</p>
         <p className="text-black font-bold text-lg">{propiedad.precio}</p>
