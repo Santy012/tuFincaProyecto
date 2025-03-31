@@ -13,11 +13,14 @@ const AdminPage = () => {
   const handleSectionChange = (section) => {
     setSelectedSection(section);
   };
+  const onSectionChange = (section) => {
+    setSelectedSection(section);
+  };
 
   return (
     <main className="min-h-screen flex flex-col bg-gray-200 font-oswald text-lg">
       {/* Header */}
-      <AdminHeader />
+      <AdminHeader onSectionChange={onSectionChange} />
 
       {/* Contenedor flexible para Navbar + Contenido */}
       <div className="flex flex-grow">
