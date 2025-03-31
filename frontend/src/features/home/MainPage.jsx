@@ -1,7 +1,14 @@
+import AllTagsSection from "./components/AllTagsSection";
+import Header from "./components/Header";
+import PropertyGrid from "./components/PropertyGrid";
+import Footer from "./components/Footer";
 const MainPage = () => {
     return(
         <main>
-            <h1>Pagina de inicio</h1>
+            <Header/>
+            <AllTagsSection/>
+            <PropertyGrid/>
+            <Footer/>
         </main>
     )
 }
