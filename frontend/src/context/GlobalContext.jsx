@@ -23,7 +23,7 @@ export const GlobalProvider = ({ children }) => {
       areaTotal: 30.0,
       ubicacion: "CDMX, México",
       estado: "En venta",
-      imagenes: ["https://picsum.photos/300/200?random=2"],
+      imagenes: ["https://picsum.photos/300/200?random=6", "https://picsum.photos/300/200?random=7"],
       etiquetas: [4, 5],
     },
   ]);
