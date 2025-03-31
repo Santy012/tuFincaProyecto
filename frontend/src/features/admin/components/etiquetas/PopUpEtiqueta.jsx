@@ -6,19 +6,24 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
   const [nombreEtiqueta, setNombreEtiqueta] = useState("");
   const [guardando, setGuardando] = useState(false);
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (!nombreEtiqueta.trim()) {
       alert("Por favor ingrese un nombre válido");
       return;
     }
   
-    const exito = guardarEtiqueta(nombreEtiqueta);
-    console.log("Resultado de guardarEtiqueta:", exito); // Para depuración
-    
-    if (exito) {
-      cerrar();
+    setGuardando(true);
+    try {
+      const exito = await guardarEtiqueta(nombreEtiqueta);
+      if (exito) {
+        cerrar(); // Aseguramos que se cierre correctamente
+      }
+    } finally {
+      setTimeout(() => setGuardando(false), 300); // Pequeño delay para evitar errores de estado
     }
   };
+  
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50 p-4">
@@ -29,7 +34,6 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="relative bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full"
       >
-        {/* Botón de cierre */}
         <button
           onClick={cerrar}
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 p-2"
@@ -39,7 +43,6 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
 
         <h2 className="text-xl font-semibold mb-4">Crear Nueva Etiqueta</h2>
 
-        {/* Campo de entrada */}
         <input
           type="text"
           value={nombreEtiqueta}
@@ -48,7 +51,6 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
           className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-500"
         />
 
-        {/* Botones */}
         <div className="flex justify-end gap-2 mt-4">
           <button
             onClick={cerrar}

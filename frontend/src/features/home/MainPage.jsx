@@ -1,9 +1,52 @@
+import Header from "./components/Header";
+import PropertyGrid from "./components/PropertyGrid";
+import Footer from "./components/Footer";
+import PropertyFilters from "./components/PropertyFilters";
+import { useState, useEffect } from "react";
+import { useGlobalContext } from "../../context/GlobalContext";
+
 const MainPage = () => {
-    return(
-        <main>
-            <h1>Pagina de inicio</h1>
-        </main>
-    )
-}
+  const { propiedades } = useGlobalContext();
+  const [filteredProperties, setFilteredProperties] = useState([]);
+
+  // Inicializar filteredProperties con propiedades cuando estén disponibles
+  useEffect(() => {
+    if (propiedades) {
+      setFilteredProperties(propiedades);
+    }
+  }, [propiedades]);
+
+  const handleFilter = (filters) => {
+    if (!propiedades) return;
+
+    const filtered = propiedades.filter((propiedad) => {
+      // Filtro por nombre (case insensitive)
+      const matchesNombre = filters.nombre === "" || 
+        propiedad.titulo.toLowerCase().includes(filters.nombre.toLowerCase());
+      
+      // Filtro por ubicación
+      const matchesUbicacion = filters.ubicacion === "" || 
+        propiedad.ubicacion === filters.ubicacion;
+      
+      // Filtro por etiqueta (manejar null y string vacío)
+      const matchesEtiqueta = filters.etiqueta === null || 
+        filters.etiqueta === "" || 
+        (propiedad.etiquetas && propiedad.etiquetas.includes(Number(filters.etiqueta)));
+      
+      return matchesNombre && matchesUbicacion && matchesEtiqueta;
+    });
+
+    setFilteredProperties(filtered);
+  };
+
+  return (
+    <main>
+      <Header />
+      <PropertyFilters onFilter={handleFilter} />
+      <PropertyGrid propiedades={filteredProperties || []} />
+      <Footer />
+    </main>
+  );
+};
 
 export default MainPage;

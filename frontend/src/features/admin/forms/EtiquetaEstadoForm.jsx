@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import ListaTotalEtiquetas from "../components/etiquetas/ListaTotalEtiquetas";
 import ListaEtiquetas from "../components/etiquetas/ListaEtiquetas";
+import PopUpEtiqueta from "../components/etiquetas/PopUpEtiqueta";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
   const { etiquetas, setEtiquetas } = useGlobalContext();
-  const etiquetasDisponibles = etiquetas.map(e => e.nombre);
-  
-  // Estado local para las etiquetas seleccionadas
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState(
     propiedadData.etiquetas || []
   );
+  const [mostrarPopup, setMostrarPopup] = useState(false);
+  const etiquetasDisponibles = etiquetas.map(e => e.nombre);
 
-  // Sincronizar con propiedadData cuando cambian las etiquetas seleccionadas
   useEffect(() => {
     handleChange('etiquetas', etiquetasSeleccionadas);
   }, [etiquetasSeleccionadas]);
@@ -29,11 +28,11 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
     );
   };
 
-  const agregarNuevaEtiqueta = (nombreEtiqueta) => {
+  const agregarNuevaEtiqueta = async (nombreEtiqueta) => {
     // Validar que no exista ya
     if (etiquetas.some(e => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase())) {
       alert("Esta etiqueta ya existe");
-      return false; // Retorna false si ya existe
+      return false;
     }
   
     // Agregar al contexto global
@@ -46,7 +45,7 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
     // Agregar a las seleccionadas
     setEtiquetasSeleccionadas(prev => [...prev, nombreEtiqueta]);
     
-    return true; // Retorna true si se agregó correctamente
+    return true;
   };
 
   return (
@@ -56,7 +55,7 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
       <ListaTotalEtiquetas 
         etiquetasDisponibles={etiquetasDisponibles.filter((e) => !etiquetasSeleccionadas.includes(e))} 
         agregarEtiqueta={agregarEtiqueta}
-        agregarNuevaEtiqueta={agregarNuevaEtiqueta}
+        onAgregarNueva={() => setMostrarPopup(true)}
       />
 
       <h3 className="text-lg font-semibold mt-4">Etiquetas seleccionadas</h3>    
@@ -66,6 +65,13 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
         editando={true} 
         mostrarAgregar={false} 
       />
+
+      {mostrarPopup && (
+        <PopUpEtiqueta 
+          cerrar={() => setMostrarPopup(false)}
+          guardarEtiqueta={agregarNuevaEtiqueta}
+        />
+      )}
     </div>
   );
 };
