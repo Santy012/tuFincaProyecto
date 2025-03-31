@@ -47,7 +47,7 @@ const AdminPage = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <TituloSeccion titulo={"Mis Propiedades"} />
+                <TituloSeccion titulo={"Listado de Propiedades"} />
                 <ListaPropiedades/>
               </motion.section>
             )}

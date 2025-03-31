@@ -3,8 +3,8 @@ import {
   FaComments,
   FaPlus,
   FaRegUser,
-  FaUserSlash,
-} from "react-icons/fa";
+} 
+from "react-icons/fa";
 import { BsHousesFill } from "react-icons/bs";
 
 const Navbar = ({ onSectionChange }) => {
@@ -38,13 +38,7 @@ const Navbar = ({ onSectionChange }) => {
           <FaPlus className="text-xl" />
           <span className="text-xs">Agregar</span>
         </a>
-        <a
-          href="#"
-          className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
-        >
-          <FaUserSlash className="text-xl" />
-          <span className="text-xs">Cerrar Sesión</span>
-        </a>
+        
       </nav>
     </>
   );
@@ -102,17 +96,9 @@ const NavContent = ({ onSectionChange }) => {
           onClick={() => onSectionChange("Mi Perfil")}
           className={navItemClass}
         >
-          <FaPlus className="mr-3" /> Mi Perfil
+          <FaRegUser className="mr-3" /> Mi Perfil
         </button>
 
-
-        {/* Botón de Cerrar Sesión */}
-        <a
-          href="#"
-          className="flex items-center text-gray-700 hover:text-blue-800"
-        >
-          <FaUserSlash className="mr-3" /> Cierre De Sesión
-        </a>
       </nav>
     </div>
   );
