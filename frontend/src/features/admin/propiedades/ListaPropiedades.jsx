@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import PropiedadCard from "./components/PropiedadCard";
-import PopUpDetalles from "./components/PopUpDetalles";
 import FiltroEtiquetas from "./components/FiltroEtiquetas";
 import PopUpDetalles from "./components/PopUpDetalles/PopUpDetalles";
 
