@@ -139,22 +139,29 @@ const PopUpDetalles = ({
         <CampoEditable
           label="Área Total (m²)"
           value={propiedad.areaTotal}
-          onChange={(val) => setPropiedad({ ...propiedad, areaTotal: val })}
+          onChange={(val) => {
+            if (val === '' || /^[0-9]*\.?[0-9]*$/.test(val)) {
+              setPropiedad({ ...propiedad, areaTotal: val });
+            }
+          }}
           editando={editando}
           type="number"
+          step="0.01"
         />
 
-        {propiedad.areaConstruida && (
-          <CampoEditable
-            label="Área Construida (m²)"
-            value={propiedad.areaConstruida}
-            onChange={(val) =>
-              setPropiedad({ ...propiedad, areaConstruida: val })
+        <CampoEditable
+          label="Área Construida (m²)"
+          value={propiedad.areaConstruida || ''}
+          onChange={(val) => {
+            if (val === '' || /^[0-9]*\.?[0-9]*$/.test(val)) {
+              setPropiedad({ ...propiedad, areaConstruida: val });
             }
-            editando={editando}
-            type="number"
-          />
-        )}
+          }}
+          editando={editando}
+          type="number"
+          step="0.01"
+          placeholder="Opcional"
+        />
 
         <CampoEditable
           label="Descripción"

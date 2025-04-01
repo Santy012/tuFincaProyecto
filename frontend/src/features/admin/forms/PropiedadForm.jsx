@@ -16,15 +16,17 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { setPropiedades } = useGlobalContext();
+  const { setPropiedades, etiquetas } = useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
     descripcion: "",
     codigo: "",
     ubicacion: "",
-    estado: "",
+    estado: "Disponible",
     etiquetas: [],
     archivos: [],
+    areaTotal: "",
+    areaConstruida: ""
   });
 
   const nextStep = () => {
@@ -41,20 +43,29 @@ const PropiedadForm = () => {
 
   const guardarPropiedad = () => {
     // Validación básica de campos requeridos
-    if (!propiedadData.titulo || !propiedadData.descripcion || !propiedadData.codigo) {
-      alert("Por favor complete los campos obligatorios (Título, Descripción y Código)");
-      setActiveStep(0); // Regresa al primer paso
+    if (!propiedadData.titulo || !propiedadData.descripcion || !propiedadData.codigo || !propiedadData.areaTotal) {
+      alert("Por favor complete los campos obligatorios (Título, Descripción, Código y Área Total)");
+      setActiveStep(0);
       return;
     }
+
+    const etiquetasIds = propiedadData.etiquetas
+      .map(nombre => {
+        const etiqueta = etiquetas.find(e => e.nombre === nombre);
+        return etiqueta ? etiqueta.id : null;
+      })
+      .filter(id => id !== null);
 
     // Crear objeto de propiedad con todos los datos
     const nuevaPropiedad = {
       ...propiedadData,
-      id: Date.now(), // ID temporal basado en timestamp
+      id: Date.now(),
       imagenes: propiedadData.archivos.map(file => 
         typeof file === 'string' ? file : URL.createObjectURL(file)
       ),
-      areaTotal: 0, // Puedes agregar un campo para esto en el formulario
+      etiquetas: etiquetasIds,
+      areaTotal: parseFloat(propiedadData.areaTotal) || 0,
+      areaConstruida: parseFloat(propiedadData.areaConstruida) || null,
       estado: propiedadData.estado || "Disponible",
     };
 
@@ -69,9 +80,11 @@ const PropiedadForm = () => {
       descripcion: "",
       codigo: "",
       ubicacion: "",
-      estado: "",
+      estado: "Disponible",
       etiquetas: [],
       archivos: [],
+      areaTotal: "",
+      areaConstruida: ""
     });
   };
 
