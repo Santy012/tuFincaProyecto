@@ -25,8 +25,8 @@ const MainPage = () => {
         propiedad.titulo.toLowerCase().includes(filters.nombre.toLowerCase());
       
       // Filtro por ubicación
-      const matchesUbicacion = filters.ubicacion === "" || 
-        propiedad.ubicacion === filters.ubicacion;
+      const matchesCodigo = filters.codigo === "" || 
+        propiedad.codigo === filters.codigo;
       
       // Filtro por etiqueta (manejar null y string vacío)
       const matchesEtiqueta = filters.etiquetas.length === 0 || 
@@ -34,7 +34,7 @@ const MainPage = () => {
           propiedad.etiquetas.includes(parseInt(etiquetaId))
         );
       
-      return matchesNombre && matchesUbicacion && matchesEtiqueta;
+      return matchesNombre && matchesCodigo && matchesEtiqueta;
     });
 
     setFilteredProperties(filtered);

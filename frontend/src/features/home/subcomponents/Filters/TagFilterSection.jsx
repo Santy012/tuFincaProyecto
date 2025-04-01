@@ -1,4 +1,4 @@
-const TagsFilterSection = ({ etiquetas, selectedTags, onTagClick }) => {
+const TagFilterSection = ({ etiquetas, selectedTags, onTagClick }) => {
   return (
     <div className="mt-6">
       <h3 className="text-lg font-medium text-gray-800 mb-3">Filtrar por características</h3>
@@ -22,7 +22,7 @@ const TagsFilterSection = ({ etiquetas, selectedTags, onTagClick }) => {
                   ? 'bg-blue-200 text-blue-900'
                   : 'bg-blue-100 text-blue-800'
               }`}>
-                {etiqueta.id}
+                {etiqueta.count} {/* Mostramos el conteo en lugar del ID */}
               </span>
               {isSelected && (
                 <span className="ml-1 text-blue-600">✓</span>
@@ -40,4 +40,4 @@ const TagsFilterSection = ({ etiquetas, selectedTags, onTagClick }) => {
   );
 };
 
-export default TagsFilterSection;
+export default TagFilterSection

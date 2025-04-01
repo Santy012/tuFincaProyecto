@@ -4,10 +4,12 @@ import AdminPage from '../features/admin/AdminPage';
 import LoginPage from '../features/login/LoginPage';
 import ProtectedRoute from './ProtectedRoute';
 import PropertyPage from '../features/propiedades/PropertyPage';
+import ScrollToTop from './ScrollToTop';
 
 const AppRoutes = () => {
     return(
         <Router>
+            <ScrollToTop />
             <Routes>
                 <Route path='/' element={<MainPage/>}/>
                 
@@ -19,8 +21,7 @@ const AppRoutes = () => {
 
                 <Route path='/login' element={<LoginPage/>}/>
                 <Route path='/admin' element={<AdminPage/>}/>
-                <Route path="/propiedad/:id" element={<PropertyPage />} />
-                
+                <Route path="/propiedad/:id" element={<PropertyPage />} /> 
             </Routes>
         </Router>
     )
