@@ -24,7 +24,7 @@ export const GlobalProvider = ({ children }) => {
       areaTotal: 30.0,
       ubicacion: "Bogotá, Colombia",
       estado: "Vendido",
-      imagenes: ["https://picsum.photos/300/200?random=6", "https://picsum.photos/300/200?random=7"],
+      imagenes: ["https://picsum.photos/1200/800?random=6", "https://picsum.photos/1200/800?random=7"],
       etiquetas: [3, 4, 5],
     },
   ]);

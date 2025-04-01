@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import NameFilter from "../subcomponents/Filters/NameFilter";
-import LocationFilter from "../subcomponents/Filters/LocationFilter";
+import CodeFilter from "../subcomponents/Filters/CodeFilter"; // Nuevo import
 import FilterButtons from "../subcomponents/Filters/FilterButtons";
 import TagsFilterSection from "../subcomponents/Filters/TagFilterSection";
 
@@ -9,17 +9,23 @@ const PropertyFilters = ({ onFilter }) => {
   const { etiquetas, propiedades } = useGlobalContext();
   const [filters, setFilters] = useState({
     nombre: "",
-    etiquetas: [], // Cambiamos a array para múltiples selecciones
-    ubicacion: ""
+    etiquetas: [],
+    codigo: "" // Cambiamos ubicacion por codigo
   });
-  const [ubicaciones, setUbicaciones] = useState([]);
+  const [etiquetasConConteo, setEtiquetasConConteo] = useState([]);
 
   useEffect(() => {
     if (propiedades && propiedades.length > 0) {
-      const uniqueLocations = [...new Set(propiedades.map(p => p.ubicacion))];
-      setUbicaciones(uniqueLocations);
+      // Eliminamos el cálculo de ubicaciones ya que no lo necesitamos
+      const conteoEtiquetas = etiquetas.map(etiqueta => {
+        const count = propiedades.filter(propiedad => 
+          propiedad.etiquetas.includes(etiqueta.id)
+        ).length;
+        return { ...etiqueta, count };
+      });
+      setEtiquetasConConteo(conteoEtiquetas);
     }
-  }, [propiedades]);
+  }, [propiedades, etiquetas]);
 
   const handleInputChange = (name, value) => {
     setFilters(prev => ({ ...prev, [name]: value }));
@@ -29,9 +35,8 @@ const PropertyFilters = ({ onFilter }) => {
     setFilters(prev => {
       const idString = etiquetaId.toString();
       const newEtiquetas = prev.etiquetas.includes(idString)
-        ? prev.etiquetas.filter(id => id !== idString) // Remover si ya está
-        : [...prev.etiquetas, idString]; // Agregar si no está
-      
+        ? prev.etiquetas.filter(id => id !== idString)
+        : [...prev.etiquetas, idString];
       return { ...prev, etiquetas: newEtiquetas };
     });
   };
@@ -45,7 +50,7 @@ const PropertyFilters = ({ onFilter }) => {
     const resetValues = {
       nombre: "",
       etiquetas: [],
-      ubicacion: ""
+      codigo: ""
     };
     setFilters(resetValues);
     onFilter(resetValues);
@@ -62,10 +67,9 @@ const PropertyFilters = ({ onFilter }) => {
             onChange={(value) => handleInputChange("nombre", value)} 
           />
           
-          <LocationFilter 
-            value={filters.ubicacion} 
-            ubicaciones={ubicaciones}
-            onChange={(value) => handleInputChange("ubicacion", value)} 
+          <CodeFilter // Reemplazamos LocationFilter por CodeFilter
+            value={filters.codigo}
+            onChange={(value) => handleInputChange("codigo", value)}
           />
           
           <FilterButtons 
@@ -74,8 +78,8 @@ const PropertyFilters = ({ onFilter }) => {
         </form>
 
         <TagsFilterSection 
-          etiquetas={etiquetas} 
-          selectedTags={filters.etiquetas} // Cambiamos prop a plural
+          etiquetas={etiquetasConConteo} 
+          selectedTags={filters.etiquetas}
           onTagClick={handleTagClick}
         />
       </div>
