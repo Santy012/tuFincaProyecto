@@ -9,6 +9,7 @@ import com.gestion.tufinca.services.IMensajeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.ZonedDateTime;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -122,6 +123,7 @@ public class MensajeController {
                 .correo(mensajeDTO.getCorreo())
                 .detalle(mensajeDTO.getDetalle())
                 .gestion(mensajeDTO.getGestion())
+                .fecha(mensajeDTO.getFecha())
                 .build();
     }
 
@@ -142,6 +144,7 @@ public class MensajeController {
                 .correo(mensaje.getCorreo())
                 .detalle(mensaje.getDetalle())
                 .gestion(mensaje.getGestion())
+                .fecha(mensaje.getFecha())
                 .build();
     }
 }

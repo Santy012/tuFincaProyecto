@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,9 @@ public class MensajeModel {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gestion gestion;
+
+    @Column(updatable = false, insertable = false)
+    private ZonedDateTime fecha; // Nueva columna de fecha
 
     @ManyToOne
     @JoinColumn(name = "propiedad_id", foreignKey = @ForeignKey(name = "fk_mensaje_propiedad"))
