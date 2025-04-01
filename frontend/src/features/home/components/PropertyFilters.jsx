@@ -9,7 +9,7 @@ const PropertyFilters = ({ onFilter }) => {
   const { etiquetas, propiedades } = useGlobalContext();
   const [filters, setFilters] = useState({
     nombre: "",
-    etiqueta: null,
+    etiquetas: [], // Cambiamos a array para múltiples selecciones
     ubicacion: ""
   });
   const [ubicaciones, setUbicaciones] = useState([]);
@@ -26,10 +26,14 @@ const PropertyFilters = ({ onFilter }) => {
   };
 
   const handleTagClick = (etiquetaId) => {
-    setFilters(prev => ({
-      ...prev,
-      etiqueta: prev.etiqueta === etiquetaId ? "" : etiquetaId.toString()
-    }));
+    setFilters(prev => {
+      const idString = etiquetaId.toString();
+      const newEtiquetas = prev.etiquetas.includes(idString)
+        ? prev.etiquetas.filter(id => id !== idString) // Remover si ya está
+        : [...prev.etiquetas, idString]; // Agregar si no está
+      
+      return { ...prev, etiquetas: newEtiquetas };
+    });
   };
 
   const handleSubmit = (e) => {
@@ -40,7 +44,7 @@ const PropertyFilters = ({ onFilter }) => {
   const resetFilters = () => {
     const resetValues = {
       nombre: "",
-      etiqueta: null,
+      etiquetas: [],
       ubicacion: ""
     };
     setFilters(resetValues);
@@ -71,7 +75,7 @@ const PropertyFilters = ({ onFilter }) => {
 
         <TagsFilterSection 
           etiquetas={etiquetas} 
-          selectedTag={filters.etiqueta}
+          selectedTags={filters.etiquetas} // Cambiamos prop a plural
           onTagClick={handleTagClick}
         />
       </div>

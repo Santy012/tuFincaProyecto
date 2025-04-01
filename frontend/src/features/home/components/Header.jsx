@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from '../../../assets/TuFincaLogo.jpeg';
 
 const Header = () => {
   return (
@@ -7,7 +8,7 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img
-            src="src\assets\TuFincaLogo.jpeg" // Asegúrate de que la ruta sea correcta
+            src={logo}
             alt="TuFinca Logo"
             className="h-25 w-auto" // Ajusta la altura según necesites
           />
@@ -23,13 +24,6 @@ const Header = () => {
             className="text-gray-700 hover:text-blue-600 font-medium transition-colors relative group"
           >
             Inicio
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
-          </Link>
-          <Link
-            to="/propiedades"
-            className="text-gray-700 hover:text-blue-600 font-medium transition-colors relative group"
-          >
-            Propiedades
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
           </Link>
           <Link

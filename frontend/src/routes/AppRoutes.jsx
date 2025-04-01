@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from '../features/home/MainPage';
 import AdminPage from '../features/admin/AdminPage';
+import PropertyPage from '../features/propiedades/PropertyPage';
+
 
 const AppRoutes = () => {
     return(
@@ -9,6 +11,8 @@ const AppRoutes = () => {
                 <Route path='/' element={<MainPage/>}/>
 
                 <Route path='/admin' element={<AdminPage/>}/>
+
+                <Route path="/propiedad/:id" element={<PropertyPage />} />
             </Routes>
         </Router>
     )
