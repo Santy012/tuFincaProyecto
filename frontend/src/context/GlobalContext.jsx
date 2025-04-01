@@ -13,7 +13,7 @@ export const GlobalProvider = ({ children }) => {
       areaConstruida:null,
       ubicacion: "Cancún, México",
       estado: "Disponible",
-      imagenes: ["https://picsum.photos/300/200?random=1", "https://picsum.photos/300/200?random=2", "https://picsum.photos/300/200?random=3", "https://picsum.photos/300/200?random=4", "https://picsum.photos/300/200?random=5"],
+      imagenes: ["https://picsum.photos/1200/800?random=1", "https://picsum.photos/1200/800?random=2", "https://picsum.photos/1200/800?random=3", "https://picsum.photos/1200/800?random=4", "https://picsum.photos/1200/800?random=5"],
       etiquetas: [1, 2, 3],
     },
     {
@@ -25,7 +25,7 @@ export const GlobalProvider = ({ children }) => {
       areaConstruida:10.5,
       ubicacion: "CDMX, México",
       estado: "En venta",
-      imagenes: ["https://picsum.photos/300/200?random=6", "https://picsum.photos/300/200?random=7"],
+      imagenes: ["https://picsum.photos/1200/800?random=6", "https://picsum.photos/1200/800?random=7"],
       etiquetas: [4, 5],
     },
   ]);
