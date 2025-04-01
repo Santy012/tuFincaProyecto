@@ -28,6 +28,10 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
     );
   };
 
+  const eliminarEtiquetaDisponible = (nombreEtiqueta) => {
+    setEtiquetas(prev => prev.filter(e => e.nombre !== nombreEtiqueta));
+  };
+
   const agregarNuevaEtiqueta = async (nombreEtiqueta) => {
     // Validar que no exista ya
     if (etiquetas.some(e => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase())) {
@@ -56,6 +60,7 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
         etiquetasDisponibles={etiquetasDisponibles.filter((e) => !etiquetasSeleccionadas.includes(e))} 
         agregarEtiqueta={agregarEtiqueta}
         onAgregarNueva={() => setMostrarPopup(true)}
+        eliminarEtiqueta={eliminarEtiquetaDisponible}
       />
 
       <h3 className="text-lg font-semibold mt-4">Etiquetas seleccionadas</h3>    

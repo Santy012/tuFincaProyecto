@@ -23,6 +23,10 @@ const SelectorEtiquetas = ({
       (nombre) => !obtenerNombresEtiquetas(propiedad.etiquetas).includes(nombre)
     );
 
+  const eliminarEtiquetaDisponible = (nombreEtiqueta) => {
+    setEtiquetas(prev => prev.filter(e => e.nombre !== nombreEtiqueta));
+  };
+
   // Agregar etiqueta a la propiedad
   const agregarEtiqueta = (etiqueta) => {
     setPropiedad((prev) => {
@@ -111,6 +115,7 @@ const SelectorEtiquetas = ({
           etiquetasDisponibles={etiquetasDisponibles}
           agregarEtiqueta={agregarEtiqueta}
           onAgregarNueva={() => setMostrarPopupNuevaEtiqueta(true)} // Cambiado de agregarNuevaEtiqueta
+          eliminarEtiqueta={eliminarEtiquetaDisponible}
         />
 
         {/* Etiquetas seleccionadas */}

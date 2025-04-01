@@ -3,7 +3,6 @@ import { X } from "lucide-react";
 const ListaEtiquetas = ({ etiquetas, onRemove, editando, mostrarAgregar = true }) => {
   return (
     <div className="mt-4">
-      <p className="text-sm font-semibold mb-2">Etiquetas Seleccionadas:</p>
       <div className="flex flex-wrap gap-2">
         {etiquetas.map((etiqueta) => (
           <div key={etiqueta} className="flex items-center gap-2 border px-2 py-1 rounded bg-gray-800 text-white">

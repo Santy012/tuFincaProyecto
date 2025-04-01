@@ -112,14 +112,24 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
 
           {/* Filtro por Código */}
           <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
-            <input
-              type="text"
-              className="bg-transparent focus:outline-none w-full"
-              placeholder="Por Código"
-              value={valoresInput.codigo}
-              onChange={(e) => handleInputChange(e, 'codigo')}
-              onKeyPress={(e) => e.key === 'Enter' && aplicarFiltro('codigo')}
-            />
+          <input
+            type="text"
+            className="bg-transparent focus:outline-none w-full"
+            placeholder="Por Código"
+            value={valoresInput.codigo}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '' || /^[0-9]+$/.test(value)) {
+                handleInputChange(e, 'codigo');
+              }
+            }}
+            onKeyPress={(e) => {
+              if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+              }
+              if (e.key === 'Enter') aplicarFiltro('codigo');
+            }}
+          />
             {busquedas.codigo ? (
               <FaTimes 
                 className="text-blue-500 cursor-pointer" 

@@ -19,9 +19,21 @@ const TituloForm = ({ propiedadData, handleChange }) =>{
                 type="number" 
                 placeholder="Ingresa el código de propiedad..."
                 value={propiedadData.codigo}
-                onChange={(e) => handleChange("codigo", e.target.value)}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || /^[0-9]+$/.test(value)) {
+                        handleChange("codigo", value);
+                    }
+                }}
+                onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                }}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md mt-1 appearance-none"
                 required
+                min="0"
+                step="1"
             />
 
             <label className="block mt-4 text-gray-700">Descripción</label>

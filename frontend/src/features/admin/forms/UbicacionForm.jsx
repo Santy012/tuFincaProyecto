@@ -18,28 +18,52 @@ const UbicacionForm = ({ propiedadData, handleChange }) => {
         {/* Campo de Área Total */}
         <label className="block mt-4 text-gray-700">Área Total (m²)</label>
         <div className="flex items-center border border-gray-300 rounded-md mt-1">
-          <input
+        <input
             type="number"
             placeholder="Ej: 150"
             value={propiedadData.areaTotal}
-            onChange={(e) => handleChange("areaTotal", e.target.value)}
+            onChange={(e) => {
+                const value = e.target.value;
+                if (value === '' || /^[0-9]+$/.test(value)) {
+                    handleChange("areaTotal", value);
+                }
+            }}
+            onKeyPress={(e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            }}
             className="w-full px-4 py-2 outline-none rounded-md appearance-none"
             required
-          />
+            min="0"
+            step="1"
+        />
           <span className="px-3 text-gray-600">m²</span>
         </div>
   
         {/* Campo de Área Construida */}
         <label className="block mt-4 text-gray-700">Área Construida (m²)</label>
         <div className="flex items-center border border-gray-300 rounded-md mt-1">
-          <input
+        <input
             type="number"
             placeholder="Ej: 120"
             value={propiedadData.areaConstruida}
-            onChange={(e) => handleChange("areaConstruida", e.target.value)}
+            onChange={(e) => {
+                const value = e.target.value;
+                if (value === '' || /^[0-9]+$/.test(value)) {
+                    handleChange("areaConstruida", value);
+                }
+            }}
+            onKeyPress={(e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            }}
             className="w-full px-4 py-2 outline-none rounded-md appearance-none"
             required
-          />
+            min="0"
+            step="1"
+        />
           <span className="px-3 text-gray-600">m²</span>
         </div>
       </div>
