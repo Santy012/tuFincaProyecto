@@ -3,6 +3,7 @@ import MainPage from '../features/home/MainPage';
 import AdminPage from '../features/admin/AdminPage';
 import LoginPage from '../features/login/LoginPage';
 import ProtectedRoute from './ProtectedRoute';
+import PropertyPage from '../features/propiedades/PropertyPage';
 
 const AppRoutes = () => {
     return(
@@ -17,6 +18,9 @@ const AppRoutes = () => {
                 }/>
 
                 <Route path='/login' element={<LoginPage/>}/>
+                <Route path='/admin' element={<AdminPage/>}/>
+                <Route path="/propiedad/:id" element={<PropertyPage />} />
+                
             </Routes>
         </Router>
     )

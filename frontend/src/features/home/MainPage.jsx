@@ -29,9 +29,10 @@ const MainPage = () => {
         propiedad.ubicacion === filters.ubicacion;
       
       // Filtro por etiqueta (manejar null y string vacío)
-      const matchesEtiqueta = filters.etiqueta === null || 
-        filters.etiqueta === "" || 
-        (propiedad.etiquetas && propiedad.etiquetas.includes(Number(filters.etiqueta)));
+      const matchesEtiqueta = filters.etiquetas.length === 0 || 
+        filters.etiquetas.every(etiquetaId => 
+          propiedad.etiquetas.includes(parseInt(etiquetaId))
+        );
       
       return matchesNombre && matchesUbicacion && matchesEtiqueta;
     });
@@ -41,7 +42,7 @@ const MainPage = () => {
 
   return (
     <main>
-      <Header />
+      <Header rutaLogo="src\assets\TuFincaLogo.jpeg" />
       <PropertyFilters onFilter={handleFilter} />
       <PropertyGrid propiedades={filteredProperties || []} />
       <Footer />
