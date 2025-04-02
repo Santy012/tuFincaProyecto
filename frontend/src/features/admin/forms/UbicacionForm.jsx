@@ -1,10 +1,11 @@
-const UbicacionForm = ({ propiedadData, handleChange }) => {
+import { XCircle } from "lucide-react";
+
+const UbicacionForm = ({ propiedadData, handleChange, errors }) => {
   return (
     <div>
       <h2 className="text-xl font-semibold">Información de Ubicación y Área</h2>
       <p className="text-gray-600 mt-2">Especifica la ubicación y dimensiones de la propiedad.</p>
 
-      {/* Campo de Ubicación */}
       <label className="block mt-4 text-gray-700">Ubicación</label>
       <input
         type="text"
@@ -12,12 +13,10 @@ const UbicacionForm = ({ propiedadData, handleChange }) => {
         value={propiedadData.ubicacion}
         onChange={(e) => handleChange("ubicacion", e.target.value)}
         className="w-full border border-gray-300 px-4 py-2 rounded-md mt-1"
-        required
       />
 
-      {/* Campo de Área Total */}
       <label className="block mt-4 text-gray-700">Área Total (m²)</label>
-      <div className="flex items-center border border-gray-300 rounded-md mt-1">
+      <div className={`flex items-center border ${errors.areaTotal ? 'border-red-500' : 'border-gray-300'} rounded-md mt-1`}>
         <input
           type="number"
           placeholder="Ej: 150.5"
@@ -25,12 +24,10 @@ const UbicacionForm = ({ propiedadData, handleChange }) => {
           onChange={(e) => {
             const value = e.target.value;
             if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
-              // Convertir a número flotante si no está vacío
               handleChange("areaTotal", value === '' ? '' : parseFloat(value));
             }
           }}
           onKeyPress={(e) => {
-            // Permitir solo números, punto y teclas de control
             if (!/[0-9.]/.test(e.key) && 
                 e.key !== 'Backspace' && 
                 e.key !== 'Delete' && 
@@ -46,8 +43,12 @@ const UbicacionForm = ({ propiedadData, handleChange }) => {
         />
         <span className="px-3 text-gray-600">m²</span>
       </div>
+      {errors.areaTotal && (
+        <p className="mt-1 text-sm text-red-600 flex items-center">
+          <XCircle className="mr-1" size={16} /> {errors.areaTotal}
+        </p>
+      )}
 
-      {/* Campo de Área Construida */}
       <label className="block mt-4 text-gray-700">Área Construida (m²)</label>
       <div className="flex items-center border border-gray-300 rounded-md mt-1">
         <input
@@ -57,12 +58,10 @@ const UbicacionForm = ({ propiedadData, handleChange }) => {
           onChange={(e) => {
             const value = e.target.value;
             if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
-              // Convertir a número flotante si no está vacío
               handleChange("areaConstruida", value === '' ? '' : parseFloat(value));
             }
           }}
           onKeyPress={(e) => {
-            // Permitir solo números, punto y teclas de control
             if (!/[0-9.]/.test(e.key) && 
                 e.key !== 'Backspace' && 
                 e.key !== 'Delete' && 
