@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CheckCircle, XCircle } from "lucide-react";
 import TituloForm from "./TituloForm";
 import UbicacionForm from "./UbicacionForm";
 import EtiquetasEstadoForm from "./EtiquetaEstadoForm";
@@ -28,6 +29,30 @@ const PropiedadForm = () => {
     areaTotal: "",
     areaConstruida: ""
   });
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const requiredFields = {
+    titulo: "Título",
+    descripcion: "Descripción",
+    codigo: "Código",
+    areaTotal: "Área Total"
+  };
+
+  // Validación en tiempo real
+  useEffect(() => {
+    const newErrors = {};
+    let hasErrors = false;
+
+    Object.keys(requiredFields).forEach(field => {
+      if (!propiedadData[field]) {
+        newErrors[field] = `${requiredFields[field]} es requerido`;
+        hasErrors = true;
+      }
+    });
+
+    setErrors(newErrors);
+  }, [propiedadData]);
 
   const nextStep = () => {
     if (activeStep < steps.length - 1) setActiveStep(activeStep + 1);
@@ -42,10 +67,8 @@ const PropiedadForm = () => {
   };
 
   const guardarPropiedad = () => {
-    // Validación básica de campos requeridos
-    if (!propiedadData.titulo || !propiedadData.descripcion || !propiedadData.codigo || !propiedadData.areaTotal) {
-      alert("Por favor complete los campos obligatorios (Título, Descripción, Código y Área Total)");
-      setActiveStep(0);
+    if (Object.keys(errors).length > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -56,7 +79,6 @@ const PropiedadForm = () => {
       })
       .filter(id => id !== null);
 
-    // Crear objeto de propiedad con todos los datos
     const nuevaPropiedad = {
       ...propiedadData,
       id: Date.now(),
@@ -69,23 +91,25 @@ const PropiedadForm = () => {
       estado: propiedadData.estado || "Disponible",
     };
 
-    // Agregar al contexto global
     setPropiedades(prev => [...prev, nuevaPropiedad]);
+    setShowSuccess(true);
     
-    // Resetear el formulario
-    alert("Propiedad guardada exitosamente!");
-    setActiveStep(0);
-    setPropiedadData({
-      titulo: "",
-      descripcion: "",
-      codigo: "",
-      ubicacion: "",
-      estado: "Disponible",
-      etiquetas: [],
-      archivos: [],
-      areaTotal: "",
-      areaConstruida: ""
-    });
+    setTimeout(() => {
+      setActiveStep(0);
+      setPropiedadData({
+        titulo: "",
+        descripcion: "",
+        codigo: "",
+        ubicacion: "",
+        estado: "Disponible",
+        etiquetas: [],
+        archivos: [],
+        areaTotal: "",
+        areaConstruida: ""
+      });
+      setErrors({});
+      setShowSuccess(false);
+    }, 3000);
   };
 
   return (
@@ -112,35 +136,37 @@ const PropiedadForm = () => {
         {activeStep === 0 && (
           <TituloForm 
             propiedadData={propiedadData} 
-            handleChange={handleChange} 
+            handleChange={handleChange}
+            errors={errors}
           />
         )}
         {activeStep === 1 && (
           <UbicacionForm 
             propiedadData={propiedadData} 
-            handleChange={handleChange} 
+            handleChange={handleChange}
+            errors={errors}
           />
         )}
         {activeStep === 2 && (
           <EtiquetasEstadoForm 
             propiedadData={propiedadData} 
-            handleChange={handleChange} 
+            handleChange={handleChange}
           />
         )}
         {activeStep === 3 && (
           <MultimediaForm 
             propiedadData={propiedadData} 
-            handleChange={handleChange} 
+            handleChange={handleChange}
           />
         )}
         {activeStep === 4 && (
           <ResumenForm 
-            propiedadData={propiedadData} 
+            propiedadData={propiedadData}
+            errors={errors}
           />
         )}
 
         <div className="flex justify-between mt-4">
-          {/* Botón Anterior */}
           {activeStep > 0 && (
             <button
               onClick={prevStep}
@@ -149,11 +175,7 @@ const PropiedadForm = () => {
               Anterior
             </button>
           )}
-
-          {/* Espacio vacío para mantener el layout cuando no hay botón anterior */}
           {activeStep === 0 && <div></div>}
-
-          {/* Botón Siguiente o Guardar */}
           {activeStep < steps.length - 1 ? (
             <button
               onClick={nextStep}
@@ -164,13 +186,31 @@ const PropiedadForm = () => {
           ) : (
             <button
               onClick={guardarPropiedad}
-              className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-500 cursor-pointer transition-all"
+              className={`${
+                Object.keys(errors).length > 0 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-green-600 hover:bg-green-500 cursor-pointer'
+              } text-white px-6 py-3 rounded-md transition-all`}
+              disabled={Object.keys(errors).length > 0}
             >
               Guardar Propiedad
             </button>
           )}
         </div>
       </div>
+
+      {/* Notificación de éxito */}
+      {showSuccess && (
+        <div className="fixed bottom-4 right-4 animate-fade-in-up">
+          <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center">
+            <CheckCircle className="mr-2" size={24} />
+            <div>
+              <p className="font-semibold">¡Propiedad guardada!</p>
+              <p className="text-sm">La propiedad se ha agregado correctamente.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
