@@ -2,6 +2,7 @@ package com.gestion.tufinca.controllers;
 
 import com.gestion.tufinca.controllers.dto.EtiquetaDTO;
 import com.gestion.tufinca.models.EtiquetaModel;
+import com.gestion.tufinca.models.enums.TipoEtiqueta;
 import com.gestion.tufinca.services.IEtiquetaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +54,19 @@ public class EtiquetaController {
         return ResponseEntity.badRequest().build();
     }
 
+    @GetMapping("/tipoEtiqueta/{tipoEtiqueta}")
+    public ResponseEntity<List<EtiquetaDTO>> getEtiquetaByTipoEtiqueta(@PathVariable TipoEtiqueta tipoEtiqueta) {
+        List<EtiquetaDTO> etiquetaList = etiquetaService.getEtiquetaByTipoEtiqueta(tipoEtiqueta)
+                .stream()
+                .map(this::buildEtiquetaDTO)
+                .toList();
+        return ResponseEntity.ok(etiquetaList); // Siempre devuelve 200 OK con la lista
+    }
+
+
     public EtiquetaModel setEtiquetaUpdateValues(EtiquetaDTO etiquetaDTO, EtiquetaModel etiquetaToUpdate){
         etiquetaToUpdate.setNombre(etiquetaDTO.getNombre());
+        etiquetaToUpdate.setTipoEtiqueta(etiquetaDTO.getTipoEtiqueta());
         return etiquetaToUpdate;
     }
 
@@ -62,6 +74,7 @@ public class EtiquetaController {
         return EtiquetaModel.builder()
                 .id(etiquetaDTO.getId())
                 .nombre(etiquetaDTO.getNombre())
+                .tipoEtiqueta(etiquetaDTO.getTipoEtiqueta())
                 .build();
     }
 
@@ -77,6 +90,7 @@ public class EtiquetaController {
         return EtiquetaDTO.builder()
                 .id(etiqueta.getId())
                 .nombre(etiqueta.getNombre())
+                .tipoEtiqueta(etiqueta.getTipoEtiqueta())
                 .build();
     }
 }

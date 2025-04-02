@@ -3,6 +3,7 @@ package com.gestion.tufinca.persistence.impl;
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.persistence.IEtiquetaDAO;
 import com.gestion.tufinca.repositories.IEtiquetaRepository;
+import com.gestion.tufinca.models.enums.TipoEtiqueta;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,11 @@ public class EtiquetaDAOImpl implements IEtiquetaDAO {
     @Override
     public List<EtiquetaModel> getEtiquetas() {
         return etiquetaRepository.findAll();
+    }
+
+    @Override
+    public List<EtiquetaModel> getEtiquetaByTipoEtiqueta(TipoEtiqueta tipoEtiqueta) {
+        return etiquetaRepository.findAllByTipoEtiqueta(tipoEtiqueta);
     }
 
     @Override

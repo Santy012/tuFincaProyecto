@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.gestion.tufinca.models.enums.*;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +24,10 @@ public class EtiquetaModel {
 
     @Column(nullable = false, unique = true)
     private String nombre;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoEtiqueta tipoEtiqueta;
 
     /**
      * mappedBy = "etiquetas"
