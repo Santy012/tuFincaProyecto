@@ -75,68 +75,64 @@ const FiltroEtiquetas = ({
       </div>
 
       {pestanaActiva === "tags" ? (
-        <div className="space-y-4">
-          {etiquetasSeleccionadas.length > 0 && (
-            <div className="mb-2">
-              <button
-                className="px-4 py-2 rounded-lg text-sm font-medium shadow-md bg-red-500 text-white hover:bg-red-600 transition-colors"
-                onClick={() => setEtiquetasSeleccionadas([])}
-              >
-                Limpiar todos los filtros
-              </button>
-            </div>
-          )}
+        <div className="space-y-6">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Contenedor principal */}
+            <div className="flex-1 flex flex-col lg:flex-row gap-8">
+              {/* Sección Tipo de Propiedad */}
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Tipo de Propiedad</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {etiquetasPropiedad.map((etiqueta) => (
+                    <button
+                      key={etiqueta.id}
+                      className={`px-4 py-2 text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
+                        etiquetasSeleccionadas.includes(etiqueta.id)
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                      onClick={() => toggleEtiqueta(etiqueta.id)}
+                    >
+                      {etiqueta.nombre}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Sección Tipo de Propiedad */}
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
-                Tipo de Propiedad
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {etiquetasPropiedad.map((etiqueta) => (
-                  <button
-                    key={etiqueta.id}
-                    className={`px-4 py-2 min-w-[120px] text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
-                      etiquetasSeleccionadas.includes(etiqueta.id)
-                        ? "bg-blue-500 text-white hover:bg-blue-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                    onClick={() => toggleEtiqueta(etiqueta.id)}
-                  >
-                    {etiqueta.nombre}
-                  </button>
-                ))}
+              {/* Sección Características */}
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Características de Propiedad</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {etiquetasCategoria.map((etiqueta) => (
+                    <button
+                      key={etiqueta.id}
+                      className={`px-4 py-2 text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
+                        etiquetasSeleccionadas.includes(etiqueta.id)
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                      onClick={() => toggleEtiqueta(etiqueta.id)}
+                    >
+                      {etiqueta.nombre}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Separador vertical */}
-            <div className="hidden lg:block w-px bg-gray-200 mx-4" />
-
-            {/* Sección Características */}
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
-                Características de Propiedad
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {etiquetasCategoria.map((etiqueta) => (
-                  <button
-                    key={etiqueta.id}
-                    className={`px-4 py-2 min-w-[120px] text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
-                      etiquetasSeleccionadas.includes(etiqueta.id)
-                        ? "bg-blue-500 text-white hover:bg-blue-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                    onClick={() => toggleEtiqueta(etiqueta.id)}
-                  >
-                    {etiqueta.nombre}
-                  </button>
-                ))}
+            {/* Botón Limpiar Filtros */}
+            {etiquetasSeleccionadas.length > 0 && (
+              <div className="lg:ml-auto mt-4 lg:mt-0">
+                <button
+                  className="px-4 py-2 rounded-lg text-sm font-medium shadow-md bg-red-500 text-white hover:bg-red-600 transition-colors"
+                  onClick={() => setEtiquetasSeleccionadas([])}
+                >
+                  Limpiar filtros
+                </button>
               </div>
-            </div>
+            )}
           </div>
         </div>
-
       ) : (
         <div className="flex flex-col md:flex-row gap-4 items-center">
           {/* Filtro por Nombre */}
