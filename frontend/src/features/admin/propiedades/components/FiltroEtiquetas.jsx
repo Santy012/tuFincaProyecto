@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 
-const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSeleccionadas, busquedas, setBusquedas }) => {
+const FiltroEtiquetas = ({
+  etiquetasPropiedad,
+  etiquetasCategoria,
+  etiquetasSeleccionadas,
+  setEtiquetasSeleccionadas,
+  busquedas,
+  setBusquedas
+}) => {
   const [pestanaActiva, setPestanaActiva] = useState("tags");
   const [valoresInput, setValoresInput] = useState({
     nombre: '',
@@ -47,7 +54,9 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
       <div className="flex border-b mb-4">
         <button
           className={`px-4 py-2 text-lg font-bold transition-colors duration-200 ${
-            pestanaActiva === "tags" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
+            pestanaActiva === "tags" 
+              ? "text-blue-500 border-b-2 border-blue-500" 
+              : "text-gray-500 hover:text-gray-700"
           }`}
           onClick={() => setPestanaActiva("tags")}
         >
@@ -55,7 +64,9 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
         </button>
         <button
           className={`px-4 py-2 text-lg font-bold transition-colors duration-200 ${
-            pestanaActiva === "busqueda" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
+            pestanaActiva === "busqueda" 
+              ? "text-blue-500 border-b-2 border-blue-500" 
+              : "text-gray-500 hover:text-gray-700"
           }`}
           onClick={() => setPestanaActiva("busqueda")}
         >
@@ -64,97 +75,144 @@ const FiltroEtiquetas = ({ etiquetas, etiquetasSeleccionadas, setEtiquetasSelecc
       </div>
 
       {pestanaActiva === "tags" ? (
-        <div className="flex flex-wrap gap-2">
+        <div className="space-y-4">
           {etiquetasSeleccionadas.length > 0 && (
-            <button
-              className="px-4 py-2 rounded-lg text-sm font-medium shadow-md bg-red-500 text-white"
-              onClick={() => setEtiquetasSeleccionadas([])}
-            >
-              X
-            </button>
+            <div className="mb-2">
+              <button
+                className="px-4 py-2 rounded-lg text-sm font-medium shadow-md bg-red-500 text-white hover:bg-red-600 transition-colors"
+                onClick={() => setEtiquetasSeleccionadas([])}
+              >
+                Limpiar todos los filtros
+              </button>
+            </div>
           )}
-          {etiquetas.map((etiqueta) => (
-            <button
-              key={etiqueta.id}
-              className={`px-4 py-2 rounded-lg text-sm font-medium shadow-md transition-colors duration-200 ${
-                etiquetasSeleccionadas.includes(etiqueta.id) ? "bg-blue-500 text-white" : "bg-gray-300"
-              }`}
-              onClick={() => toggleEtiqueta(etiqueta.id)}
-            >
-              {etiqueta.nombre}
-            </button>
-          ))}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Sección Tipo de Propiedad */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
+                Tipo de Propiedad
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {etiquetasPropiedad.map((etiqueta) => (
+                  <button
+                    key={etiqueta.id}
+                    className={`px-4 py-2 min-w-[120px] text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
+                      etiquetasSeleccionadas.includes(etiqueta.id)
+                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                    onClick={() => toggleEtiqueta(etiqueta.id)}
+                  >
+                    {etiqueta.nombre}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Separador vertical */}
+            <div className="hidden lg:block w-px bg-gray-200 mx-4" />
+
+            {/* Sección Características */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
+                Características de Propiedad
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {etiquetasCategoria.map((etiqueta) => (
+                  <button
+                    key={etiqueta.id}
+                    className={`px-4 py-2 min-w-[120px] text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
+                      etiquetasSeleccionadas.includes(etiqueta.id)
+                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                    onClick={() => toggleEtiqueta(etiqueta.id)}
+                  >
+                    {etiqueta.nombre}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+
       ) : (
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
           {/* Filtro por Nombre */}
-          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
-            <input
-              type="text"
-              className="bg-transparent focus:outline-none w-full"
-              placeholder="Por Nombre"
-              value={valoresInput.nombre}
-              onChange={(e) => handleInputChange(e, 'nombre')}
-              onKeyPress={(e) => e.key === 'Enter' && aplicarFiltro('nombre')}
-            />
-            {busquedas.nombre ? (
-              <FaTimes 
-                className="text-blue-500 cursor-pointer" 
-                onClick={() => limpiarFiltro('nombre')}
+          <div className="w-full md:flex-1">
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors">
+              <input
+                type="text"
+                className="bg-transparent focus:outline-none w-full"
+                placeholder="Buscar por nombre"
+                value={valoresInput.nombre}
+                onChange={(e) => handleInputChange(e, 'nombre')}
+                onKeyPress={(e) => e.key === 'Enter' && aplicarFiltro('nombre')}
               />
-            ) : (
-              <FaSearch 
-                className="text-blue-500 cursor-pointer" 
-                onClick={() => aplicarFiltro('nombre')}
-              />
-            )}
+              {busquedas.nombre ? (
+                <FaTimes 
+                  className="text-blue-500 cursor-pointer hover:text-blue-600"
+                  onClick={() => limpiarFiltro('nombre')}
+                />
+              ) : (
+                <FaSearch 
+                  className="text-blue-500 cursor-pointer hover:text-blue-600"
+                  onClick={() => aplicarFiltro('nombre')}
+                />
+              )}
+            </div>
           </div>
 
           {/* Filtro por Código */}
-          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
-          <input
-            type="text"
-            className="bg-transparent focus:outline-none w-full"
-            placeholder="Por Código"
-            value={valoresInput.codigo}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value === '' || /^[0-9]+$/.test(value)) {
-                handleInputChange(e, 'codigo');
-              }
-            }}
-            onKeyPress={(e) => {
-              if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-              }
-              if (e.key === 'Enter') aplicarFiltro('codigo');
-            }}
-          />
-            {busquedas.codigo ? (
-              <FaTimes 
-                className="text-blue-500 cursor-pointer" 
-                onClick={() => limpiarFiltro('codigo')}
+          <div className="w-full md:flex-1">
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors">
+              <input
+                type="text"
+                className="bg-transparent focus:outline-none w-full"
+                placeholder="Buscar por código"
+                value={valoresInput.codigo}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || /^[0-9]+$/.test(value)) {
+                    handleInputChange(e, 'codigo');
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                  if (e.key === 'Enter') aplicarFiltro('codigo');
+                }}
               />
-            ) : (
-              <FaSearch 
-                className="text-blue-500 cursor-pointer" 
-                onClick={() => aplicarFiltro('codigo')}
-              />
-            )}
+              {busquedas.codigo ? (
+                <FaTimes 
+                  className="text-blue-500 cursor-pointer hover:text-blue-600"
+                  onClick={() => limpiarFiltro('codigo')}
+                />
+              ) : (
+                <FaSearch 
+                  className="text-blue-500 cursor-pointer hover:text-blue-600"
+                  onClick={() => aplicarFiltro('codigo')}
+                />
+              )}
+            </div>
           </div>
 
           {/* Filtro por Estado */}
-          <div className="flex items-center gap-2 bg-gray-300 px-3 py-2 rounded-md flex-1">
-            <select
-              className="bg-transparent focus:outline-none w-full text-gray-500"
-              value={busquedas.estado}
-              onChange={(e) => setBusquedas(prev => ({ ...prev, estado: e.target.value }))}
-            >
-              <option value="">Seleccionar Estado</option>
-              <option value="En venta">En venta</option>
-              <option value="Disponible">Disponible</option>
-            </select>
-        
+          <div className="w-full md:flex-1">
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors">
+              <select
+                className="bg-transparent focus:outline-none w-full text-gray-700"
+                value={busquedas.estado}
+                onChange={(e) => setBusquedas(prev => ({ ...prev, estado: e.target.value }))}
+              >
+                <option value="">Todos los estados</option>
+                <option value="disponible">Disponible</option>
+                <option value="reservado">Reservado</option>
+                <option value="vendido">Vendido</option>
+              </select>
+            </div>
           </div>
         </div>
       )}

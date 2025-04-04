@@ -59,7 +59,7 @@ const SelectorEtiquetas = ({
   };
 
   // Crear y agregar nueva etiqueta
-  const manejarGuardarEtiqueta = (nombreEtiqueta) => {
+  const manejarGuardarEtiqueta = (nombreEtiqueta, tipoEtiqueta) => {
     if (!nombreEtiqueta.trim()) return false;
     if (
       etiquetas.some(
@@ -79,6 +79,7 @@ const SelectorEtiquetas = ({
       const nuevaEtiqueta = {
         id: Math.max(0, ...etiquetas.map((e) => e.id)) + 1,
         nombre: nombreEtiqueta.trim(),
+        tipoEtiqueta: tipoEtiqueta,
       };
 
       setEtiquetas((prev) => [...prev, nuevaEtiqueta]);

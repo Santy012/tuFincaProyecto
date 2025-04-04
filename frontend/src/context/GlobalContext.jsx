@@ -30,11 +30,11 @@ export const GlobalProvider = ({ children }) => {
   ]);
 
   const [etiquetas, setEtiquetas] = useState([
-    { id: 1, nombre: "Arriendo" },
-    { id: 2, nombre: "Finca" },
-    { id: 3, nombre: "Colombia" },
-    { id: 4, nombre: "En venta" },
-    { id: 5, nombre: "Apto" },
+    { id: 1, nombre: "Arriendo", tipoEtiqueta: "categoria"},
+    { id: 2, nombre: "Finca", tipoEtiqueta: "propiedad"},
+    { id: 3, nombre: "Colombia", tipoEtiqueta: "categoria" },
+    { id: 4, nombre: "En venta", tipoEtiqueta: "categoria" },
+    { id: 5, nombre: "Apto", tipoEtiqueta: "propiedad" },
   ]);
 
   const [mensajes, setMensajes] = useState([
@@ -60,7 +60,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Función para agregar una nueva etiqueta globalmente
-  const agregarNuevaEtiquetaGlobal = (nombreEtiqueta) => {
+  const agregarNuevaEtiquetaGlobal = (nombreEtiqueta, tipoEtiqueta) => {
     // Validar que no exista ya
     if (etiquetas.some(e => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase())) {
       return { error: "Esta etiqueta ya existe" };
@@ -68,7 +68,7 @@ export const GlobalProvider = ({ children }) => {
 
     // Crear nueva etiqueta con ID único
     const nuevaId = Math.max(...etiquetas.map(e => e.id), 0) + 1;
-    const nuevaEtiqueta = { id: nuevaId, nombre: nombreEtiqueta };
+    const nuevaEtiqueta = { id: nuevaId, nombre: nombreEtiqueta, tipoEtiqueta: tipoEtiqueta };
     
     // Actualizar el estado global
     setEtiquetas(prev => [...prev, nuevaEtiqueta]);

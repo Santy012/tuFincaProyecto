@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
   const [nombreEtiqueta, setNombreEtiqueta] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [esPropiedad, setEsPropiedad] = useState(false);
 
   const handleGuardar = async () => {
     if (!nombreEtiqueta.trim()) {
@@ -14,7 +15,7 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
   
     setGuardando(true);
     try {
-      const exito = await guardarEtiqueta(nombreEtiqueta);
+      const exito = await guardarEtiqueta(nombreEtiqueta, esPropiedad ? "propiedad" : "categoria");
       if (exito) {
         cerrar(); // Aseguramos que se cierre correctamente
       }
@@ -50,6 +51,20 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
           placeholder="Nombre de la etiqueta"
           className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-500"
         />
+
+        {/* Nuevo checkbox */}
+        <div className="mt-4 flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={esPropiedad}
+            onChange={(e) => setEsPropiedad(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            id="tipoPropiedad"
+          />
+          <label htmlFor="tipoPropiedad" className="text-sm text-gray-700">
+            Etiqueta de Tipo Propiedad
+          </label>
+        </div>
 
         <div className="flex justify-end gap-2 mt-4">
           <button
