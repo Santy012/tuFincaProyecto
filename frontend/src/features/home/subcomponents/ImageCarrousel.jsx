@@ -22,7 +22,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '' }) => {
 
   // Estilos condicionales
   const containerClass = fullSize 
-    ? `relative w-full ${className}`
+    ? `relative w-full max-w-4xl mx-auto ${className}`
     : 'relative h-48 overflow-hidden group';
 
   const imageClass = fullSize

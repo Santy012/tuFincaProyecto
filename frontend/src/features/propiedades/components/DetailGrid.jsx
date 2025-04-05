@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const DetailGrid = ({ propiedad, etiquetas }) => {
   // Función para formatear números con separadores de miles
   const formatNumber = (num) => {
@@ -83,7 +85,7 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
           </h3>
 
           <div className="space-y-4">
-
+            <Link to={`/mensaje?codigo=${encodeURIComponent(propiedad.codigo)}`} className="flex items-center">
             <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium flex items-center justify-center">
               <svg
                 className="w-5 h-5 mr-2"
@@ -100,6 +102,7 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
               </svg>
               Enviar mensaje
             </button>
+            </Link>
           </div>
         </div>
 

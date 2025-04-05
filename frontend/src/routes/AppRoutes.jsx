@@ -5,6 +5,7 @@ import LoginPage from '../features/login/LoginPage';
 import ProtectedRoute from './ProtectedRoute';
 import PropertyPage from '../features/propiedades/PropertyPage';
 import ScrollToTop from './ScrollToTop';
+import MessagePage from '../features/mensaje/MessagePage';
 
 const AppRoutes = () => {
     return(
@@ -22,6 +23,7 @@ const AppRoutes = () => {
                 <Route path='/login' element={<LoginPage/>}/>
                 <Route path='/admin' element={<AdminPage/>}/>
                 <Route path="/propiedad/:id" element={<PropertyPage />} /> 
+                <Route path="/mensaje" element={<MessagePage/>} />
             </Routes>
         </Router>
     )

@@ -4,7 +4,7 @@ import logo from '../../../assets/TuFincaLogo.jpeg';
 const Header = () => {
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img
@@ -13,12 +13,12 @@ const Header = () => {
             className="h-25 w-auto" // Ajusta la altura según necesites
           />
           <span className="text-2xl font-bold text-blue-800">
-            Tu<span className="text-green-800">Finca WEB</span>
+            TU<span className="text-green-800">FINCA</span><span className="text-blue-800">Inmobiliaria</span>
           </span>
         </Link>
 
         {/* Navegación para desktop */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex space-x-8 text-lg">
           <Link
             to="/"
             className="text-gray-700 hover:text-blue-600 font-medium transition-colors relative group"
@@ -44,9 +44,11 @@ const Header = () => {
 
         {/* Botón de contacto y menú móvil */}
         <div className="flex items-center space-x-4">
+        <Link to="/mensaje" className="flex items-center">
           <button className="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
             Contacto
           </button>
+        </Link>
 
           {/* Botón de menú móvil */}
           <button className="md:hidden text-gray-700 focus:outline-none">
