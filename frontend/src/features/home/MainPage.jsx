@@ -9,10 +9,13 @@ const MainPage = () => {
   const { propiedades } = useGlobalContext();
   const [filteredProperties, setFilteredProperties] = useState([]);
 
-  // Inicializar filteredProperties con propiedades cuando estén disponibles
+  // Inicializar filteredProperties con propiedades disponibles
   useEffect(() => {
     if (propiedades) {
-      setFilteredProperties(propiedades);
+      const propiedadesDisponibles = propiedades.filter(
+        propiedad => propiedad.estado === "Disponible"
+      );
+      setFilteredProperties(propiedadesDisponibles);
     }
   }, [propiedades]);
 
@@ -20,21 +23,27 @@ const MainPage = () => {
     if (!propiedades) return;
 
     const filtered = propiedades.filter((propiedad) => {
+      // Primero verificar que esté disponible
+      if (propiedad.estado !== "Disponible") return false;
+      
       // Filtro por nombre (case insensitive)
       const matchesNombre = filters.nombre === "" || 
         propiedad.titulo.toLowerCase().includes(filters.nombre.toLowerCase());
       
-      // Filtro por ubicación
+      // Filtro por código
       const matchesCodigo = filters.codigo === "" || 
         propiedad.codigo === filters.codigo;
+
+      const matchesUbicacion = filters.ubicacion === "" || 
+      propiedad.ubicacion === filters.ubicacion;
       
-      // Filtro por etiqueta (manejar null y string vacío)
+      // Filtro por etiqueta
       const matchesEtiqueta = filters.etiquetas.length === 0 || 
         filters.etiquetas.every(etiquetaId => 
           propiedad.etiquetas.includes(parseInt(etiquetaId))
         );
       
-      return matchesNombre && matchesCodigo && matchesEtiqueta;
+      return matchesNombre && matchesCodigo && matchesUbicacion && matchesEtiqueta;
     });
 
     setFilteredProperties(filtered);

@@ -14,7 +14,7 @@ export const GlobalProvider = ({ children }) => {
       ubicacion: "Guatavita, Colombia",
       estado: "Disponible",
       imagenes: ["https://picsum.photos/1200/800?random=1", "https://picsum.photos/1200/800?random=2", "https://picsum.photos/1200/800?random=3", "https://picsum.photos/1200/800?random=4", "https://picsum.photos/1200/800?random=5"],
-      etiquetas: [1, 2, 3],
+      etiquetas: [2, 4, 7],
     },
     {
       id: 2,
@@ -25,17 +25,32 @@ export const GlobalProvider = ({ children }) => {
       ubicacion: "Bogotá, Colombia",
       estado: "Vendido",
       imagenes: ["https://picsum.photos/1200/800?random=6", "https://picsum.photos/1200/800?random=7"],
-      etiquetas: [3, 4, 5],
+      etiquetas: [2, 6, 7, 9],
     },
+    {
+      id: 3,
+      titulo: "Finca en Guatavita",
+      codigo: "0003",
+      descripcion: "Finca con mucho espacio a las afueras de guatavita con vistas espectaculares.",
+      areaTotal: 200.0,
+      ubicacion: "Guatavita, Colombia",
+      estado: "Disponible",
+      imagenes: ["https://picsum.photos/1200/800?random=8", "https://picsum.photos/1200/800?random=9"],
+      etiquetas: [2, 3, 8, 9],
+    }
   ]);
 
   const [etiquetas, setEtiquetas] = useState([
-    { id: 1, nombre: "Arriendo" },
-    { id: 2, nombre: "Finca" },
-    { id: 3, nombre: "Colombia" },
-    { id: 4, nombre: "En venta" },
-    { id: 5, nombre: "Apto" },
+    { id: 1, nombre: "Finca", tipo: "propiedad" },
+    { id: 2, nombre: "Casa", tipo: "propiedad" },
+    { id: 3, nombre: "Departamento", tipo: "propiedad" },
+    { id: 4, nombre: "Apto", tipo: "propiedad" },
+    { id: 5, nombre: "3 baños", tipo: "categoria" },
+    { id: 6, nombre: "5 habitaciones", tipo: "categoria" },
+    { id: 7, nombre: "Piscina", tipo: "categoria" },
+    { id: 8, nombre: "Asador", tipo: "categoria" }
   ]);
+  
 
   const [mensajes, setMensajes] = useState([
     { id: 1, nombreCliente: "Cliente1", apellidoCliente: "Apellido Cliente 1", celular: "311123456", propiedad_id: 1, correo: "correo_ejemplo@gmail.com", detalle: "Hola, este es un ejemplo de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "porLeer" },
