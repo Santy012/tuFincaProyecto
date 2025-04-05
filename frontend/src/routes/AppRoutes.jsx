@@ -7,6 +7,7 @@ import PropertyPage from '../features/propiedades/PropertyPage';
 import ScrollToTop from './ScrollToTop';
 import MessagePage from '../features/mensaje/MessagePage';
 import ServiciosPage from '../features/servicios/ServiciosPage';
+import SobreNosotrosPage from '../features/sobre_nosotros/SobreNosotrosPage';
 
 const AppRoutes = () => {
     return(
@@ -22,10 +23,10 @@ const AppRoutes = () => {
                 }/>
 
                 <Route path='/login' element={<LoginPage/>}/>
-                <Route path='/admin' element={<AdminPage/>}/>
                 <Route path="/propiedad/:id" element={<PropertyPage />} /> 
                 <Route path="/mensaje" element={<MessagePage/>} />
                 <Route path="/servicios" element={<ServiciosPage/>}/>
+                <Route path='/sobre-nosotros' element={<SobreNosotrosPage/>}/>
             </Routes>
         </Router>
     )
