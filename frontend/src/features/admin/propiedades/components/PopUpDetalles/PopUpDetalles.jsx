@@ -29,14 +29,11 @@ const PopUpDetalles = ({
 
   const agregarMedia = (archivo) => {
     if (archivo) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPropiedad((prev) => ({
-          ...prev,
-          imagenes: [...prev.imagenes, e.target.result],
-        }));
-      };
-      reader.readAsDataURL(archivo);
+      // Guardamos el archivo completo en el estado, no solo el DataURL
+      setPropiedad((prev) => ({
+        ...prev,
+        imagenes: [...prev.imagenes, archivo],
+      }));
     }
   };
 

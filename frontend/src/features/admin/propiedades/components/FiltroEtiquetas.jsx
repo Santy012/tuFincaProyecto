@@ -205,7 +205,6 @@ const FiltroEtiquetas = ({
               >
                 <option value="">Todos los estados</option>
                 <option value="disponible">Disponible</option>
-                <option value="reservado">Reservado</option>
                 <option value="vendido">Vendido</option>
               </select>
             </div>
