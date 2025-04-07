@@ -41,14 +41,14 @@ export const GlobalProvider = ({ children }) => {
   ]);
 
   const [etiquetas, setEtiquetas] = useState([
-    { id: 1, nombre: "Finca", tipo: "propiedad" },
-    { id: 2, nombre: "Casa", tipo: "propiedad" },
-    { id: 3, nombre: "Departamento", tipo: "propiedad" },
-    { id: 4, nombre: "Apto", tipo: "propiedad" },
-    { id: 5, nombre: "3 baños", tipo: "categoria" },
-    { id: 6, nombre: "5 habitaciones", tipo: "categoria" },
-    { id: 7, nombre: "Piscina", tipo: "categoria" },
-    { id: 8, nombre: "Asador", tipo: "categoria" }
+    { id: 1, nombre: "Finca", tipoEtiqueta: "propiedad" },
+    { id: 2, nombre: "Casa", tipoEtiqueta: "propiedad" },
+    { id: 3, nombre: "Departamento", tipoEtiqueta: "propiedad" },
+    { id: 4, nombre: "Apto", tipoEtiqueta: "propiedad" },
+    { id: 5, nombre: "3 baños", tipoEtiqueta: "categoria" },
+    { id: 6, nombre: "5 habitaciones", tipoEtiqueta: "categoria" },
+    { id: 7, nombre: "Piscina", tipoEtiqueta: "categoria" },
+    { id: 8, nombre: "Asador", tipoEtiqueta: "categoria" }
   ]);
   
 

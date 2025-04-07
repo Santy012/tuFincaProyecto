@@ -21,7 +21,7 @@ const MainPage = () => {
 
   const handleFilter = (filters) => {
     if (!propiedades) return;
-
+  
     const filtered = propiedades.filter((propiedad) => {
       // Primero verificar que esté disponible
       if (propiedad.estado !== "Disponible") return false;
@@ -33,19 +33,24 @@ const MainPage = () => {
       // Filtro por código
       const matchesCodigo = filters.codigo === "" || 
         propiedad.codigo === filters.codigo;
-
+  
       const matchesUbicacion = filters.ubicacion === "" || 
-      propiedad.ubicacion === filters.ubicacion;
+        propiedad.ubicacion === filters.ubicacion;
       
-      // Filtro por etiqueta
+      // Filtro por tipo de propiedad (select)
+      const matchesTipoPropiedad = filters.tipoPropiedad === "" || 
+        propiedad.etiquetas.includes(parseInt(filters.tipoPropiedad));
+      
+      // Filtro por etiqueta (solo categorías)
       const matchesEtiqueta = filters.etiquetas.length === 0 || 
         filters.etiquetas.every(etiquetaId => 
           propiedad.etiquetas.includes(parseInt(etiquetaId))
         );
       
-      return matchesNombre && matchesCodigo && matchesUbicacion && matchesEtiqueta;
+      return matchesNombre && matchesCodigo && matchesUbicacion && 
+             matchesTipoPropiedad && matchesEtiqueta;
     });
-
+  
     setFilteredProperties(filtered);
   };
 
