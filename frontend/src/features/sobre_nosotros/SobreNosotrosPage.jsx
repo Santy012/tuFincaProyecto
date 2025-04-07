@@ -1,33 +1,9 @@
 import { FaBalanceScale, FaHandshake, FaChartLine, FaMapMarkedAlt, FaUsers } from 'react-icons/fa';
 import Header from '../home/components/Header';
 import Footer from '../home/components/Footer';
-import TeamMemberCard from './TeamMemberCard';
 import { Link } from 'react-router-dom';
 
 const SobreNosotrosPage = () => {
-  const teamMembers = [
-    {
-      name: "María Fernanda López",
-      position: "Directora Legal",
-      expertise: "Derecho Inmobiliario y Registral",
-      experience: "15 años",
-      image: "/team/maria-lopez.jpg"
-    },
-    {
-      name: "Carlos Andrés Ramírez",
-      position: "Asesor Comercial",
-      expertise: "Negociación y Mercado Inmobiliario",
-      experience: "10 años",
-      image: "/team/carlos-ramirez.jpg"
-    },
-    {
-      name: "Ana Isabel Gómez",
-      position: "Especialista en Trámites",
-      expertise: "Procedimientos Notariales y Registrales",
-      experience: "12 años",
-      image: "/team/ana-gomez.jpg"
-    }
-  ];
 
   return (
     <>

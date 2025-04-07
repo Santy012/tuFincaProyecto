@@ -14,7 +14,7 @@ const PropertyFilters = ({ onFilter }) => {
     etiquetas: [],
     codigo: "",
     ubicacion: "",
-    tipoPropiedad: "", // Nuevo campo para el select
+    tipoPropiedad: "",
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
@@ -23,7 +23,7 @@ const PropertyFilters = ({ onFilter }) => {
     if (propiedades && propiedades.length > 0 && etiquetas) {
       // Filtrar solo propiedades disponibles
       const propiedadesDisponibles = propiedades.filter(
-        propiedad => propiedad.estado === "Disponible"
+        propiedad => propiedad.estado === "disponible"
       );
       
       // Separar etiquetas por tipo y calcular conteo solo en propiedades disponibles

@@ -4,44 +4,46 @@ import Footer from "./components/Footer";
 import PropertyFilters from "./components/PropertyFilters";
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../context/GlobalContext";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const MainPage = () => {
-  const { propiedades } = useGlobalContext();
+  const { 
+    propiedades,
+    loadingPropiedades,
+    errorPropiedades,
+    reloadPropiedades,
+    resetErrorPropiedades,
+    etiquetas
+  } = useGlobalContext();
+  
   const [filteredProperties, setFilteredProperties] = useState([]);
 
   // Inicializar filteredProperties con propiedades disponibles
   useEffect(() => {
-    if (propiedades) {
+    if (propiedades && !loadingPropiedades) {
       const propiedadesDisponibles = propiedades.filter(
-        propiedad => propiedad.estado === "Disponible"
+        propiedad => propiedad.estado === "disponible"
       );
       setFilteredProperties(propiedadesDisponibles);
     }
-  }, [propiedades]);
+  }, [propiedades, loadingPropiedades]);
 
   const handleFilter = (filters) => {
-    if (!propiedades) return;
+    if (!propiedades || loadingPropiedades) return;
   
     const filtered = propiedades.filter((propiedad) => {
-      // Primero verificar que esté disponible
-      if (propiedad.estado !== "Disponible") return false;
+      if (propiedad.estado !== "disponible") return false;
       
-      // Filtro por nombre (case insensitive)
+      // Filtros
       const matchesNombre = filters.nombre === "" || 
         propiedad.titulo.toLowerCase().includes(filters.nombre.toLowerCase());
-      
-      // Filtro por código
       const matchesCodigo = filters.codigo === "" || 
         propiedad.codigo === filters.codigo;
-  
       const matchesUbicacion = filters.ubicacion === "" || 
         propiedad.ubicacion === filters.ubicacion;
-      
-      // Filtro por tipo de propiedad (select)
       const matchesTipoPropiedad = filters.tipoPropiedad === "" || 
         propiedad.etiquetas.includes(parseInt(filters.tipoPropiedad));
-      
-      // Filtro por etiqueta (solo categorías)
       const matchesEtiqueta = filters.etiquetas.length === 0 || 
         filters.etiquetas.every(etiquetaId => 
           propiedad.etiquetas.includes(parseInt(etiquetaId))
@@ -54,11 +56,37 @@ const MainPage = () => {
     setFilteredProperties(filtered);
   };
 
+  if (loadingPropiedades) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner message="Cargando propiedades..." />
+      </div>
+    );
+  }
+
+  if (errorPropiedades) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <ErrorMessage 
+          message={errorPropiedades} 
+          onRetry={() => {
+            resetErrorPropiedades();
+            reloadPropiedades();
+          }} 
+          retryText="Volver a cargar propiedades"
+        />
+      </div>
+    );
+  }
+
   return (
     <main>
-      <Header rutaLogo="src\assets\TuFincaLogo.jpeg" />
-      <PropertyFilters onFilter={handleFilter} />
-      <PropertyGrid propiedades={filteredProperties || []} />
+      <Header rutaLogo="src/assets/TuFincaLogo.jpeg" />
+      <PropertyFilters 
+        onFilter={handleFilter} 
+        etiquetas={etiquetas} 
+      />
+      <PropertyGrid propiedades={filteredProperties} />
       <Footer />
     </main>
   );
