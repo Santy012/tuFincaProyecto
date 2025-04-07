@@ -29,14 +29,11 @@ const PopUpDetalles = ({
 
   const agregarMedia = (archivo) => {
     if (archivo) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPropiedad((prev) => ({
-          ...prev,
-          imagenes: [...prev.imagenes, e.target.result],
-        }));
-      };
-      reader.readAsDataURL(archivo);
+      // Guardamos el archivo completo en el estado, no solo el DataURL
+      setPropiedad((prev) => ({
+        ...prev,
+        imagenes: [...prev.imagenes, archivo],
+      }));
     }
   };
 
@@ -82,22 +79,21 @@ const PopUpDetalles = ({
         </div>
 
         {/* Carrusel de imágenes */}
-        <div className="relative cursor-pointer">
-          <div
-            className={`absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg transition-opacity duration-300 rounded-lg ${
-              editando ? "opacity-0 hover:opacity-100" : "hidden"
-            }`}
-          >
-            Editar
-          </div>
+        <div className="relative">
           <Carrusel
             propiedadSeleccionada={propiedad}
             imagenActual={imagenActual}
             setImagenActual={setImagenActual}
-            setMostrarGaleria={() => {
-              if (editando) setMostrarGaleria(true);
-            }}
+            onEditClick={() => editando && setMostrarGaleria(true)}
           />
+          {editando && (
+            <div 
+              className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg transition-opacity duration-300 rounded-lg opacity-0 hover:opacity-100 cursor-pointer"
+              onClick={() => setMostrarGaleria(true)}
+            >
+              Editar
+            </div>
+          )}
         </div>
 
         <Indicadores

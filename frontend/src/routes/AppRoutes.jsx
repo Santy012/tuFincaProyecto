@@ -21,7 +21,6 @@ const AppRoutes = () => {
                 }/>
 
                 <Route path='/login' element={<LoginPage/>}/>
-                <Route path='/admin' element={<AdminPage/>}/>
                 <Route path="/propiedad/:id" element={<PropertyPage />} /> 
                 <Route path="/mensaje" element={<MessagePage/>} />
             </Routes>

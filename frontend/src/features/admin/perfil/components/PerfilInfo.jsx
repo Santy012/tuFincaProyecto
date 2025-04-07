@@ -3,18 +3,21 @@ import PopUpBorrarPerfil from "../subcomponents/PopUpBorrarPerfil";
 import PopUpConfirmar from "../subcomponents/PopUpConfirmar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
 
 const PerfilInfo = ({ admin, onEdit }) => {
   const [mostrarPopUpBorrar, setMostrarPopUpBorrar] = useState(false);
   const [mostrarPopUpCerrarSesion, setMostrarPopUpCerrarSesion] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      // TODO: Cerrar la sesión y limpiar el contexto de admin
-      navigate("/login");
+      await logout();
+      // Forzar recarga para limpiar completamente el estado
+      window.location.href = '/login';
     } catch (error) {
       console.error("Error al cerrar sesión", error);
     } finally {

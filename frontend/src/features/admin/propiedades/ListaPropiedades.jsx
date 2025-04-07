@@ -10,6 +10,10 @@ const ListaPropiedades = () => {
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
   const [busquedas, setBusquedas] = useState({ nombre: "", codigo: "", estado: "" });
 
+    // Separar etiquetas por tipo
+  const etiquetasPropiedad = etiquetas.filter(e => e.tipoEtiqueta === 'propiedad');
+  const etiquetasCategoria = etiquetas.filter(e => e.tipoEtiqueta === 'categoria');
+
   const obtenerNombresEtiquetas = (ids = []) => {
     if (!Array.isArray(ids) || !Array.isArray(etiquetas)) return [];
     return ids
@@ -38,7 +42,8 @@ const ListaPropiedades = () => {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <FiltroEtiquetas
-        etiquetas={etiquetas}
+        etiquetasPropiedad={etiquetasPropiedad}
+        etiquetasCategoria={etiquetasCategoria}
         etiquetasSeleccionadas={etiquetasSeleccionadas}
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
         busquedas={busquedas}

@@ -5,6 +5,7 @@ import com.gestion.tufinca.persistence.IEtiquetaDAO;
 import com.gestion.tufinca.services.IEtiquetaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.gestion.tufinca.models.enums.TipoEtiqueta;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,11 @@ public class EtiquetaServiceImpl implements IEtiquetaService {
     @Override
     public Optional<EtiquetaModel> getEtiquetaById(Integer id) {
         return EtiquetaDAO.getEtiquetaById(id);
+    }
+
+    @Override
+    public List<EtiquetaModel> getEtiquetaByTipoEtiqueta(TipoEtiqueta tipoEtiqueta) {
+        return EtiquetaDAO.getEtiquetaByTipoEtiqueta(tipoEtiqueta);
     }
 
     @Override

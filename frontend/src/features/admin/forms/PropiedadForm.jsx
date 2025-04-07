@@ -17,7 +17,7 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { setPropiedades, etiquetas } = useGlobalContext();
+  const { propiedades, setPropiedades, etiquetas } = useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
     descripcion: "",
@@ -31,6 +31,7 @@ const PropiedadForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
+  const [codigoExistente, setCodigoExistente] = useState(false);
 
   const requiredFields = {
     titulo: "Título",
@@ -39,22 +40,52 @@ const PropiedadForm = () => {
     areaTotal: "Área Total"
   };
 
+  const requiredFieldsByStep = {
+    0: ['titulo', 'descripcion', 'codigo'], // TítuloForm
+    1: ['areaTotal'], // UbicacionForm
+    // Los demás pasos no tienen campos requeridos
+  };
+
+  const [formValido, setFormValido] = useState(false);
+
   // Validación en tiempo real
   useEffect(() => {
+    const currentRequiredFields = requiredFieldsByStep[activeStep] || [];
     const newErrors = {};
     let hasErrors = false;
 
-    Object.keys(requiredFields).forEach(field => {
-      if (!propiedadData[field]) {
+    // Validar campos requeridos del paso actual
+    currentRequiredFields.forEach(field => {
+      if (!propiedadData[field] || (typeof propiedadData[field] === 'string' && propiedadData[field].trim() === '')) {
         newErrors[field] = `${requiredFields[field]} es requerido`;
         hasErrors = true;
       }
     });
 
+    // Validación especial para el código (solo en paso 0)
+    if (activeStep === 0 && propiedadData.codigo && propiedadData.codigo.trim() !== '') {
+      const codigoEnUso = propiedades.some(
+        propiedad => propiedad.codigo === propiedadData.codigo
+      );
+      if (codigoEnUso) {
+        newErrors.codigo = "Este código ya está en uso por otra propiedad";
+        setCodigoExistente(true);
+        hasErrors = true;
+      } else {
+        setCodigoExistente(false);
+      }
+    }
+
     setErrors(newErrors);
-  }, [propiedadData]);
+    setFormValido(!hasErrors && 
+      (activeStep !== 0 || (propiedadData.codigo && propiedadData.codigo.trim() !== '')));
+  }, [propiedadData, propiedades, activeStep]);
 
   const nextStep = () => {
+    if (!formValido) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (activeStep < steps.length - 1) setActiveStep(activeStep + 1);
   };
 
@@ -67,7 +98,7 @@ const PropiedadForm = () => {
   };
 
   const guardarPropiedad = () => {
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(errors).length > 0 || codigoExistente) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -82,9 +113,7 @@ const PropiedadForm = () => {
     const nuevaPropiedad = {
       ...propiedadData,
       id: Date.now(),
-      imagenes: propiedadData.archivos.map(file => 
-        typeof file === 'string' ? file : URL.createObjectURL(file)
-      ),
+      imagenes: propiedadData.archivos,
       etiquetas: etiquetasIds,
       areaTotal: parseFloat(propiedadData.areaTotal) || 0,
       areaConstruida: parseFloat(propiedadData.areaConstruida) || null,
@@ -179,7 +208,12 @@ const PropiedadForm = () => {
           {activeStep < steps.length - 1 ? (
             <button
               onClick={nextStep}
-              className="bg-blue-800 text-white px-6 py-3 rounded-md hover:bg-blue-400 cursor-pointer transition-all"
+              className={`${
+                !formValido || (activeStep === 0 && codigoExistente)
+                  ? 'bg-blue-400 cursor-not-allowed'
+                  : 'bg-blue-800 hover:bg-blue-600 cursor-pointer'
+              } text-white px-6 py-3 rounded-md transition-all`}
+              disabled={!formValido || (activeStep === 0 && codigoExistente)}
             >
               Siguiente
             </button>
@@ -187,11 +221,11 @@ const PropiedadForm = () => {
             <button
               onClick={guardarPropiedad}
               className={`${
-                Object.keys(errors).length > 0 
+                !formValido || codigoExistente
                   ? 'bg-gray-400 cursor-not-allowed' 
                   : 'bg-green-600 hover:bg-green-500 cursor-pointer'
               } text-white px-6 py-3 rounded-md transition-all`}
-              disabled={Object.keys(errors).length > 0}
+              disabled={!formValido || codigoExistente}
             >
               Guardar Propiedad
             </button>

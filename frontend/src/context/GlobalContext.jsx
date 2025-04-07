@@ -12,7 +12,7 @@ export const GlobalProvider = ({ children }) => {
       areaTotal: 25.0,
       areaConstruida:null,
       ubicacion: "Guatavita, Colombia",
-      estado: "Disponible",
+      estado: "disponible",
       imagenes: ["https://picsum.photos/1200/800?random=1", "https://picsum.photos/1200/800?random=2", "https://picsum.photos/1200/800?random=3", "https://picsum.photos/1200/800?random=4", "https://picsum.photos/1200/800?random=5"],
       etiquetas: [1, 2, 3],
     },
@@ -23,25 +23,25 @@ export const GlobalProvider = ({ children }) => {
       descripcion: "Lindo Departamento en la ciudad de Bogota, con vista a la montaña",
       areaTotal: 30.0,
       ubicacion: "Bogotá, Colombia",
-      estado: "Vendido",
-      imagenes: ["https://picsum.photos/1200/800?random=6", "https://picsum.photos/1200/800?random=7"],
+      estado: "vendido",
+      imagenes: ["src/assets/videoPrueba.mp4", "https://picsum.photos/1200/800?random=6", "https://picsum.photos/1200/800?random=7"],
       etiquetas: [3, 4, 5],
     },
   ]);
 
   const [etiquetas, setEtiquetas] = useState([
-    { id: 1, nombre: "Arriendo" },
-    { id: 2, nombre: "Finca" },
-    { id: 3, nombre: "Colombia" },
-    { id: 4, nombre: "En venta" },
-    { id: 5, nombre: "Apto" },
+    { id: 1, nombre: "Arriendo", tipoEtiqueta: "categoria"},
+    { id: 2, nombre: "Finca", tipoEtiqueta: "propiedad"},
+    { id: 3, nombre: "Colombia", tipoEtiqueta: "categoria" },
+    { id: 4, nombre: "En venta", tipoEtiqueta: "categoria" },
+    { id: 5, nombre: "Apto", tipoEtiqueta: "propiedad" },
   ]);
 
   const [mensajes, setMensajes] = useState([
-    { id: 1, nombreCliente: "Cliente1", apellidoCliente: "Apellido Cliente 1", celular: "311123456", propiedad_id: 1, correo: "correo_ejemplo@gmail.com", detalle: "Hola, este es un ejemplo de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "porLeer" },
-    { id: 2, nombreCliente: "Cliente2", apellidoCliente: "Apellido Cliente 2", celular: "3223456678", propiedad_id: 2,correo: "correo1_ejemplo@gmail.com", detalle: "Buenos días, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "porLeer" },
-    { id: 3, nombreCliente: "Cliente3", apellidoCliente: "Apellido Cliente 3", celular: "33312343122", propiedad_id: null,correo: "correo2_ejemplo@gmail.com", detalle: "Buenas noches, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "realizado" },
-    { id: 1, nombreCliente: "Cliente4", apellidoCliente: "Apellido Cliente 4", celular: "31044323443", propiedad_id: 1, correo: "correo3_ejemplo@gmail.com", detalle: "Hola Hola!!!, Buenas noches, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "realizado" },
+    { id: 1, nombreCliente: "Cliente1", apellidoCliente: "Apellido Cliente 1", celular: "311123456", propiedad_id: 1, correo: "correo_ejemplo@gmail.com", fecha: "2025-04-05 14:30:00", detalle: "Hola, este es un ejemplo de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "porLeer" },
+    { id: 2, nombreCliente: "Cliente2", apellidoCliente: "Apellido Cliente 2", celular: "3223456678", propiedad_id: 2,correo: "correo1_ejemplo@gmail.com", fecha: "2025-04-03 7:30:00", detalle: "Buenos días, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "porLeer" },
+    { id: 3, nombreCliente: "Cliente3", apellidoCliente: "Apellido Cliente 3", celular: "33312343122", propiedad_id: null,correo: "correo2_ejemplo@gmail.com", fecha: "2025-04-05 14:38:00", detalle: "Buenas noches, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "realizado" },
+    { id: 4, nombreCliente: "Cliente4", apellidoCliente: "Apellido Cliente 4", celular: "31044323443", propiedad_id: 1, correo: "correo3_ejemplo@gmail.com", fecha: "2025-03-25 00:45:00", detalle: "Hola Hola!!!, Buenas noches, este es otro ejemplo diferente de un posible mensaje que un cliente puede llegar a enviar, de esta manera, el cliente comunica todas las dudas puntuales respecto a una o varias propiedades, y el admin, de manera fácil y ágil, puede revisar y tener en cuenta las dudas antes de contactarse de vuelta con el cliente, para así tener un mejor orden. EL mensaje puede ser tan extenso como el cliente desee", gestion: "realizado" },
   ]);
 
   const [admin, setAdmin] = useState(null); 
@@ -60,7 +60,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Función para agregar una nueva etiqueta globalmente
-  const agregarNuevaEtiquetaGlobal = (nombreEtiqueta) => {
+  const agregarNuevaEtiquetaGlobal = (nombreEtiqueta, tipoEtiqueta) => {
     // Validar que no exista ya
     if (etiquetas.some(e => e.nombre.toLowerCase() === nombreEtiqueta.toLowerCase())) {
       return { error: "Esta etiqueta ya existe" };
@@ -68,7 +68,7 @@ export const GlobalProvider = ({ children }) => {
 
     // Crear nueva etiqueta con ID único
     const nuevaId = Math.max(...etiquetas.map(e => e.id), 0) + 1;
-    const nuevaEtiqueta = { id: nuevaId, nombre: nombreEtiqueta };
+    const nuevaEtiqueta = { id: nuevaId, nombre: nombreEtiqueta, tipoEtiqueta: tipoEtiqueta };
     
     // Actualizar el estado global
     setEtiquetas(prev => [...prev, nuevaEtiqueta]);
