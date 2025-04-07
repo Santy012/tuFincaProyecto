@@ -3,51 +3,59 @@ import {
   FaComments,
   FaPlus,
   FaRegUser,
-} 
-from "react-icons/fa";
-import { BsHousesFill } from "react-icons/bs";
+} from "react-icons/fa";
+import { BsHousesFill, BsHouseDoorFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ onSectionChange }) => {
+  const navigate = useNavigate(); // Mover useNavigate aquí para usarlo en ambos componentes
+
   return (
     <>
       {/* Navbar lateral para pantallas grandes */}
       <aside className="hidden sm:flex w-64 min-h-screen bg-white shadow-md flex-col p-4">
-        <NavContent onSectionChange={onSectionChange} />
+        <NavContent onSectionChange={onSectionChange} navigate={navigate} />
       </aside>
 
       {/* Navbar inferior para pantallas pequeñas */}
       <nav className="sm:hidden fixed bottom-0 left-0 w-full bg-white shadow-md flex justify-around p-2 border-t z-10">
-        <a
-          href="#"
+        <button
           className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
+          onClick={() => navigate('/')}
         >
-          <FaHome className="text-xl" />
-          <span className="text-xs">Propiedades</span>
-        </a>
-        <a
-          href="#"
+          <BsHouseDoorFill className="text-xl" />
+          <span className="text-xs">Inicio</span>
+        </button>
+        <button
           className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
+          onClick={() => onSectionChange("propiedades")}
+        >
+          <BsHousesFill className="text-xl" />
+          <span className="text-xs">Propiedades</span>
+        </button>
+        <button
+          className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
+          onClick={() => onSectionChange("mensajes")}
         >
           <FaComments className="text-xl" />
           <span className="text-xs">Comentarios</span>
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
           className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
+          onClick={() => onSectionChange("+propiedad")}
         >
           <FaPlus className="text-xl" />
           <span className="text-xs">Agregar</span>
-        </a>
-        
+        </button>
       </nav>
     </>
   );
 };
 
 // Componente reutilizable para el menú de navegación
-const NavContent = ({ onSectionChange }) => {
-  const navItemClass =
-    "flex items-center text-gray-700 cursor-pointer hover:text-emerald-600";
+const NavContent = ({ onSectionChange, navigate }) => {
+  const navItemClass = "flex items-center text-gray-700 cursor-pointer hover:text-emerald-600";
+  
   return (
     <div className="flex flex-col h-full">
       {/* Logo y Título */}
@@ -56,6 +64,14 @@ const NavContent = ({ onSectionChange }) => {
         alt="TuFincaLogo"
         className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 object-contain mx-auto m-5"
       />
+
+      {/* Botón de Inicio */}
+      <button
+        onClick={() => navigate('/')}
+        className={`${navItemClass} mb-4 p-2 rounded-lg hover:bg-gray-100`}
+      >
+        <BsHouseDoorFill className="mr-3" /> Página Principal
+      </button>
 
       {/* Sección Administración */}
       <h2 className="text-lg font-semibold text-gray-700 mb-2">
@@ -90,15 +106,12 @@ const NavContent = ({ onSectionChange }) => {
         Administrar La Cuenta
       </h2>
       <nav className="flex flex-col space-y-4 mb-4">
-        {/* Botón de ver cuenta */}
-
         <button
           onClick={() => onSectionChange("Mi Perfil")}
           className={navItemClass}
         >
           <FaRegUser className="mr-3" /> Mi Perfil
         </button>
-
       </nav>
     </div>
   );

@@ -3,59 +3,132 @@ import { useState, useEffect } from "react";
 const MultimediaForm = ({ propiedadData, handleChange }) => {
   const [archivos, setArchivos] = useState(propiedadData.archivos || []);
 
-  // Manejo de selección de archivos
+  const isVideo = (file) => {
+    if (!file) return false;
+    if (file instanceof File || file instanceof Blob) {
+      return file.type.startsWith("video/");
+    }
+    if (typeof file === 'string') {
+      return file.startsWith('data:video/') || file.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
+    return false;
+  };
+
   const handleFileChange = (e) => {
-    const nuevosArchivos = Array.from(e.target.files);
-    setArchivos((prev) => [...prev, ...nuevosArchivos]);
+    if (e.target.files && e.target.files.length > 0) {
+      const nuevosArchivos = Array.from(e.target.files);
+      setArchivos(prev => [...prev, ...nuevosArchivos]);
+    }
   };
 
-  // Eliminar archivo de la lista
   const removeFile = (index) => {
-    setArchivos((prev) => prev.filter((_, i) => i !== index));
+    setArchivos(prev => {
+      const newFiles = [...prev];
+      if (typeof newFiles[index] !== 'string') {
+        URL.revokeObjectURL(newFiles[index]);
+      }
+      return newFiles.filter((_, i) => i !== index);
+    });
   };
 
-  // Sincronizar cambios en propiedadData
   useEffect(() => {
-    handleChange("archivos", archivos);
+    // Convertir archivos a DataURL para persistencia
+    const processFiles = async () => {
+      const processedFiles = await Promise.all(
+        archivos.map(async file => {
+          if (typeof file === 'string') return file; // Si ya es string (DataURL)
+          
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            if (isVideo(file)) {
+              reader.readAsDataURL(file);
+            } else {
+              reader.readAsDataURL(file);
+            }
+          });
+        })
+      );
+      handleChange("archivos", processedFiles);
+    };
+
+    if (archivos.length > 0) {
+      processFiles();
+    } else {
+      handleChange("archivos", []);
+    }
+
+    return () => {
+      archivos.forEach(file => {
+        if (typeof file !== 'string') {
+          URL.revokeObjectURL(file);
+        }
+      });
+    };
   }, [archivos]);
 
+  const getMediaSource = (file) => {
+    if (typeof file === 'string') return file;
+    return URL.createObjectURL(file);
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold">Sube Imágenes o Videos</h2>
-      <p className="text-gray-600 mt-2">Adjunta archivos para mostrar tu propiedad.</p>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-xl font-semibold">Sube Imágenes o Videos</h2>
+        <p className="text-gray-600 mt-1">Formatos soportados: JPG, PNG, MP4, WEBM</p>
+      </div>
 
-      {/* Input para subir archivos */}
-      <input
-        type="file"
-        accept="image/png, image/jpeg, video/mp4, video/quicktime"
-        multiple
-        onChange={handleFileChange}
-        className="w-full border border-gray-300 px-4 py-2 rounded-md mt-2 cursor-pointer"
-      />
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+        <label className="flex flex-col items-center justify-center cursor-pointer">
+          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          <input
+            type="file"
+            accept="image/*, video/*"
+            multiple
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <span className="mt-2 text-sm font-medium text-gray-700">
+            Haz clic para seleccionar archivos
+          </span>
+        </label>
+      </div>
 
-      {/* Vista previa de archivos */}
       {archivos.length > 0 && (
         <div className="mt-4">
-          <p className="text-gray-700 font-semibold">Vista previa:</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">Vista previa de archivos</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {archivos.map((archivo, index) => (
-              <div key={index} className="relative">
-                {archivo.type.startsWith("image/") ? (
-                  <img
-                    src={URL.createObjectURL(archivo)}
-                    alt="Vista previa"
-                    className="w-full h-32 object-cover rounded-md shadow-md"
-                  />
+              <div key={index} className="relative aspect-square rounded-md overflow-hidden border border-gray-200 group">
+                {isVideo(archivo) ? (
+                  <div className="w-full h-full bg-black flex items-center justify-center">
+                    <video
+                      src={getMediaSource(archivo)}
+                      className="max-w-full max-h-full"
+                      muted
+                      loop
+                    />
+                  </div>
                 ) : (
-                  <video controls className="w-full h-32 rounded-md shadow-md">
-                    <source src={URL.createObjectURL(archivo)} type={archivo.type} />
-                  </video>
+                  <img
+                    src={getMediaSource(archivo)}
+                    alt="Vista previa"
+                    className="w-full h-full object-cover"
+                  />
                 )}
                 <button
-                  onClick={() => removeFile(index)}
-                  className="absolute top-0 cursor-pointer right-1 bg-red-600 text-white text-xs px-2 py-1 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile(index);
+                  }}
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  ✕
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
             ))}

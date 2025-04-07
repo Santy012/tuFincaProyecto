@@ -10,8 +10,19 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
     ? propiedades.find(p => p.id === mensaje.propiedad_id)
     : null;
 
+  // Función para formatear la fecha
+  const formatFecha = (fechaString) => {
+    const fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const handleCardClick = (e) => {
-    // Evitar que el click en el checkbox abra el popup
     if (e.target.type !== 'checkbox') {
       setIsOpen(true);
     }
@@ -54,12 +65,10 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
                   {mensaje.celular}
                 </span>
-                {propiedadRelacionada && (
-                  <span className="flex items-center bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs">
-                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-                    Prop: {propiedadRelacionada.codigo}
-                  </span>
-                )}
+                <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/></svg>
+                  {formatFecha(mensaje.fecha)}
+                </span>
               </div>
             </div>
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -74,11 +83,6 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
           <p className="mt-3 text-gray-600 line-clamp-2">{mensaje.detalle}</p>
           
           <div className="mt-4 flex justify-between items-center">
-            {propiedadRelacionada && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                Relacionado con: {propiedadRelacionada.titulo}
-              </span>
-            )}
             <button className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center">
               Ver completo
               <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"/></svg>

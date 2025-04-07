@@ -8,6 +8,19 @@ const PopUpMensaje = ({ mensaje, onClose, setMensajes, propiedades, onDelete }) 
     ? propiedades.find(p => p.id === mensaje.propiedad_id)
     : null;
 
+  // Función para formatear la fecha más detallada
+  const formatFechaDetallada = (fechaString) => {
+    const fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const toggleEstado = () => {
     setIsProcessing(true);
     setTimeout(() => {
@@ -35,13 +48,11 @@ const PopUpMensaje = ({ mensaje, onClose, setMensajes, propiedades, onDelete }) 
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
                 {mensaje.correo}
               </span>
-              {propiedadRelacionada && (
-                <span className="flex items-center bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-sm">
-                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-                  Propiedad: {propiedadRelacionada.codigo}
-                </span>
-              )}
+              <p className="text-sm text-gray-500 mt-1">
+                Mensaje enviado el: {formatFechaDetallada(mensaje.fecha)}
+              </p>
             </div>
+           
           </div>
           <button 
             onClick={onClose}

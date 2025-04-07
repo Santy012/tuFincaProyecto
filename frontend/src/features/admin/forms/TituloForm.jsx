@@ -3,7 +3,7 @@ import { XCircle } from "lucide-react";
 const TituloForm = ({ propiedadData, handleChange, errors }) => {
   return (
     <div>
-      <h2 className="text-xl font-semibold">Información de Título, Codigo y Descripción</h2>
+      <h2 className="text-xl font-semibold">Información de Título, Código y Descripción</h2>
       <p className="text-gray-600 mt-2">Ingresa los datos básicos de tu propiedad.</p>
 
       <label className="block mt-4 text-gray-700">Título</label>
@@ -21,10 +21,10 @@ const TituloForm = ({ propiedadData, handleChange, errors }) => {
         </p>
       )}
 
-      <label className="block mt-4 text-gray-700">Código</label>
+      <label className="block mt-4 text-gray-700">Código (único)</label>
       <input 
         type="number" 
-        placeholder="Ingresa el código de propiedad..."
+        placeholder="Ingresa el código único de propiedad"
         value={propiedadData.codigo}
         onChange={(e) => {
           const value = e.target.value;

@@ -5,11 +5,13 @@ import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PopUpConfirmar from "./PopUpConfirmar";
 import ConfirmarIdentidad from "../components//ConfirmarIdentidad"; // 
+import { useAuth } from "../../../../context/AuthContext";
 
 const PopUpBorrarPerfil = ({ admin, onCancel }) => {
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleVerifyPassword = (inputPassword) => {
     if (inputPassword === admin.contraseña) {
@@ -22,12 +24,11 @@ const PopUpBorrarPerfil = ({ admin, onCancel }) => {
 
   const handleDelete = async () => {
     setIsDeleting(true);
-
     try {
-      // Aquí llamamos a la API del backend para eliminar el perfil
       // await deleteProfile(admin.id);
-      // TODO: Aquí se debe cerrar la sesión y limpiar el contexto de admin
-      navigate("/login");
+      await logout();
+      // Forzar recarga para limpiar completamente el estado
+      window.location.href = '/login';
     } catch (error) {
       console.error("Error al eliminar el perfil", error);
       setIsDeleting(false);
