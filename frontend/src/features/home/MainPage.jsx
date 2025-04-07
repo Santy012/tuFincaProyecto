@@ -84,7 +84,8 @@ const MainPage = () => {
       <Header rutaLogo="src/assets/TuFincaLogo.jpeg" />
       <PropertyFilters 
         onFilter={handleFilter} 
-        etiquetas={etiquetas} 
+        etiquetas={etiquetas}
+        propiedades={propiedades} 
       />
       <PropertyGrid propiedades={filteredProperties} />
       <Footer />

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useGlobalContext } from "../../../context/GlobalContext";
 import NameFilter from "../subcomponents/Filters/NameFilter";
 import CodeFilter from "../subcomponents/Filters/CodeFilter";
 import FilterButtons from "../subcomponents/Filters/FilterButtons";
@@ -7,14 +6,13 @@ import TagsFilterSection from "../subcomponents/Filters/TagFilterSection";
 import LocationFilter from "../subcomponents/Filters/LocationFilter";
 import PropertyTypeFilter from "../subcomponents/Filters/PropertyTypeFilter";
 
-const PropertyFilters = ({ onFilter }) => {
-  const { etiquetas, propiedades } = useGlobalContext();
+const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
   const [filters, setFilters] = useState({
     nombre: "",
     etiquetas: [],
     codigo: "",
     ubicacion: "",
-    tipoPropiedad: "",
+    tipo: "",
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
@@ -111,7 +109,7 @@ const PropertyFilters = ({ onFilter }) => {
 
           {/* Select para tipo de propiedad */}
           <PropertyTypeFilter
-            value={filters.tipoPropiedad}
+            value={filters.tipo}
             onChange={(value) => handleInputChange("tipoPropiedad", value)}
             options={etiquetasPropiedad}
           />

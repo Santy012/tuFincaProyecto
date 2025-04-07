@@ -22,12 +22,7 @@ public class EtiquetaServiceImpl implements IEtiquetaService {
 
     @Override
     public List<EtiquetaModel> getEtiquetas() {
-        List<EtiquetaModel> Etiquetas = EtiquetaDAO.getEtiquetas();
-
-        System.out.println("Etiquetas encontradas: " + Etiquetas.size());
-        Etiquetas.forEach(p -> System.out.println("Etiqueta: " + p.getNombre()));
-
-        return Etiquetas;
+        return EtiquetaDAO.getEtiquetas();
     }
 
     @Override
