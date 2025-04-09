@@ -76,7 +76,7 @@ const AdminPage = () => {
                 transition={{ duration: 0.4 }}
               >
                 <TituloSeccion titulo={"Mi perfil"} />
-                <PerfilAdminPage/>   
+                <PerfilAdminPage/>
               </motion.section>
             )}
           </AnimatePresence>

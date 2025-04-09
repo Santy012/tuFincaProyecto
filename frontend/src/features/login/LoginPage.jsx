@@ -4,9 +4,14 @@ import { useGlobalContext } from "../../context/GlobalContext";
 import { useEffect } from "react";
 
 const LoginPage = () => {
-    
     const navigate = useNavigate();
-    const { admin, setAdmin, administradores, setAdministradores } = useGlobalContext();
+    const { 
+        admin, 
+        setAdmin, 
+        admins,              // Reemplaza administradores
+        createAdmin,         // Nueva función del contexto
+        loadingAdmins        // Estado de carga
+    } = useGlobalContext();
 
     useEffect(() => {
         if (admin) {
@@ -16,47 +21,60 @@ const LoginPage = () => {
 
     const handleLogin = (credentials) => {
         const { usuario, contrasena } = credentials;
-        const adminEncontrado = administradores.find(
+        const adminEncontrado = admins.find(
             a => a.usuario === usuario && a.contraseña === contrasena
         );
         
         if (adminEncontrado) {
-            console.log("hola, admin encontrado")
             setAdmin(adminEncontrado);
-            navigate('/admin'); // Redirección aquí
+            navigate('/admin');
             return { success: true };
         } else {
             return { success: false, error: "Usuario o contraseña incorrectos" };
         }
     };
     
-    const handleRegister = (newAdminData) => {
-        if (administradores.some(a => a.usuario === newAdminData.usuario)) {
-            return { success: false, error: "Este nombre de usuario ya está en uso" };
+    const handleRegister = async (newAdminData) => {
+        try {
+            // Verificar si el usuario ya existe
+            if (admins.some(a => a.usuario === newAdminData.usuario)) {
+                return { success: false, error: "Este nombre de usuario ya está en uso" };
+            }
+            
+            if (admins.some(a => a.correo === newAdminData.correo)) {
+                return { success: false, error: "Este correo ya está registrado" };
+            }
+            
+            // Crear el nuevo admin usando la API
+            const response = await createAdmin({
+                ...newAdminData,
+                contraseña: newAdminData.contrasena
+            });
+            
+            setAdmin(response);
+            navigate('/admin');
+            
+            return { success: true };
+        } catch (error) {
+            return { 
+                success: false, 
+                error: error.message || "Error al registrar el administrador" 
+            };
         }
-        
-        if (administradores.some(a => a.correo === newAdminData.correo)) {
-            return { success: false, error: "Este correo ya está registrado" };
-        }
-        
-        const nuevoId = Math.max(...administradores.map(a => a.id), 0) + 1;
-        const adminRegistrado = {
-            id: nuevoId,
-            ...newAdminData,
-            contraseña: newAdminData.contrasena
-        };
-        
-        setAdministradores([...administradores, adminRegistrado]);
-        setAdmin(adminRegistrado);
-        navigate('/admin'); // Redirección después de registro exitoso
-        
-        return { success: true };
     };
     
     const handleLogout = () => {
         setAdmin(null);
-        navigate('/login'); // Redirección al logout
+        navigate('/login');
     };
+
+    if (loadingAdmins) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p>Cargando datos de administradores...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -65,7 +83,7 @@ const LoginPage = () => {
                 onRegister={handleRegister} 
                 onLogout={handleLogout}
                 admin={admin} 
-                administradores={administradores}
+                administradores={admins}  // Cambiado a admins
             />
         </div>
     );

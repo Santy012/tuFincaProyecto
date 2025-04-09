@@ -4,7 +4,7 @@ import PopUpPerfil from "./subcomponents/PopUpPerfil";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const PerfilAdminPage = () => {
-  const { admin, setAdmin } = useGlobalContext(); // Ahora dentro de la función
+  const { admin, setAdmin } = useGlobalContext();
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
 
   return (

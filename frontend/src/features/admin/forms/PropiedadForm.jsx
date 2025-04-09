@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import TituloForm from "./TituloForm";
 import UbicacionForm from "./UbicacionForm";
 import EtiquetasEstadoForm from "./EtiquetaEstadoForm";
@@ -17,7 +17,8 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { propiedades, setPropiedades, etiquetas } = useGlobalContext();
+  const { propiedades, etiquetas, admin, crearPropiedad, loadingPropiedades } =
+    useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
     descripcion: "",
@@ -27,7 +28,7 @@ const PropiedadForm = () => {
     etiquetas: [],
     archivos: [],
     areaTotal: "",
-    areaConstruida: ""
+    areaConstruida: "",
   });
   const [errors, setErrors] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
@@ -37,12 +38,12 @@ const PropiedadForm = () => {
     titulo: "Título",
     descripcion: "Descripción",
     codigo: "Código",
-    areaTotal: "Área Total"
+    areaTotal: "Área Total",
   };
 
   const requiredFieldsByStep = {
-    0: ['titulo', 'descripcion', 'codigo'], // TítuloForm
-    1: ['areaTotal'], // UbicacionForm
+    0: ["titulo", "descripcion", "codigo"], // TítuloForm
+    1: ["areaTotal"], // UbicacionForm
     // Los demás pasos no tienen campos requeridos
   };
 
@@ -54,18 +55,31 @@ const PropiedadForm = () => {
     const newErrors = {};
     let hasErrors = false;
 
-    // Validar campos requeridos del paso actual
-    currentRequiredFields.forEach(field => {
-      if (!propiedadData[field] || (typeof propiedadData[field] === 'string' && propiedadData[field].trim() === '')) {
+    currentRequiredFields.forEach((field) => {
+      if (
+        !propiedadData[field] ||
+        (typeof propiedadData[field] === "string" &&
+          propiedadData[field].trim() === "")
+      ) {
         newErrors[field] = `${requiredFields[field]} es requerido`;
         hasErrors = true;
       }
     });
 
-    // Validación especial para el código (solo en paso 0)
-    if (activeStep === 0 && propiedadData.codigo && propiedadData.codigo.trim() !== '') {
+    if (
+      activeStep === 0 &&
+      propiedadData.codigo &&
+      propiedadData.codigo.trim() !== ""
+    ) {
+      // Validar que sea numérico
+      if (isNaN(propiedadData.codigo)) {
+        newErrors.codigo = "El código debe ser un número";
+        hasErrors = true;
+      }
+
+      // Validar que no exista (comparando como número)
       const codigoEnUso = propiedades.some(
-        propiedad => propiedad.codigo === propiedadData.codigo
+        (propiedad) => propiedad.codigo === parseInt(propiedadData.codigo)
       );
       if (codigoEnUso) {
         newErrors.codigo = "Este código ya está en uso por otra propiedad";
@@ -77,13 +91,12 @@ const PropiedadForm = () => {
     }
 
     setErrors(newErrors);
-    setFormValido(!hasErrors && 
-      (activeStep !== 0 || (propiedadData.codigo && propiedadData.codigo.trim() !== '')));
+    setFormValido(!hasErrors);
   }, [propiedadData, propiedades, activeStep]);
 
   const nextStep = () => {
     if (!formValido) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (activeStep < steps.length - 1) setActiveStep(activeStep + 1);
@@ -97,48 +110,74 @@ const PropiedadForm = () => {
     setPropiedadData((prev) => ({ ...prev, [campo]: valor }));
   };
 
-  const guardarPropiedad = () => {
+  const guardarPropiedad = async () => {
     if (Object.keys(errors).length > 0 || codigoExistente) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
-    const etiquetasIds = propiedadData.etiquetas
-      .map(nombre => {
-        const etiqueta = etiquetas.find(e => e.nombre === nombre);
-        return etiqueta ? etiqueta.id : null;
-      })
-      .filter(id => id !== null);
+    try {
+      // Preparar las etiquetas como objetos con id y nombre
+      const etiquetasCompletas = propiedadData.etiquetas
+        .map((nombre) => {
+          const etiqueta = etiquetas.find((e) => e.nombre === nombre);
+          return etiqueta ? { id: etiqueta.id, nombre: etiqueta.nombre } : null;
+        })
+        .filter((etq) => etq !== null);
 
-    const nuevaPropiedad = {
-      ...propiedadData,
-      id: Date.now(),
-      imagenes: propiedadData.archivos,
-      etiquetas: etiquetasIds,
-      areaTotal: parseFloat(propiedadData.areaTotal) || 0,
-      areaConstruida: parseFloat(propiedadData.areaConstruida) || null,
-      estado: propiedadData.estado || "Disponible",
-    };
+      // Preparar los medios (imágenes/videos)
+      const medias = propiedadData.archivos.map((url, index) => ({
+        id: index,
+        url,
+        tipo: url.match(/\.(jpg|jpeg|png|gif)$/i) ? "imagen" : "video",
+      }));
 
-    setPropiedades(prev => [...prev, nuevaPropiedad]);
-    setShowSuccess(true);
-    
-    setTimeout(() => {
-      setActiveStep(0);
-      setPropiedadData({
-        titulo: "",
-        descripcion: "",
-        codigo: "",
-        ubicacion: "",
-        estado: "Disponible",
-        etiquetas: [],
-        archivos: [],
-        areaTotal: "",
-        areaConstruida: ""
+      // Crear el objeto para la API
+      const propiedadParaAPI = {
+        titulo: propiedadData.titulo,
+        codigo: parseInt(propiedadData.codigo) || 0,
+        descripcion: propiedadData.descripcion,
+        areaTotal: parseFloat(propiedadData.areaTotal) || 0,
+        areaConst: parseFloat(propiedadData.areaConstruida) || 0,
+        ubicacion: propiedadData.ubicacion,
+        estado: propiedadData.estado.toLowerCase(),
+        administradorId: admin?.id || 0,  // Solo enviamos el ID
+        etiquetas: etiquetasCompletas,
+        medias: medias,
+        mensajes: [] // Inicialmente vacío
+      };
+
+      // Llamar a la función del contexto
+      await crearPropiedad(propiedadParaAPI);
+
+      // Mostrar mensaje de éxito
+      setShowSuccess(true);
+
+      // Resetear el formulario
+      setTimeout(() => {
+        setActiveStep(0);
+        setPropiedadData({
+          titulo: "",
+          descripcion: "",
+          codigo: "",
+          ubicacion: "",
+          estado: "Disponible",
+          etiquetas: [],
+          archivos: [],
+          areaTotal: "",
+          areaConstruida: "",
+        });
+        setErrors({});
+        setShowSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error al guardar la propiedad:", error);
+      setErrors({
+        general:
+          "Ocurrió un error al guardar la propiedad. Por favor intenta nuevamente.",
       });
-      setErrors({});
-      setShowSuccess(false);
-    }, 3000);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -150,8 +189,8 @@ const PropiedadForm = () => {
             key={index}
             onClick={() => setActiveStep(index)}
             className={`py-2 px-3 rounded-md transition-all ${
-              activeStep === index 
-                ? "bg-blue-800 font-semibold text-white" 
+              activeStep === index
+                ? "bg-blue-800 font-semibold text-white"
                 : "hover:bg-gray-200 font-medium cursor-pointer"
             }`}
           >
@@ -163,36 +202,33 @@ const PropiedadForm = () => {
       {/* Contenido dinámico */}
       <div className="bg-white p-6 mt-4 rounded-lg shadow-md">
         {activeStep === 0 && (
-          <TituloForm 
-            propiedadData={propiedadData} 
+          <TituloForm
+            propiedadData={propiedadData}
             handleChange={handleChange}
             errors={errors}
           />
         )}
         {activeStep === 1 && (
-          <UbicacionForm 
-            propiedadData={propiedadData} 
+          <UbicacionForm
+            propiedadData={propiedadData}
             handleChange={handleChange}
             errors={errors}
           />
         )}
         {activeStep === 2 && (
-          <EtiquetasEstadoForm 
-            propiedadData={propiedadData} 
+          <EtiquetasEstadoForm
+            propiedadData={propiedadData}
             handleChange={handleChange}
           />
         )}
         {activeStep === 3 && (
-          <MultimediaForm 
-            propiedadData={propiedadData} 
+          <MultimediaForm
+            propiedadData={propiedadData}
             handleChange={handleChange}
           />
         )}
         {activeStep === 4 && (
-          <ResumenForm 
-            propiedadData={propiedadData}
-            errors={errors}
-          />
+          <ResumenForm propiedadData={propiedadData} errors={errors} />
         )}
 
         <div className="flex justify-between mt-4">
@@ -210,8 +246,8 @@ const PropiedadForm = () => {
               onClick={nextStep}
               className={`${
                 !formValido || (activeStep === 0 && codigoExistente)
-                  ? 'bg-blue-400 cursor-not-allowed'
-                  : 'bg-blue-800 hover:bg-blue-600 cursor-pointer'
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-800 hover:bg-blue-600 cursor-pointer"
               } text-white px-6 py-3 rounded-md transition-all`}
               disabled={!formValido || (activeStep === 0 && codigoExistente)}
             >
@@ -220,14 +256,40 @@ const PropiedadForm = () => {
           ) : (
             <button
               onClick={guardarPropiedad}
+              disabled={!formValido || codigoExistente || loadingPropiedades}
               className={`${
-                !formValido || codigoExistente
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-green-600 hover:bg-green-500 cursor-pointer'
-              } text-white px-6 py-3 rounded-md transition-all`}
-              disabled={!formValido || codigoExistente}
+                !formValido || codigoExistente || loadingPropiedades
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-500 cursor-pointer"
+              } text-white px-6 py-3 rounded-md transition-all flex items-center justify-center`}
             >
-              Guardar Propiedad
+              {loadingPropiedades ? (
+                <span className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Guardando...
+                </span>
+              ) : (
+                "Guardar Propiedad"
+              )}
             </button>
           )}
         </div>
@@ -240,9 +302,16 @@ const PropiedadForm = () => {
             <CheckCircle className="mr-2" size={24} />
             <div>
               <p className="font-semibold">¡Propiedad guardada!</p>
-              <p className="text-sm">La propiedad se ha agregado correctamente.</p>
+              <p className="text-sm">
+                La propiedad se ha agregado correctamente.
+              </p>
             </div>
           </div>
+        </div>
+      )}
+      {errors.general && (
+        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
+          {errors.general}
         </div>
       )}
     </div>
