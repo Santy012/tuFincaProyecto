@@ -87,7 +87,7 @@ public class MediaController {
                 }
 
                 // Generar nombre único para el archivo
-                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                String fileName = file.getOriginalFilename();
                 String filePath = uploadDirectory + File.separator + fileName;
 
                 // Guardar archivo en sistema

@@ -2,24 +2,7 @@ import Etiqueta from "../../components/etiquetas/Etiqueta";
 
 const PropiedadCard = ({ propiedad, onClick }) => {
   const isVideo = (media) => {
-    if (!media) return false;
-    
-    // Si es un objeto File/Blob
-    if (media instanceof File || media instanceof Blob) {
-      return media.type.startsWith('video/');
-    }
-    
-    // Si es un string (URL o DataURL)
-    if (typeof media === 'string') {
-      // Para DataURLs
-      if (media.startsWith('data:')) {
-        return media.split(';')[0].includes('video');
-      }
-      // Para URLs normales
-      return media.match(/\.(mp4|webm|ogg|mov)$/i);
-    }
-    
-    return false;
+    return media?.tipo === "video";
   };
 
   const getMediaSource = (media) => {
@@ -68,7 +51,7 @@ const PropiedadCard = ({ propiedad, onClick }) => {
         <p className="text-black font-bold text-lg">{propiedad.precio}</p>
         <div className="flex flex-wrap gap-2 mt-3">
           {propiedad.etiquetas?.map((etiqueta, index) => (
-            <Etiqueta key={index} etiqueta={etiqueta}/>
+            <Etiqueta key={index} etiqueta={etiqueta} />
           ))}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../../../context/GlobalContext";
 import { motion } from "framer-motion";
 import { X, Plus } from "lucide-react";
@@ -58,6 +58,16 @@ const PopUpDetalles = ({
       return prev;
     });
   };
+
+  useEffect(() => {
+    if (propiedadSeleccionada) {
+      const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+      const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map((img) =>
+        img.startsWith("/uploads") ? `${baseUrl}${img}` : img
+      );
+      setPropiedad({ ...propiedadSeleccionada, imagenes: imagenesConUrlCompleta });
+    }
+  }, [propiedadSeleccionada]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50 p-4">
