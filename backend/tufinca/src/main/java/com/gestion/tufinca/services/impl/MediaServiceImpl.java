@@ -35,8 +35,8 @@ public class MediaServiceImpl implements IMediaService {
     }
 
     @Override
-    public void saveMedia(MediaModel Media) {
-        MediaDAO.saveMedia(Media);
+    public MediaModel saveMedia(MediaModel Media) {
+        return MediaDAO.saveMedia(Media);
     }
 
     @Override

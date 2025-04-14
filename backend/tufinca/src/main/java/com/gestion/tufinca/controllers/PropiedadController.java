@@ -40,13 +40,14 @@ public class PropiedadController {
         return createPropiedadResponseEntity(propiedadOptional);
     }
 
-    @PostMapping(path="/save")
-    public ResponseEntity<?> savePropiedad(@RequestBody PropiedadDTO propiedadDTO) throws URISyntaxException {
-        if(propiedadDTO.getCodigo() == null){
+    @PostMapping(path = "/save")
+    public ResponseEntity<PropiedadDTO> savePropiedad(@RequestBody PropiedadDTO propiedadDTO) throws URISyntaxException {
+        if (propiedadDTO.getCodigo() == null) {
             return ResponseEntity.badRequest().build();
         }
-        propiedadService.savePropiedad(buildPropiedad(propiedadDTO));
-        return ResponseEntity.created(new URI("api/propiedad/save")).build();
+        PropiedadModel nuevaPropiedad = propiedadService.savePropiedad(buildPropiedad(propiedadDTO));
+        PropiedadDTO propiedadCreadaDTO = buildPropiedadDTO(nuevaPropiedad);
+        return ResponseEntity.created(new URI("/propiedades/save")).body(propiedadCreadaDTO);
     }
 
     @PutMapping(path = "/update/{id}")

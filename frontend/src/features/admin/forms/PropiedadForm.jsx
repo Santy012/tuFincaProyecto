@@ -17,7 +17,7 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { propiedades, etiquetas, admin, crearPropiedad, loadingPropiedades } =
+  const { propiedades, etiquetas, admin, crearPropiedad, loadingPropiedades, reloadPropiedades, uploadMedia } =
     useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
@@ -115,7 +115,7 @@ const PropiedadForm = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-
+  
     try {
       // Preparar las etiquetas como objetos con id y nombre
       const etiquetasCompletas = propiedadData.etiquetas
@@ -124,15 +124,8 @@ const PropiedadForm = () => {
           return etiqueta ? { id: etiqueta.id, nombre: etiqueta.nombre } : null;
         })
         .filter((etq) => etq !== null);
-
-      // Preparar los medios (imágenes/videos)
-      const medias = propiedadData.archivos.map((url, index) => ({
-        id: index,
-        url,
-        tipo: url.match(/\.(jpg|jpeg|png|gif)$/i) ? "imagen" : "video",
-      }));
-
-      // Crear el objeto para la API
+  
+      // Crear el objeto para la API (sin los medios todavía)
       const propiedadParaAPI = {
         titulo: propiedadData.titulo,
         codigo: parseInt(propiedadData.codigo) || 0,
@@ -141,18 +134,40 @@ const PropiedadForm = () => {
         areaConst: parseFloat(propiedadData.areaConstruida) || 0,
         ubicacion: propiedadData.ubicacion,
         estado: propiedadData.estado.toLowerCase(),
-        administradorId: admin?.id || 0,  // Solo enviamos el ID
+        administradorId: admin?.id || 0,
         etiquetas: etiquetasCompletas,
-        medias: medias,
-        mensajes: [] // Inicialmente vacío
+        mensajes: [],
       };
-
-      // Llamar a la función del contexto
-      await crearPropiedad(propiedadParaAPI);
-
+  
+      // 1. Crear la propiedad en el backend
+      const propiedadCreada = await crearPropiedad(propiedadParaAPI);
+  
+      // 2. Subir los archivos multimedia si existen
+      if (propiedadData.archivos.length > 0 && propiedadCreada?.id) {
+        try {
+          // Llamar a la API para subir los archivos
+          await uploadMedia(propiedadData.archivos, propiedadCreada.id);
+          console.log("Archivos subidos:", propiedadData.archivos);
+          console.log("ID de la propiedad creada:", propiedadCreada?.id);
+  
+          // Opcional: Recargar las propiedades para reflejar los cambios
+          await reloadPropiedades();
+        } catch (uploadError) {
+          console.error("Error al subir archivos:", uploadError);
+          setErrors({
+            general:
+              "La propiedad se creó, pero hubo un error al subir algunos archivos. Puedes editarla para volver a intentarlo.",
+          });
+        }
+      }else{
+        // Si no hay archivos, simplemente recargamos las propiedades
+        console.log(propiedadData.archivos.length)
+        await reloadPropiedades();
+      }
+  
       // Mostrar mensaje de éxito
       setShowSuccess(true);
-
+  
       // Resetear el formulario
       setTimeout(() => {
         setActiveStep(0);
@@ -179,7 +194,7 @@ const PropiedadForm = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
+  
   return (
     <div className="max-w-6xl mx-auto p-6">
       {/* Barra de navegación */}

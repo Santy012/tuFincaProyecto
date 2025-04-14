@@ -38,8 +38,8 @@ public class PropiedadServiceImpl implements IPropiedadService {
     }
 
     @Override
-    public void savePropiedad(PropiedadModel propiedad) {
-        propiedadDAO.savePropiedad(propiedad);
+    public PropiedadModel savePropiedad(PropiedadModel propiedad) {
+        return propiedadDAO.savePropiedad(propiedad);
     }
 
     @Override

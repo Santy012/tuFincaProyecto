@@ -9,7 +9,7 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
       return file.type.startsWith("video/");
     }
     if (typeof file === 'string') {
-      return file.startsWith('data:video/') || file.match(/\.(mp4|webm|ogg|mov)$/i);
+      return file.match(/\.(mp4|webm|ogg|mov)$/i);
     }
     return false;
   };
@@ -24,7 +24,8 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
   const removeFile = (index) => {
     setArchivos(prev => {
       const newFiles = [...prev];
-      if (typeof newFiles[index] !== 'string') {
+      // Solo revocar URL si es una URL de objeto, no un File
+      if (typeof newFiles[index] === 'string') {
         URL.revokeObjectURL(newFiles[index]);
       }
       return newFiles.filter((_, i) => i !== index);
@@ -32,35 +33,13 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
   };
 
   useEffect(() => {
-    // Convertir archivos a DataURL para persistencia
-    const processFiles = async () => {
-      const processedFiles = await Promise.all(
-        archivos.map(async file => {
-          if (typeof file === 'string') return file; // Si ya es string (DataURL)
-          
-          return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            if (isVideo(file)) {
-              reader.readAsDataURL(file);
-            } else {
-              reader.readAsDataURL(file);
-            }
-          });
-        })
-      );
-      handleChange("archivos", processedFiles);
-    };
+    // Actualizar el estado del padre con los archivos originales (File objects)
+    handleChange("archivos", archivos);
 
-    if (archivos.length > 0) {
-      processFiles();
-    } else {
-      handleChange("archivos", []);
-    }
-
+    // Limpieza: revocar URLs de objetos
     return () => {
       archivos.forEach(file => {
-        if (typeof file !== 'string') {
+        if (typeof file === 'string') {
           URL.revokeObjectURL(file);
         }
       });
@@ -68,8 +47,14 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
   }, [archivos]);
 
   const getMediaSource = (file) => {
-    if (typeof file === 'string') return file;
-    return URL.createObjectURL(file);
+    if (typeof file === 'string') {
+      // Si es un string (ya procesado anteriormente)
+      return file;
+    } else if (file instanceof File || file instanceof Blob) {
+      // Si es un File object, crear URL temporal para vista previa
+      return URL.createObjectURL(file);
+    }
+    return '';
   };
 
   return (

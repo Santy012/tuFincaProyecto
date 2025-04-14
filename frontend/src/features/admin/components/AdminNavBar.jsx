@@ -6,6 +6,7 @@ import {
 } from "react-icons/fa";
 import { BsHousesFill, BsHouseDoorFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import logo from '../../../assets/imgs/TuFincaLogo.jpeg';
 
 const Navbar = ({ onSectionChange }) => {
   const navigate = useNavigate(); // Mover useNavigate aquí para usarlo en ambos componentes
@@ -60,7 +61,7 @@ const NavContent = ({ onSectionChange, navigate }) => {
     <div className="flex flex-col h-full">
       {/* Logo y Título */}
       <img
-        src="src/assets/TuFincaLogo.jpeg"
+        src={logo}
         alt="TuFincaLogo"
         className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 object-contain mx-auto m-5"
       />

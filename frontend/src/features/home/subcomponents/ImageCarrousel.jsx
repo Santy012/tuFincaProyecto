@@ -2,7 +2,10 @@ import { useState } from 'react';
 
 const ImageCarrousel = ({ propiedad, fullSize = false, className = '' }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = propiedad.imagenes || ["https://via.placeholder.com/300x200"];
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+const images = propiedad.imagenes?.map((img) =>
+  img.startsWith("/uploads") ? `${baseUrl}${img}` : img
+) || ["https://picsum.photos/1200/800?random=10"];
   const hasMultipleImages = images.length > 1;
 
   const nextImage = (e) => {
@@ -37,7 +40,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '' }) => {
         alt={propiedad.titulo || "Propiedad"}
         className={imageClass}
         onError={(e) => {
-          e.target.src = "https://via.placeholder.com/800x500";
+          e.target.src = "https://picsum.photos/1200/800?random=10";
         }}
       />
 

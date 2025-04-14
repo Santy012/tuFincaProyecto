@@ -31,8 +31,8 @@ public class MediaDAOImpl implements IMediaDAO {
     }
 
     @Override
-    public void saveMedia(MediaModel media) {
-        mediaRepository.save(media);
+    public MediaModel saveMedia(MediaModel media) {
+        return mediaRepository.save(media);
     }
 
     @Override

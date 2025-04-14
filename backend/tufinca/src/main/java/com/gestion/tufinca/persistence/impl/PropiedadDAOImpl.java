@@ -1,5 +1,6 @@
 package com.gestion.tufinca.persistence.impl;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
@@ -33,8 +34,8 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     }
 
     @Override
-    public void savePropiedad(PropiedadModel propiedad) {
-        propiedadRepository.save(propiedad);
+    public PropiedadModel savePropiedad(PropiedadModel propiedad) {
+        return propiedadRepository.save(propiedad);
     }
 
     @Override

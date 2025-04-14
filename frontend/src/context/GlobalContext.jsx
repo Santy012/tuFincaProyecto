@@ -55,6 +55,7 @@ export const GlobalProvider = ({ children }) => {
         //Medias
         medias: medias.medias,
         setMedias: medias.setMedias,
+        uploadMedia: medias.uploadMedia,
         fetchAllMedia: medias.fetchAllMedia,
         fetchMediaById: medias.fetchMediaById,
         createMedia: medias.createMedia,

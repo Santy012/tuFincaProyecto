@@ -23,7 +23,10 @@ const PropiedadCard = ({ propiedad, onClick }) => {
   };
 
   const getMediaSource = (media) => {
-    if (typeof media === 'string') return media;
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+    if (typeof media === "string") {
+      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
+    }
     return URL.createObjectURL(media);
   };
 

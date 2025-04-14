@@ -4,7 +4,8 @@ import {
   saveMedia,
   getMedia,
   getAllMedia,
-  deleteMedia
+  deleteMedia,
+  uploadMedia as uploadMediaAPI
 } from '../api/medias';
 
 export const useMedias = () => {
@@ -42,6 +43,21 @@ export const useMedias = () => {
     });
   };
 
+  const uploadMedia = async (files, propiedadId) => {
+    return asyncHandler.execute(async () => {
+      const response = await uploadMediaAPI(files, propiedadId);
+      console.log("Medias subidas:", response); // Depuración
+  
+      // Verifica si la respuesta es un array
+      if (!Array.isArray(response)) {
+        throw new Error("La respuesta del backend no es un array");
+      }
+  
+      setMedias((prev) => [...prev, ...response]); // Agregar las medias subidas al estado
+      return response;
+    });
+  };
+
   useEffect(() => {
     fetchAllMedia();
   }, []);
@@ -49,6 +65,7 @@ export const useMedias = () => {
   return {
     medias,
     setMedias,
+    uploadMedia,
     fetchAllMedia,
     fetchMediaById,
     createMedia,

@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import ConfirmarIdentidad from "../../admin/perfil/components/ConfirmarIdentidad";
 
-const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) => {
+const LoginForm = ({
+  onLogin,
+  onRegister,
+  onLogout,
+  admin,
+  administradores,
+}) => {
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
@@ -11,7 +17,7 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
     nombre: "",
     usuario: "",
     correo: "",
-    contrasena: ""
+    contrasena: "",
   });
   const [errorCorreo, setErrorCorreo] = useState("");
 
@@ -26,8 +32,8 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
 
   const handleChangeCorreo = (e) => {
     const valor = e.target.value;
-    setNuevoAdmin({...nuevoAdmin, correo: valor});
-    
+    setNuevoAdmin({ ...nuevoAdmin, correo: valor });
+
     if (valor && !isValidEmail(valor)) {
       setErrorCorreo("Ingresa un correo válido (ejemplo@dominio.com)");
     } else {
@@ -51,14 +57,14 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
       nombre: "",
       usuario: "",
       correo: "",
-      contrasena: ""
+      contrasena: "",
     });
   };
 
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     setError("");
-    
+
     if (!usuario || !contrasena) {
       setError("Por favor ingresa usuario y contraseña");
       return;
@@ -73,9 +79,14 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
     setError("");
-    
+
     // Validar campos vacíos
-    if (!nuevoAdmin.nombre || !nuevoAdmin.usuario || !nuevoAdmin.correo || !nuevoAdmin.contrasena) {
+    if (
+      !nuevoAdmin.nombre ||
+      !nuevoAdmin.usuario ||
+      !nuevoAdmin.correo ||
+      !nuevoAdmin.contrasena
+    ) {
       setError("Por favor completa todos los campos");
       return;
     }
@@ -87,13 +98,13 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
     }
 
     // Verificar si el usuario ya existe
-    if (administradores.some(a => a.usuario === nuevoAdmin.usuario)) {
+    if (administradores.some((a) => a.usuario === nuevoAdmin.usuario)) {
       setError("Este nombre de usuario ya está en uso");
       return;
     }
 
     // Verificar si el correo ya existe
-    if (administradores.some(a => a.correo === nuevoAdmin.correo)) {
+    if (administradores.some((a) => a.correo === nuevoAdmin.correo)) {
       setError("Este correo electrónico ya está registrado");
       return;
     }
@@ -110,7 +121,9 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
   };
 
   const confirmarRegistro = async (password) => {
-    const adminVerificador = administradores.find(a => a.contraseña === password);
+    const adminVerificador = administradores.find(
+      (a) => a.contraseña === password
+    );
     if (!adminVerificador) {
       return "Contraseña de verificación incorrecta";
     }
@@ -123,7 +136,7 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
         nombre: "",
         usuario: "",
         correo: "",
-        contrasena: ""
+        contrasena: "",
       });
       return null;
     } else {
@@ -133,7 +146,7 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
 
   if (mostrarConfirmacion) {
     return (
-      <ConfirmarIdentidad 
+      <ConfirmarIdentidad
         onVerify={confirmarRegistro}
         onCancel={() => {
           setMostrarConfirmacion(false);
@@ -148,7 +161,7 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
       <div className="flex justify-center mb-2">
         <div className="w-16 h-1 bg-gray-200 rounded-full"></div>
       </div>
-      
+
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
         {mostrarRegistro ? "Registro de Administrador" : "Inicio de Sesión"}
       </h2>
@@ -162,29 +175,39 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
       {mostrarRegistro ? (
         <form onSubmit={handleSubmitRegister} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre completo
+            </label>
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              value={nuevoAdmin.nombre}
-              onChange={(e) => setNuevoAdmin({...nuevoAdmin, nombre: e.target.value})}
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
               placeholder="Ej: Juan Pérez"
               required
+              autoComplete="name"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de usuario</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre de usuario
+            </label>
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={nuevoAdmin.usuario}
-              onChange={(e) => setNuevoAdmin({...nuevoAdmin, usuario: e.target.value})}
+              onChange={(e) =>
+                setNuevoAdmin({ ...nuevoAdmin, usuario: e.target.value })
+              }
               placeholder="Ej: juanperez"
+              autoComplete="username"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Correo electrónico
+            </label>
             <input
               type="email"
               className={`w-full px-4 py-2 border ${
@@ -193,22 +216,30 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
               value={nuevoAdmin.correo}
               onChange={handleChangeCorreo}
               placeholder="Ej: juan@email.com"
+              autoComplete="email"
               required
             />
             {errorCorreo && (
-              <p className="text-red-500 text-sm mt-1 animate-fadeIn">{errorCorreo}</p>
+              <p className="text-red-500 text-sm mt-1 animate-fadeIn">
+                {errorCorreo}
+              </p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contraseña
+            </label>
             <input
               type="password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={nuevoAdmin.contrasena}
-              onChange={(e) => setNuevoAdmin({...nuevoAdmin, contrasena: e.target.value})}
+              onChange={(e) =>
+                setNuevoAdmin({ ...nuevoAdmin, contrasena: e.target.value })
+              }
               placeholder="••••••••"
               required
               minLength="6"
+              autoComplete="new-password"
             />
           </div>
           <div className="flex space-x-4 pt-2">
@@ -235,9 +266,12 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
       ) : (
         <form onSubmit={handleSubmitLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Usuario
+            </label>
             <input
               type="text"
+              autoComplete="username"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
@@ -246,7 +280,9 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contraseña
+            </label>
             <input
               type="password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -254,6 +290,7 @@ const LoginForm = ({ onLogin, onRegister, onLogout, admin, administradores }) =>
               onChange={(e) => setContrasena(e.target.value)}
               placeholder="••••••••"
               required
+              autoComplete="current-password"
             />
           </div>
           <div className="flex space-x-4 pt-2">

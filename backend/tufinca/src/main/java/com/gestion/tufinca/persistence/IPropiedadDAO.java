@@ -24,7 +24,7 @@ public interface IPropiedadDAO {
 
     Optional<PropiedadModel> getPropiedadById(Integer id);
 
-    void savePropiedad(PropiedadModel propiedad);
+    PropiedadModel savePropiedad(PropiedadModel propiedad);
 
     void deletePropiedadById(Integer id);
 

@@ -9,7 +9,7 @@ public interface IMediaService {
 
     Optional<MediaModel> getMediaById(Integer id);
 
-    void saveMedia(MediaModel Media);
+    MediaModel saveMedia(MediaModel media);
 
     void deleteMediaById(Integer id);
 }
