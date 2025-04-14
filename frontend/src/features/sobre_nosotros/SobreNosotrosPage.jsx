@@ -14,7 +14,7 @@ const SobreNosotrosPage = () => {
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Sobre Tu Finca Inmobiliaria</h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto">
-              Más de una década brindando seguridad jurídica y soluciones inmobiliarias integrales en Guatavita y sus alrededores
+              Brindando seguridad jurídica y soluciones inmobiliarias integrales en Guatavita y sus alrededores
             </p>
           </div>
         </div>
@@ -25,7 +25,7 @@ const SobreNosotrosPage = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Nuestra Historia</h2>
             <div className="h-1 w-20 bg-blue-600 mx-auto mb-8"></div>
             <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-              Fundada en 2010, Tu Finca Inmobiliaria nació con el propósito de transformar el mercado inmobiliario regional,
+              Fundada en 2022, Tu Finca Inmobiliaria nació con el propósito de transformar el mercado inmobiliario regional,
               combinando expertise legal con un profundo conocimiento del territorio. Lo que comenzó como un pequeño despacho
               especializado en regularización de propiedades, hoy es un referente en transacciones seguras y desarrollo
               inmobiliario en Guatavita. Nuestro crecimiento se ha basado en la confianza de cientos de clientes que han
