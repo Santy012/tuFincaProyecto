@@ -16,7 +16,7 @@ export const getAllMedia = async () => {
 };
 
 export const deleteMedia = async (id) => {
-  const response = await apiClient.delete(`/media/delete/${id}`);
+  const response = await apiClient.delete(`/media/${id}`);
   return response;
 };
 

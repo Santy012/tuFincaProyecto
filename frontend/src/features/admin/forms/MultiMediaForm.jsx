@@ -8,8 +8,11 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
     if (file instanceof File || file instanceof Blob) {
       return file.type.startsWith("video/");
     }
-    if (typeof file === 'string') {
+    if (typeof file === "string") {
       return file.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
+    if (file.url) {
+      return file.tipo === "video";
     }
     return false;
   };
@@ -17,44 +20,30 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const nuevosArchivos = Array.from(e.target.files);
-      setArchivos(prev => [...prev, ...nuevosArchivos]);
+      setArchivos((prev) => [...prev, ...nuevosArchivos]);
     }
   };
 
   const removeFile = (index) => {
-    setArchivos(prev => {
-      const newFiles = [...prev];
-      // Solo revocar URL si es una URL de objeto, no un File
-      if (typeof newFiles[index] === 'string') {
-        URL.revokeObjectURL(newFiles[index]);
-      }
-      return newFiles.filter((_, i) => i !== index);
-    });
+    setArchivos((prev) => prev.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
-    // Actualizar el estado del padre con los archivos originales (File objects)
+    // Actualizar el estado del padre con los archivos
     handleChange("archivos", archivos);
-
-    // Limpieza: revocar URLs de objetos
-    return () => {
-      archivos.forEach(file => {
-        if (typeof file === 'string') {
-          URL.revokeObjectURL(file);
-        }
-      });
-    };
   }, [archivos]);
 
   const getMediaSource = (file) => {
-    if (typeof file === 'string') {
-      // Si es un string (ya procesado anteriormente)
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+
+    if (typeof file === "string") {
       return file;
     } else if (file instanceof File || file instanceof Blob) {
-      // Si es un File object, crear URL temporal para vista previa
       return URL.createObjectURL(file);
+    } else if (file.url) {
+      return file.url.startsWith("/uploads") ? `${baseUrl}${file.url}` : file.url;
     }
-    return '';
+    return "";
   };
 
   return (
@@ -66,8 +55,19 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
 
       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
         <label className="flex flex-col items-center justify-center cursor-pointer">
-          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          <svg
+            className="w-12 h-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            ></path>
           </svg>
           <input
             type="file"
@@ -87,7 +87,10 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
           <h3 className="text-sm font-medium text-gray-700 mb-2">Vista previa de archivos</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {archivos.map((archivo, index) => (
-              <div key={index} className="relative aspect-square rounded-md overflow-hidden border border-gray-200 group">
+              <div
+                key={index}
+                className="relative aspect-square rounded-md overflow-hidden border border-gray-200 group"
+              >
                 {isVideo(archivo) ? (
                   <div className="w-full h-full bg-black flex items-center justify-center">
                     <video
@@ -111,8 +114,18 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
                   }}
                   className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>

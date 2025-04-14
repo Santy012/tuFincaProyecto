@@ -17,8 +17,15 @@ const steps = [
 
 const PropiedadForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { propiedades, etiquetas, admin, crearPropiedad, loadingPropiedades, reloadPropiedades, uploadMedia } =
-    useGlobalContext();
+  const {
+    propiedades,
+    etiquetas,
+    admin,
+    crearPropiedad,
+    loadingPropiedades,
+    reloadPropiedades,
+    uploadMedia,
+  } = useGlobalContext();
   const [propiedadData, setPropiedadData] = useState({
     titulo: "",
     descripcion: "",
@@ -71,7 +78,6 @@ const PropiedadForm = () => {
       propiedadData.codigo &&
       propiedadData.codigo.trim() !== ""
     ) {
-
       // Validar que no exista (comparando como número)
       const codigoEnUso = propiedades.some(
         (propiedad) => propiedad.codigo === propiedadData.codigo
@@ -110,17 +116,24 @@ const PropiedadForm = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-  
+
     try {
-      // Preparar las etiquetas como objetos con id y nombre
+
+      if (!admin?.id) {
+        setErrors({
+          general:
+            "No se puede crear la propiedad porque no se ha identificado un administrador.",
+        });
+        return;
+      }
+
       const etiquetasCompletas = propiedadData.etiquetas
         .map((nombre) => {
           const etiqueta = etiquetas.find((e) => e.nombre === nombre);
           return etiqueta ? { id: etiqueta.id, nombre: etiqueta.nombre } : null;
         })
         .filter((etq) => etq !== null);
-  
-      // Crear el objeto para la API (sin los medios todavía)
+
       const propiedadParaAPI = {
         titulo: propiedadData.titulo,
         codigo: propiedadData.codigo,
@@ -129,41 +142,25 @@ const PropiedadForm = () => {
         areaConst: parseFloat(propiedadData.areaConstruida) || 0,
         ubicacion: propiedadData.ubicacion,
         estado: propiedadData.estado.toLowerCase(),
-        administradorId: admin?.id || 0,
+        administrador: admin,
         etiquetas: etiquetasCompletas,
         mensajes: [],
       };
-  
-      // 1. Crear la propiedad en el backend
+
       const propiedadCreada = await crearPropiedad(propiedadParaAPI);
-  
-      // 2. Subir los archivos multimedia si existen
+
       if (propiedadData.archivos.length > 0 && propiedadCreada?.id) {
-        try {
-          // Llamar a la API para subir los archivos
-          await uploadMedia(propiedadData.archivos, propiedadCreada.id);
-          console.log("Archivos subidos:", propiedadData.archivos);
-          console.log("ID de la propiedad creada:", propiedadCreada?.id);
-  
-          // Opcional: Recargar las propiedades para reflejar los cambios
-          await reloadPropiedades();
-        } catch (uploadError) {
-          console.error("Error al subir archivos:", uploadError);
-          setErrors({
-            general:
-              "La propiedad se creó, pero hubo un error al subir algunos archivos. Puedes editarla para volver a intentarlo.",
-          });
-        }
-      }else{
-        // Si no hay archivos, simplemente recargamos las propiedades
-        console.log(propiedadData.archivos.length)
-        await reloadPropiedades();
+        await uploadMedia(propiedadData.archivos, propiedadCreada.id);
+        const propiedadActualizada = await reloadPropiedades(
+          propiedadCreada.id
+        );
+        setPropiedadData((prev) => ({
+          ...prev,
+          archivos: propiedadActualizada.medias,
+        }));
       }
-  
-      // Mostrar mensaje de éxito
+
       setShowSuccess(true);
-  
-      // Resetear el formulario
       setTimeout(() => {
         setActiveStep(0);
         setPropiedadData({
@@ -189,7 +186,7 @@ const PropiedadForm = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-  
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       {/* Barra de navegación */}

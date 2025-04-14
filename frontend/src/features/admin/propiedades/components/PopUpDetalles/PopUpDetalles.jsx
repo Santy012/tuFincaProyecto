@@ -29,10 +29,9 @@ const PopUpDetalles = ({
 
   const agregarMedia = (archivo) => {
     if (archivo) {
-      // Guardamos el archivo completo en el estado, no solo el DataURL
       setPropiedad((prev) => ({
         ...prev,
-        imagenes: [...prev.imagenes, archivo],
+        imagenes: [...prev.imagenes, archivo], // Agrega el objeto completo
       }));
     }
   };
@@ -47,7 +46,6 @@ const PopUpDetalles = ({
 
   const eliminarEtiqueta = (nombreEtiqueta) => {
     setPropiedad((prev) => {
-      // Encuentra el ID de la etiqueta por su nombre
       const etiquetaObj = etiquetas.find((e) => e.nombre === nombreEtiqueta);
       if (etiquetaObj) {
         return {
@@ -62,9 +60,10 @@ const PopUpDetalles = ({
   useEffect(() => {
     if (propiedadSeleccionada) {
       const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-      const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map((img) =>
-        img.startsWith("/uploads") ? `${baseUrl}${img}` : img
-      );
+      const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map((img) => ({
+        ...img, // Mantén los demás campos del objeto
+        url: img.url.startsWith("/uploads") ? `${baseUrl}${img.url}` : img.url, // Actualiza solo la URL
+      }));
       setPropiedad({ ...propiedadSeleccionada, imagenes: imagenesConUrlCompleta });
     }
   }, [propiedadSeleccionada]);
@@ -177,7 +176,7 @@ const PopUpDetalles = ({
           type="textarea"
         />
 
-        {/* Sección de etiquetas mejorada */}
+        {/* Sección de etiquetas */}
         <div className="mt-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-sm font-semibold">Etiquetas:</h3>
@@ -219,6 +218,7 @@ const PopUpDetalles = ({
           onClose={() => setMostrarGaleria(false)}
           onAddImage={agregarMedia}
           onRemoveImage={handleRemoveImage}
+          propiedadSeleccionada={propiedadSeleccionada}
         />
       )}
 

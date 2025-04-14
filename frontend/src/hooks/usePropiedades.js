@@ -21,9 +21,9 @@ export const usePropiedades = () => {
     areaConstruida: prop?.areaConst || 0,
     ubicacion: prop?.ubicacion || "Desconocida",
     estado: prop?.estado?.toLowerCase() || "desconocido",
-    imagenes: prop?.medias?.filter(m => m?.tipo === 'imagen').map(m => m?.url || "") || [],
-    etiquetas: prop?.etiquetas?.map(e => e?.id || 0) || [],
-    administrador: prop?.administrador || null
+    imagenes: prop?.medias?.filter((m) => m?.tipo === "imagen") || [], // Guarda los objetos completos
+    etiquetas: prop?.etiquetas?.map((e) => e?.id || 0) || [],
+    administradorId: prop?.administrador?.id || null, // Extrae el ID del administrador
   });
 
   // Cargar propiedades iniciales

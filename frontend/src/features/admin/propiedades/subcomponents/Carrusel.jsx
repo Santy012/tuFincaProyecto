@@ -23,8 +23,25 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
   };
 
   const getMediaSource = (media) => {
-    if (typeof media === 'string') return media;
-    return URL.createObjectURL(media);
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+
+    if (typeof media === "string") {
+      // Si es una URL relativa, prepéndele el dominio base
+      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
+    }
+
+    if (media instanceof File || media instanceof Blob) {
+      // Si es un objeto File o Blob, usa URL.createObjectURL
+      return URL.createObjectURL(media);
+    }
+
+    if (typeof media === "object" && media.url) {
+      // Si es un objeto con un campo `url`, construye la URL
+      return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;
+    }
+
+    console.error("Tipo de media no válido:", media);
+    return null;
   };
 
   const handleClick = () => {
@@ -87,7 +104,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
           exit={{ x: -direccion * 300, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          {isVideo(currentMedia) ? (
+          {currentMedia && isVideo(currentMedia) ? (
             <div className="w-full h-full flex items-center justify-center bg-gray-900">
               <video
                 src={getMediaSource(currentMedia)}
@@ -98,12 +115,16 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
                 muted
               />
             </div>
-          ) : (
+          ) : currentMedia ? (
             <img
               src={getMediaSource(currentMedia)}
               alt={propiedadSeleccionada.titulo || "Imagen de la propiedad"}
               className="w-full h-full object-cover"
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <p className="text-gray-500">Media no disponible</p>
+            </div>
           )}
         </motion.div>
       </AnimatePresence>

@@ -7,13 +7,16 @@ const PropiedadCard = ({ propiedad, onClick }) => {
 
   const getMediaSource = (media) => {
     const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-    if (typeof media === "string") {
-      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
+
+    if (media?.url) {
+      return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;
     }
-    return URL.createObjectURL(media);
+
+    console.error("Media no tiene una URL válida:", media);
+    return null;
   };
 
-  const firstMedia = propiedad.imagenes?.[0];
+  const firstMedia = propiedad.imagenes?.[0]; // Ahora es un objeto completo
 
   return (
     <div

@@ -22,46 +22,38 @@ const LoginPage = () => {
     const handleLogin = (credentials) => {
         const { usuario, contrasena } = credentials;
         const adminEncontrado = admins.find(
-            a => a.usuario === usuario && a.contraseña === contrasena
+          (a) => a.usuario === usuario && a.contraseña === contrasena
         );
-        
+      
         if (adminEncontrado) {
-            setAdmin(adminEncontrado);
-            navigate('/admin');
-            return { success: true };
+          setAdmin(adminEncontrado);
+          localStorage.setItem("admin", JSON.stringify(adminEncontrado)); // Guardar en localStorage
+          navigate("/admin");
+          return { success: true };
         } else {
-            return { success: false, error: "Usuario o contraseña incorrectos" };
+          return { success: false, error: "Usuario o contraseña incorrectos" };
         }
-    };
+      };
     
-    const handleRegister = async (newAdminData) => {
+      const handleRegister = async (newAdminData) => {
         try {
-            // Verificar si el usuario ya existe
-            if (admins.some(a => a.usuario === newAdminData.usuario)) {
-                return { success: false, error: "Este nombre de usuario ya está en uso" };
-            }
-            
-            if (admins.some(a => a.correo === newAdminData.correo)) {
-                return { success: false, error: "Este correo ya está registrado" };
-            }
-            
-            // Crear el nuevo admin usando la API
-            const response = await createAdmin({
-                ...newAdminData,
-                contraseña: newAdminData.contrasena
-            });
-            
-            setAdmin(response);
-            navigate('/admin');
-            
-            return { success: true };
+          const response = await createAdmin({
+            ...newAdminData,
+            contraseña: newAdminData.contrasena,
+          });
+      
+          setAdmin(response);
+          localStorage.setItem("admin", JSON.stringify(response)); // Guardar en localStorage
+          navigate("/admin");
+      
+          return { success: true };
         } catch (error) {
-            return { 
-                success: false, 
-                error: error.message || "Error al registrar el administrador" 
-            };
+          return {
+            success: false,
+            error: error.message || "Error al registrar el administrador",
+          };
         }
-    };
+      };
     
     const handleLogout = () => {
         setAdmin(null);

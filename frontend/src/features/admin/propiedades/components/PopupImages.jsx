@@ -1,33 +1,82 @@
 import { motion } from "framer-motion";
 import { X, Plus } from "lucide-react";
+import { useGlobalContext } from "../../../../context/GlobalContext";
+import { useState, useEffect } from "react";
 
-const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
+const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSeleccionada }) => {
+  const { uploadMedia, deleteMedia } = useGlobalContext();
+  const [localImages, setLocalImages] = useState(imagenes); // Estado local para manejar las imágenes
+
+  useEffect(() => {
+    setLocalImages(imagenes); // Sincroniza el estado local con las imágenes recibidas como prop
+  }, [imagenes]);
+
   const isVideo = (file) => {
     if (!file) return false;
-    
-    // Si es un objeto File/Blob
+
     if (file instanceof File || file instanceof Blob) {
-      return file.type.includes('video');
+      return file.type.includes("video");
     }
-    
-    // Si es un string (DataURL o URL normal)
-    if (typeof file === 'string') {
-      // Para DataURLs, verificamos el tipo MIME
-      if (file.startsWith('data:')) {
-        return file.split(';')[0].includes('video');
+
+    if (typeof file === "string") {
+      if (file.startsWith("data:")) {
+        return file.split(";")[0].includes("video");
       }
-      // Para URLs normales, verificamos la extensión
       return file.match(/\.(mp4|webm|ogg|mov)$/i);
     }
-    
+
     return false;
   };
 
   const getMediaSource = (media) => {
-    if (typeof media === 'string') {
-      return media;
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+
+    if (typeof media === "string") {
+      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
     }
-    return URL.createObjectURL(media);
+
+    if (media instanceof File || media instanceof Blob) {
+      return URL.createObjectURL(media);
+    }
+
+    if (typeof media === "object" && media.url) {
+      return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;
+    }
+
+    console.error("Tipo de media no válido:", media);
+    return null;
+  };
+
+  const handleAddImage = async (archivo) => {
+    if (archivo instanceof File || archivo instanceof Blob) {
+      try {
+        const propiedadId = propiedadSeleccionada.id;
+        const response = await uploadMedia([archivo], propiedadId);
+
+        setLocalImages((prev) => [...prev, response[0]]); // Actualiza el estado local
+        onAddImage(response[0]); // Propaga el cambio al componente padre
+      } catch (error) {
+        console.error("Error al subir el archivo:", error);
+        alert("Hubo un error al subir el archivo. Por favor, inténtalo de nuevo.");
+      }
+    } else {
+      console.error("Archivo no válido:", archivo);
+    }
+  };
+
+  const handleDeleteImage = async (mediaId, index) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta imagen?");
+    if (!confirmDelete) return;
+
+    try {
+      await deleteMedia(mediaId); // Llama a la función para eliminar la media en el backend
+      setLocalImages((prev) => prev.filter((_, i) => i !== index)); // Actualiza el estado local
+      onRemoveImage(index); // Propaga el cambio al componente padre
+      alert("Imagen eliminada exitosamente.");
+    } catch (error) {
+      console.error("Error al eliminar la imagen:", error);
+      alert("Hubo un error al eliminar la imagen. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (
@@ -47,8 +96,8 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
         </button>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {imagenes.length > 0 ? (
-            imagenes.map((media, index) => (
+          {localImages.length > 0 ? (
+            localImages.map((media, index) => (
               <div key={index} className="relative group">
                 {isVideo(media) ? (
                   <video
@@ -67,7 +116,7 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
                   />
                 )}
                 <button
-                  onClick={() => onRemoveImage(index)}
+                  onClick={() => handleDeleteImage(media.id, index)}
                   className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
                 >
                   <X size={16} />
@@ -88,7 +137,7 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage }) => {
               className="hidden"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                  onAddImage(e.target.files[0]);
+                  handleAddImage(e.target.files[0]);
                 }
               }}
               multiple

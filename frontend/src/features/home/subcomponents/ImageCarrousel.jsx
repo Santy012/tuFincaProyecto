@@ -3,9 +3,12 @@ import { useState } from 'react';
 const ImageCarrousel = ({ propiedad, fullSize = false, className = '' }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-const images = propiedad.imagenes?.map((img) =>
-  img.startsWith("/uploads") ? `${baseUrl}${img}` : img
-) || ["https://picsum.photos/1200/800?random=10"];
+
+  // Extraer las URLs de los objetos de `imagenes`
+  const images = propiedad.imagenes?.map((img) =>
+    img.url.startsWith("/uploads") ? `${baseUrl}${img.url}` : img.url
+  ) || ["https://picsum.photos/1200/800?random=10"];
+
   const hasMultipleImages = images.length > 1;
 
   const nextImage = (e) => {
@@ -49,7 +52,7 @@ const images = propiedad.imagenes?.map((img) =>
         {currentImageIndex + 1}/{images.length}
       </div>
 
-      {/* Flechas de navegación (mejoradas) */}
+      {/* Flechas de navegación */}
       {hasMultipleImages && (
         <>
           <button
@@ -78,7 +81,7 @@ const images = propiedad.imagenes?.map((img) =>
         </>
       )}
 
-      {/* Puntos de navegación (mejorados) */}
+      {/* Puntos de navegación */}
       {hasMultipleImages && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
           {images.map((_, index) => (
