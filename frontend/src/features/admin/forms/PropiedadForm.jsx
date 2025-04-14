@@ -71,15 +71,10 @@ const PropiedadForm = () => {
       propiedadData.codigo &&
       propiedadData.codigo.trim() !== ""
     ) {
-      // Validar que sea numérico
-      if (isNaN(propiedadData.codigo)) {
-        newErrors.codigo = "El código debe ser un número";
-        hasErrors = true;
-      }
 
       // Validar que no exista (comparando como número)
       const codigoEnUso = propiedades.some(
-        (propiedad) => propiedad.codigo === parseInt(propiedadData.codigo)
+        (propiedad) => propiedad.codigo === propiedadData.codigo
       );
       if (codigoEnUso) {
         newErrors.codigo = "Este código ya está en uso por otra propiedad";
@@ -128,7 +123,7 @@ const PropiedadForm = () => {
       // Crear el objeto para la API (sin los medios todavía)
       const propiedadParaAPI = {
         titulo: propiedadData.titulo,
-        codigo: parseInt(propiedadData.codigo) || 0,
+        codigo: propiedadData.codigo,
         descripcion: propiedadData.descripcion,
         areaTotal: parseFloat(propiedadData.areaTotal) || 0,
         areaConst: parseFloat(propiedadData.areaConstruida) || 0,

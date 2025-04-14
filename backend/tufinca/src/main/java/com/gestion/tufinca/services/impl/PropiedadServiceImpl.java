@@ -48,7 +48,7 @@ public class PropiedadServiceImpl implements IPropiedadService {
     }
 
     @Override
-    public Optional<PropiedadModel> getPropiedadByCodigo(Integer codigo) {
+    public Optional<PropiedadModel> getPropiedadByCodigo(String codigo) {
         return propiedadDAO.getPropiedadByCodigo(codigo);
     }
 
@@ -69,7 +69,7 @@ public class PropiedadServiceImpl implements IPropiedadService {
 
     @Override
     @Transactional
-    public void deletePropiedadByCodigo(Integer codigo) {
+    public void deletePropiedadByCodigo(String codigo) {
         propiedadDAO.deletePropiedadByCodigo(codigo);
     }
 }

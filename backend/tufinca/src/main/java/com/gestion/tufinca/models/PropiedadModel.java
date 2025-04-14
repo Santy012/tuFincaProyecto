@@ -28,7 +28,7 @@ public class PropiedadModel {
     private String titulo;
 
     @Column(nullable = false, unique = true)
-    private Integer codigo;
+    private String codigo;
 
     @Column(name = "descripción")
     private String descripcion;

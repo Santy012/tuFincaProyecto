@@ -44,7 +44,7 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     }
 
     @Override
-    public Optional<PropiedadModel> getPropiedadByCodigo(Integer codigo) {
+    public Optional<PropiedadModel> getPropiedadByCodigo(String codigo) {
         return propiedadRepository.findByCodigo(codigo);
     }
 
@@ -64,7 +64,7 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     }
 
     @Override
-    public void deletePropiedadByCodigo(Integer codigo) {
+    public void deletePropiedadByCodigo(String codigo) {
         propiedadRepository.deleteByCodigo(codigo);
     }
 }

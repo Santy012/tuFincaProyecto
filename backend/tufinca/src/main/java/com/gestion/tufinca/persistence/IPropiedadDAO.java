@@ -28,7 +28,7 @@ public interface IPropiedadDAO {
 
     void deletePropiedadById(Integer id);
 
-    Optional<PropiedadModel> getPropiedadByCodigo(Integer codigo);
+    Optional<PropiedadModel> getPropiedadByCodigo(String codigo);
 
     List<PropiedadModel> getPropiedadesByEstado(EstadoPropiedad estado);
 
@@ -36,7 +36,7 @@ public interface IPropiedadDAO {
 
     List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id);
 
-    void deletePropiedadByCodigo(Integer codigo);
+    void deletePropiedadByCodigo(String codigo);
 
 
 }

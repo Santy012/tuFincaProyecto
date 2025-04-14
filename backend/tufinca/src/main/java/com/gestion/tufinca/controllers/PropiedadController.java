@@ -71,7 +71,7 @@ public class PropiedadController {
     }
 
     @GetMapping("/codigo/{codigo}")
-    public ResponseEntity<Optional<PropiedadDTO>> getPropiedadByCodigo(@PathVariable Integer codigo){
+    public ResponseEntity<Optional<PropiedadDTO>> getPropiedadByCodigo(@PathVariable String codigo){
         Optional<PropiedadModel> propiedadOptional = propiedadService.getPropiedadByCodigo(codigo);
         return createPropiedadResponseEntity(propiedadOptional);
     }
@@ -104,7 +104,7 @@ public class PropiedadController {
     }
 
     @DeleteMapping(path="/delete/codigo/{codigo}")
-    public ResponseEntity<?> deletePropiedadByCodigo(@PathVariable Integer codigo){
+    public ResponseEntity<?> deletePropiedadByCodigo(@PathVariable String codigo){
         if(codigo!=null){
             propiedadService.deletePropiedadByCodigo(codigo);
             return ResponseEntity.ok("Propiedad con codigo " + codigo + " eliminada exitosamente");

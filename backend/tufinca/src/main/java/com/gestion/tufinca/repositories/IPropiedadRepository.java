@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @Repository
 public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Integer> {
-    Optional<PropiedadModel> findByCodigo(Integer codigo);
+    Optional<PropiedadModel> findByCodigo(String codigo);
 
     List<PropiedadModel> findAllByEstado(EstadoPropiedad estado);
 
@@ -37,5 +37,5 @@ public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Inte
     @Query("SELECT p FROM PropiedadModel p JOIN p.etiquetas e WHERE e.id = :etiquetaId")
     List<PropiedadModel> findAllByEtiquetaId(@Param("etiquetaId") Integer etiquetaId);
 
-    void deleteByCodigo(Integer codigo);
+    void deleteByCodigo(String codigo);
 }

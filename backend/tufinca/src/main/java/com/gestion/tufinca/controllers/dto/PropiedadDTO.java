@@ -16,7 +16,7 @@ import java.util.List;
 public class PropiedadDTO {
     private Integer id;
     private String titulo;
-    private Integer codigo;
+    private String codigo;
     private String descripcion;
     private Float areaTotal;
     private Float areaConst;

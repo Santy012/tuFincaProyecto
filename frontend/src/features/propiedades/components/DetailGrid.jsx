@@ -66,12 +66,10 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
                   Área construida
                 </div>
                 <div className="text-xl font-semibold mt-1">
-                  {formatNumber(propiedad.areaConstruida)} m²
+                  {formatNumber(propiedad.areaConstruida)}m²
                 </div>
               </div>
             )}
-
-            {/* Puedes añadir más características aquí */}
           </div>
         </section>
       </div>
