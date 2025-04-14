@@ -1,6 +1,5 @@
 package com.gestion.tufinca.controllers.dto;
 
-import com.gestion.tufinca.models.MediaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.Tipo;
 

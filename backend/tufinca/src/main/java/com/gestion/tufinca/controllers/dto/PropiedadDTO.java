@@ -8,7 +8,6 @@ import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

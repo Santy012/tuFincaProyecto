@@ -35,6 +35,11 @@ public class MediaServiceImpl implements IMediaService {
     }
 
     @Override
+    public List<MediaModel> getMediasByPropiedadId(Integer id){
+        return MediaDAO.getMediasByPropiedadId(id);
+    }
+
+    @Override
     public MediaModel saveMedia(MediaModel Media) {
         return MediaDAO.saveMedia(Media);
     }

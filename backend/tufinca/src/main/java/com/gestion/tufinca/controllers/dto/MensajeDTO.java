@@ -1,6 +1,5 @@
 package com.gestion.tufinca.controllers.dto;
 
-import com.gestion.tufinca.models.MensajeModel;
 import com.gestion.tufinca.models.enums.Gestion;
 import lombok.Builder;
 import lombok.Data;

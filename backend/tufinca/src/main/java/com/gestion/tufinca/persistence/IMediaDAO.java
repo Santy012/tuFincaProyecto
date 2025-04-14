@@ -11,6 +11,8 @@ public interface IMediaDAO {
 
     Optional<MediaModel> getMediaById(Integer id);
 
+    List<MediaModel> getMediasByPropiedadId(Integer propiedadId);
+
     MediaModel saveMedia(MediaModel media);
 
     void deleteMediaById(Integer id);

@@ -26,7 +26,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/media")
@@ -57,6 +56,15 @@ public class MediaController {
     public ResponseEntity<Optional<MediaDTO>> getMediaById(@PathVariable Integer id){
         Optional<MediaModel> mediaOptional = mediaService.getMediaById(id);
         return createMediaResponseEntity(mediaOptional);
+    }
+
+    @GetMapping("/propiedad/{propiedadId}")
+    public ResponseEntity<List<MediaDTO>> getMediaByPropiedadId(@PathVariable Integer propiedadId) {
+        List<MediaDTO> medias = mediaService.getMediasByPropiedadId(propiedadId)
+                .stream()
+                .map(this::buildMediaDTO)
+                .toList();
+        return ResponseEntity.ok(medias);
     }
 
     @Operation(summary = "Subir archivos multimedia", description = "Permite subir imágenes o videos y asociarlos a una propiedad")
@@ -118,20 +126,31 @@ public class MediaController {
             MediaModel media = mediaOptional.get();
 
             try {
-                // Eliminar archivo físico
+                // Obtener el nombre del archivo desde la URL
                 String fileName = media.getUrl().replace("/uploads/", "");
-                Files.deleteIfExists(Paths.get(uploadDirectory + File.separator + fileName));
 
-                // Eliminar de la BD
+                // Eliminar archivo físico del sistema
+                boolean fileDeleted = Files.deleteIfExists(Paths.get(uploadDirectory + File.separator + fileName));
+
+                // Eliminar registro de la base de datos
                 mediaService.deleteMediaById(id);
-                return ResponseEntity.ok("Media eliminada exitosamente");
+
+                // Responder según si el archivo físico fue eliminado o no
+                if (fileDeleted) {
+                    return ResponseEntity.ok("Media eliminada exitosamente (archivo y registro)");
+                } else {
+                    return ResponseEntity.ok("Media eliminada exitosamente (solo registro, archivo no encontrado)");
+                }
             } catch (IOException e) {
+                e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Error al eliminar el archivo físico");
+                        .body("Error al eliminar el archivo físico: " + e.getMessage());
             }
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Media no encontrada con el ID proporcionado");
     }
+
+
 
     public MediaModel setMediaUpdateValues(MediaDTO mediaDTO, MediaModel mediaToUpdate){
         mediaToUpdate.setUrl(mediaDTO.getUrl());

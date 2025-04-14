@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface IMediaRepository extends JpaRepository<MediaModel, Integer> {
+    List<MediaModel> findByPropiedadId(Integer propiedadId);
 }

@@ -1,6 +1,5 @@
 package com.gestion.tufinca.controllers.dto;
 
-import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.enums.TipoEtiqueta;
 import lombok.Builder;
 import lombok.Data;

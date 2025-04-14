@@ -31,6 +31,11 @@ public class MediaDAOImpl implements IMediaDAO {
     }
 
     @Override
+    public List<MediaModel> getMediasByPropiedadId(Integer id){
+        return mediaRepository.findByPropiedadId(id);
+    }
+
+    @Override
     public MediaModel saveMedia(MediaModel media) {
         return mediaRepository.save(media);
     }

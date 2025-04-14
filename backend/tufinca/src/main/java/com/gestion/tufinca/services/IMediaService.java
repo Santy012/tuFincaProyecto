@@ -9,6 +9,8 @@ public interface IMediaService {
 
     Optional<MediaModel> getMediaById(Integer id);
 
+    List<MediaModel> getMediasByPropiedadId(Integer id);
+
     MediaModel saveMedia(MediaModel media);
 
     void deleteMediaById(Integer id);
