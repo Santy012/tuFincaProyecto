@@ -8,20 +8,34 @@ import Carrusel from "../../subcomponents/Carrusel";
 import Indicadores from "../../subcomponents/Indicadores";
 import PopupImages from "../PopupImages";
 import SelectorEtiquetas from "./SelectorEtiquetas";
+import ConfirmDialog from "../../../../../components/ConfirmDialog";
 
 const PopUpDetalles = ({
   propiedadSeleccionada,
   setPropiedadSeleccionada,
   obtenerNombresEtiquetas,
 }) => {
-  const { actualizarPropiedad, etiquetas, setEtiquetas } = useGlobalContext();
+  const { actualizarPropiedad, eliminarPropiedad, etiquetas, setEtiquetas } = useGlobalContext();
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
   const [mostrarGaleria, setMostrarGaleria] = useState(false);
   const [mostrarSelectorEtiquetas, setMostrarSelectorEtiquetas] =
     useState(false);
-
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  
+  const handleDelete = async () => {
+    try {
+      await eliminarPropiedad(propiedad.id);
+      alert("Propiedad eliminada correctamente.");
+      setPropiedadSeleccionada(null); // Cierra el popup
+    } catch (error) {
+      console.error("Error al eliminar la propiedad:", error);
+      alert("Hubo un error al eliminar la propiedad. Por favor, inténtalo de nuevo.");
+    }
+  };
+  
+  
   const guardarCambios = async () => {
     try {
       const propiedadParaBackend = {
@@ -44,16 +58,13 @@ const PopUpDetalles = ({
         }),
         medias: propiedad.imagenes.map((imagen) => ({
           id: imagen.id,
-          url: imagen.url,
+          url: imagen.url.startsWith("/uploads") ? imagen.url : imagen.url.replace(/^.*\/uploads/, "/uploads"),
           tipo: imagen.tipo,
         })),
         mensajes: propiedad.mensajes || [],
       };
 
-      console.log(
-        "Propiedad transformada para el backend:",
-        propiedadParaBackend
-      );
+      console.log("Propiedad transformada para el backend:", propiedadParaBackend);
 
       const propiedadActualizada = await actualizarPropiedad(
         propiedad.id,
@@ -282,6 +293,12 @@ const PopUpDetalles = ({
         >
           {editando ? "Guardar Cambios" : "Editar Propiedad"}
         </button>
+        <button
+          onClick={() => setMostrarConfirmacion(true)}
+          className="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-500 transition"
+        >
+          Borrar Propiedad
+        </button>
       </motion.div>
 
       {/* Popup de imágenes */}
@@ -304,6 +321,18 @@ const PopUpDetalles = ({
           obtenerNombresEtiquetas={obtenerNombresEtiquetas}
           etiquetas={etiquetas}
           setEtiquetas={setEtiquetas}
+        />
+      )}
+
+      {/* Confirmación de eliminación */}
+      {mostrarConfirmacion && (
+        <ConfirmDialog
+          message="¿Estás seguro de que deseas eliminar esta propiedad?"
+          onConfirm={() => {
+            setMostrarConfirmacion(false);
+            handleDelete();
+          }}
+          onCancel={() => setMostrarConfirmacion(false)}
         />
       )}
     </div>
