@@ -1,23 +1,21 @@
 import { useGlobalContext } from "../../../context/GlobalContext";
 import ImageCarrousel from "./ImageCarrousel";
 import { Link } from "react-router-dom";
+
 const PropertyCard = ({ propiedad }) => {
   // Recibir propiedad como prop
   const { etiquetas } = useGlobalContext();
 
-  // Verificar que propiedad existe y tiene imágenes
-  if (!propiedad || !propiedad.imagenes || propiedad.imagenes.length === 0) {
-    return (
-      <div className="rounded-xl overflow-hidden shadow-md bg-gray-100 h-48 flex items-center justify-center">
-        <p className="text-gray-500">Imagen no disponible</p>
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      {/* Carrusel de imágenes */}
-      <ImageCarrousel propiedad={propiedad} />
+      {/* Carrusel de imágenes o marcador de posición */}
+      {propiedad && propiedad.imagenes && propiedad.imagenes.length > 0 ? (
+        <ImageCarrousel propiedad={propiedad} />
+      ) : (
+        <div className="h-48 bg-gray-100 flex items-center justify-center">
+          <p className="text-gray-500">Imagen no disponible</p>
+        </div>
+      )}
 
       {/* Detalles de la propiedad */}
       <Link to={`/propiedad/${propiedad.id}`}>

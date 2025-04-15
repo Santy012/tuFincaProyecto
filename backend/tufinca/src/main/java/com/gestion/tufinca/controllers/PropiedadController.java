@@ -2,6 +2,7 @@ package com.gestion.tufinca.controllers;
 
 import com.gestion.tufinca.controllers.dto.PropiedadDTO;
 import com.gestion.tufinca.models.EtiquetaModel;
+import com.gestion.tufinca.models.MediaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.services.IPropiedadService;
@@ -51,12 +52,13 @@ public class PropiedadController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<?> updatePropiedadById(@RequestBody PropiedadDTO request, @PathVariable("id") Integer id){
+    public ResponseEntity<PropiedadDTO> updatePropiedadById(@RequestBody PropiedadDTO request, @PathVariable("id") Integer id) {
         Optional<PropiedadModel> propiedadOptional = propiedadService.getPropiedadById(id);
-        if(propiedadOptional.isPresent()){
+        if (propiedadOptional.isPresent()) {
             PropiedadModel propiedadToUpdate = propiedadOptional.get();
-            propiedadService.savePropiedad(setPropiedadUpdateValues(request, propiedadToUpdate));
-            return ResponseEntity.ok("Propiedad con id " + id + " actualizado exitosamente.");
+            PropiedadModel propiedadActualizada = propiedadService.savePropiedad(setPropiedadUpdateValues(request, propiedadToUpdate));
+            PropiedadDTO propiedadActualizadaDTO = buildPropiedadDTO(propiedadActualizada);
+            return ResponseEntity.ok(propiedadActualizadaDTO); // Devuelve la propiedad actualizada
         }
         return ResponseEntity.notFound().build();
     }
@@ -121,12 +123,25 @@ public class PropiedadController {
         propiedadToUpdate.setAreaTotal(propiedadDTO.getAreaTotal());
         propiedadToUpdate.setAdministrador(propiedadDTO.getAdministrador());
         propiedadToUpdate.setAreaConst(propiedadDTO.getAreaConst());
+
+        // Actualizar medias
         propiedadToUpdate.getMedias().clear();
-        propiedadToUpdate.getMedias().addAll(propiedadDTO.getMedias());
-        propiedadToUpdate.getMensajes().clear();
-        propiedadToUpdate.getMensajes().addAll(propiedadDTO.getMensajes());
-        propiedadToUpdate.getEtiquetas().clear();
-        propiedadToUpdate.getEtiquetas().addAll(propiedadDTO.getEtiquetas());
+        for (MediaModel media : propiedadDTO.getMedias()) {
+            media.setPropiedad(propiedadToUpdate); // Establecer la relación bidireccional
+            propiedadToUpdate.getMedias().add(media);
+        }
+
+        // Manejar mensajes
+        if (propiedadDTO.getMensajes() != null) {
+            propiedadToUpdate.getMensajes().clear();
+            propiedadToUpdate.getMensajes().addAll(propiedadDTO.getMensajes());
+        }
+
+        // Manejar etiquetas
+        if (propiedadDTO.getEtiquetas() != null) {
+            propiedadToUpdate.getEtiquetas().clear();
+            propiedadToUpdate.getEtiquetas().addAll(propiedadDTO.getEtiquetas());
+        }
 
         return propiedadToUpdate;
     }

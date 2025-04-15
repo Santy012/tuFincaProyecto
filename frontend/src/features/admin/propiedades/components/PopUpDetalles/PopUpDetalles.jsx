@@ -22,18 +22,69 @@ const PopUpDetalles = ({
   const [mostrarSelectorEtiquetas, setMostrarSelectorEtiquetas] =
     useState(false);
 
-  const guardarCambios = () => {
-    actualizarPropiedad(propiedad.id, propiedad);
-    setEditando(false);
+  const guardarCambios = async () => {
+    try {
+      const propiedadParaBackend = {
+        id: propiedad.id,
+        titulo: propiedad.titulo,
+        codigo: propiedad.codigo,
+        descripcion: propiedad.descripcion,
+        areaTotal: parseFloat(propiedad.areaTotal) || 0,
+        areaConst: parseFloat(propiedad.areaConstruida) || 0,
+        ubicacion: propiedad.ubicacion,
+        estado: propiedad.estado.toLowerCase(),
+        administrador: { id: propiedad.administradorId },
+        etiquetas: propiedad.etiquetas.map((etiquetaId) => {
+          const etiqueta = etiquetas.find((e) => e.id === etiquetaId);
+          return {
+            id: etiqueta.id,
+            nombre: etiqueta.nombre,
+            tipoEtiqueta: etiqueta.tipoEtiqueta,
+          };
+        }),
+        medias: propiedad.imagenes.map((imagen) => ({
+          id: imagen.id,
+          url: imagen.url,
+          tipo: imagen.tipo,
+        })),
+        mensajes: propiedad.mensajes || [],
+      };
+
+      console.log(
+        "Propiedad transformada para el backend:",
+        propiedadParaBackend
+      );
+
+      const propiedadActualizada = await actualizarPropiedad(
+        propiedad.id,
+        propiedadParaBackend
+      );
+
+      console.log("Propiedad actualizada:", propiedadActualizada);
+
+      // Asegúrate de que las medias se mantengan en el estado
+      setPropiedad({
+        ...propiedadActualizada,
+        imagenes: propiedadActualizada.medias || propiedad.imagenes,
+      });
+
+      setPropiedadSeleccionada(propiedadActualizada);
+      setEditando(false);
+
+      alert("Propiedad actualizada correctamente.");
+    } catch (error) {
+      console.error("Error al actualizar la propiedad:", error);
+      alert(
+        "Hubo un error al actualizar la propiedad. Por favor, inténtalo de nuevo."
+      );
+    }
   };
 
-  const agregarMedia = (archivo) => {
-    if (archivo) {
-      setPropiedad((prev) => ({
-        ...prev,
-        imagenes: [...prev.imagenes, archivo], // Agrega el objeto completo
-      }));
-    }
+  const agregarMedia = (nuevaImagen) => {
+    setPropiedad((prev) => ({
+      ...prev,
+      imagenes: [...prev.imagenes, nuevaImagen],
+    }));
   };
 
   const handleRemoveImage = (index) => {
@@ -59,12 +110,24 @@ const PopUpDetalles = ({
 
   useEffect(() => {
     if (propiedadSeleccionada) {
-      const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-      const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map((img) => ({
-        ...img, // Mantén los demás campos del objeto
-        url: img.url.startsWith("/uploads") ? `${baseUrl}${img.url}` : img.url, // Actualiza solo la URL
-      }));
-      setPropiedad({ ...propiedadSeleccionada, imagenes: imagenesConUrlCompleta });
+      const baseUrl =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+      const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map(
+        (img) => ({
+          ...img,
+          url: img.url.startsWith("/uploads")
+            ? `${baseUrl}${img.url}`
+            : img.url,
+        })
+      );
+
+      setPropiedad({
+        ...propiedadSeleccionada,
+        imagenes: imagenesConUrlCompleta,
+        estado:
+          propiedadSeleccionada.estado.charAt(0).toUpperCase() +
+          propiedadSeleccionada.estado.slice(1).toLowerCase(),
+      });
     }
   }, [propiedadSeleccionada]);
 
@@ -96,7 +159,7 @@ const PopUpDetalles = ({
             onEditClick={() => editando && setMostrarGaleria(true)}
           />
           {editando && (
-            <div 
+            <div
               className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg transition-opacity duration-300 rounded-lg opacity-0 hover:opacity-100 cursor-pointer"
               onClick={() => setMostrarGaleria(true)}
             >
@@ -134,18 +197,28 @@ const PopUpDetalles = ({
 
         <CampoEditable
           label="Estado"
-          value={propiedad.estado}
+          value={propiedad.estado.toLowerCase()} // Normaliza el valor mostrado
           onChange={(val) => setPropiedad({ ...propiedad, estado: val })}
           editando={editando}
           type="select"
-          options={["Disponible", "Vendido"]}
+          options={
+            editando
+              ? [
+                  ...new Set([
+                    "disponible",
+                    "vendido",
+                    propiedad.estado.toLowerCase(),
+                  ]),
+                ]
+              : ["disponible", "vendido"]
+          }
         />
 
         <CampoEditable
           label="Área Total (m²)"
           value={propiedad.areaTotal}
           onChange={(val) => {
-            if (val === '' || /^[0-9]*\.?[0-9]*$/.test(val)) {
+            if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
               setPropiedad({ ...propiedad, areaTotal: val });
             }
           }}
@@ -156,9 +229,9 @@ const PopUpDetalles = ({
 
         <CampoEditable
           label="Área Construida (m²)"
-          value={propiedad.areaConstruida || ''}
+          value={propiedad.areaConstruida || ""}
           onChange={(val) => {
-            if (val === '' || /^[0-9]*\.?[0-9]*$/.test(val)) {
+            if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
               setPropiedad({ ...propiedad, areaConstruida: val });
             }
           }}

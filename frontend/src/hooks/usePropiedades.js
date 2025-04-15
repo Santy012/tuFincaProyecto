@@ -62,12 +62,15 @@ export const usePropiedades = () => {
     try {
       const response = await execute(() => updatePropiedad(id, propiedadData));
       const propiedadActualizada = formatPropiedad(response);
-      setPropiedades(prev => 
-        prev.map(prop => prop.id === id ? propiedadActualizada : prop)
+  
+      // Actualiza el estado local con la propiedad actualizada
+      setPropiedades((prev) =>
+        prev.map((prop) => (prop.id === id ? propiedadActualizada : prop))
       );
+  
       return propiedadActualizada;
     } catch (err) {
-      console.error('Error en actualizarPropiedad:', err);
+      console.error("Error en actualizarPropiedad:", err);
       throw err;
     }
   };
