@@ -161,6 +161,56 @@ http://localhost:8080
 Si ves una pagina de login es que todo esta corriendo bien :).
 ## 3: Instalar depencias de React
 
+## 4 📁 Instrucciones sobre la carpeta uploads
+Nuestro sistema utiliza una carpeta ubicada en la ruta:
+
+```
+/backend/tufinca/uploads
+```
+![image](https://github.com/user-attachments/assets/fa63a64b-0c6b-4857-a028-2aed92f524f3)
+
+En esta carpeta se almacenan los archivos que los usuarios suben, como imágenes asociadas a propiedades.
+
+### ⚠️ Importante: esta carpeta no se debe subir al repositorio
+Contiene muchos archivos (imágenes), lo cual puede afectar el rendimiento y peso del repositorio.
+
+Está listada en el archivo .gitignore, por lo tanto Git no la rastrea ni la sube.
+
+## 💻 Entorno de desarrollo (local)
+Cada desarrollador debe crear manualmente una carpeta llamada uploads en la ruta mencionada:
+```
+/backend/tufinca/uploads
+```
+Esto permitirá:
+
+- Probar la funcionalidad de carga de imágenes.
+
+- Verificar que las imágenes se estén guardando correctamente de manera local.
+
+- Confirmar que se asocian correctamente en la base de datos con sus respectivas propiedades.
+
+### 🔧 El esquema SQL actual ya está actualizado y contiene dos propiedades sin imágenes para realizar pruebas.
+
+### 🔍 ¿Cómo probar que funciona?
+1. Desde el frontend, edita una propiedad.
+
+2. Añade una o más imágenes.
+
+3. Verifica que:
+
+- Las imágenes se hayan guardado en tu carpeta local uploads.
+
+- Se haya actualizado correctamente la base de datos con las nuevas imágenes asociadas a la propiedad.
+
+### 🚀 Producción
+1. Para el entorno de producción:
+
+- Se subirá una única carpeta uploads que contendrá todas las imágenes asociadas a las propiedades correctamente organizadas.
+
+- Esta carpeta será administrada según las necesidades del despliegue y almacenamiento.
+
+
+
 
 
 
