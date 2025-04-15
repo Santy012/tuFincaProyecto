@@ -160,6 +160,23 @@ http://localhost:8080
 ```
 Si ves una pagina de login es que todo esta corriendo bien :).
 ## 3: Instalar depencias de React
+Deberas acceder a la carpeta del frontend para instalar las dependencias
+
+```
+cd frontend
+```
+Ya dentro de la carpeta frontend deberas ejecutar el comando npm install
+
+```
+npm install
+```
+Que instalara todas las dependencias del proyecto, luego deberas iniciar el proyecto con el comando npm run dev que te abrira el servidor en el puerto 5173
+
+```
+npm run dev
+```
+
+Y listo, ya podras acceder a la pagina desde localhost:5173
 
 ## 4 📁 Instrucciones sobre la carpeta uploads
 Nuestro sistema utiliza una carpeta ubicada en la ruta:
