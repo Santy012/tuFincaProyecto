@@ -10,6 +10,8 @@ public interface IAdministradorService {
 
     Optional<AdministradorModel> getAdministradorById(Integer id);
 
+    Optional<AdministradorModel> getAdministradorByUsuario(String usuario);
+
     void saveAdministrador(AdministradorModel administrador);
 
     void deleteAdministradorById(Integer id);

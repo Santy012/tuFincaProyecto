@@ -1,11 +1,12 @@
 package com.gestion.tufinca.services.impl;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.gestion.tufinca.models.AdministradorModel;
 import com.gestion.tufinca.persistence.IAdministradorDAO;
 import com.gestion.tufinca.services.IAdministradorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,10 +14,15 @@ import java.util.Optional;
 public class AdministradorServiceImpl implements IAdministradorService {
 
     private final IAdministradorDAO AdministradorDAO;
+    private final PasswordEncoder passwordEncoder; // Nuevo campo
 
     @Autowired
-    public AdministradorServiceImpl(IAdministradorDAO AdministradorDAO) {
+    public AdministradorServiceImpl(
+            IAdministradorDAO AdministradorDAO,
+            PasswordEncoder passwordEncoder
+    ) {
         this.AdministradorDAO = AdministradorDAO;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,8 +41,15 @@ public class AdministradorServiceImpl implements IAdministradorService {
     }
 
     @Override
-    public void saveAdministrador(AdministradorModel Administrador) {
-        AdministradorDAO.saveAdministrador(Administrador);
+    public Optional<AdministradorModel> getAdministradorByUsuario(String usuario) {
+        return AdministradorDAO.getAdministradorByUsuario(usuario);
+    }
+
+    @Override
+    public void saveAdministrador(AdministradorModel administrador) {
+        String contraseñaEncriptada = passwordEncoder.encode(administrador.getContraseña());
+        administrador.setContraseña(contraseñaEncriptada);
+        AdministradorDAO.saveAdministrador(administrador);
     }
 
     @Override
