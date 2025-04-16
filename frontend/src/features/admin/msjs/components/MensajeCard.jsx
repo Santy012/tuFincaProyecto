@@ -1,16 +1,21 @@
 import { useState } from "react";
+import { useGlobalContext } from "../../../../context/GlobalContext";
 import PopUpMensaje from "../subcomponents/PopUpMensajes";
 import PopUpConfirmar from "../../perfil/subcomponents/PopUpConfirmar";
 
-const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }) => {
+const MensajeCard = ({ mensaje, isSelected, onSelect }) => {
+  const { eliminarMensaje, propiedades, admins } = useGlobalContext();
   const [isOpen, setIsOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const propiedadRelacionada = mensaje.propiedad_id 
-    ? propiedades.find(p => p.id === mensaje.propiedad_id)
+  const propiedadRelacionada = mensaje?.propiedad 
+    ? propiedades.find(p => p.id === mensaje.propiedad.id)
     : null;
 
-  // Función para formatear la fecha
+  const administradorRelacionado = mensaje?.administrador?.id 
+    ? admins.find(a => a.id === mensaje.administrador.id)
+    : null;
+
   const formatFecha = (fechaString) => {
     const fecha = new Date(fechaString);
     return fecha.toLocaleDateString('es-ES', {
@@ -28,9 +33,13 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
     }
   };
 
-  const eliminarMensaje = () => {
-    setMensajes(prev => prev.filter(msg => msg.id !== mensaje.id));
-    setShowDeleteConfirm(false);
+  const handleDelete = async () => {
+    try {
+      await eliminarMensaje(mensaje.id);
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      console.error("Error eliminando mensaje:", error);
+    }
   };
 
   return (
@@ -47,7 +56,7 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
             checked={isSelected}
             onChange={(e) => {
               e.stopPropagation();
-              onSelect();
+              onSelect(mensaje.id);
             }}
             className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             onClick={(e) => e.stopPropagation()}
@@ -60,15 +69,37 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
               <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
                 {mensaje.nombreCliente} {mensaje.apellidoCliente}
               </h3>
-              <div className="flex gap-3 mt-1 text-sm text-gray-500">
+              <div className="flex flex-wrap gap-3 mt-1 text-sm text-gray-500">
                 <span className="flex items-center">
-                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                  </svg>
                   {mensaje.celular}
                 </span>
                 <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/></svg>
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
+                  </svg>
                   {formatFecha(mensaje.fecha)}
                 </span>
+                {propiedadRelacionada && (
+                  <span className="flex items-center bg-blue-50 rounded-full px-2 py-0.5">
+                    <svg className="w-3 h-3 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 010-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd"/>
+                    </svg>
+                    <span className="text-blue-600 font-medium">{propiedadRelacionada.codigo}</span>
+                  </span>
+                )}
+                {administradorRelacionado && (
+                  <span className="flex items-center bg-purple-50 rounded-full px-2 py-0.5">
+                    <svg className="w-3 h-3 mr-1 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                    </svg>
+                    <span className="text-purple-600 font-medium">
+                      {administradorRelacionado.nombre.split(' ')[0]}
+                    </span>
+                  </span>
+                )}
               </div>
             </div>
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -85,7 +116,9 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
           <div className="mt-4 flex justify-between items-center">
             <button className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center">
               Ver completo
-              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"/></svg>
+              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -95,16 +128,16 @@ const MensajeCard = ({ mensaje, setMensajes, propiedades, isSelected, onSelect }
         <PopUpMensaje 
           mensaje={mensaje} 
           onClose={() => setIsOpen(false)} 
-          setMensajes={setMensajes}
-          propiedades={propiedades}
           onDelete={() => setShowDeleteConfirm(true)}
+          propiedadRelacionada={propiedadRelacionada}
+          administradorRelacionado={administradorRelacionado}
         />
       )}
 
       {showDeleteConfirm && (
         <PopUpConfirmar
           mensaje="¿Estás seguro que deseas eliminar este mensaje?"
-          onConfirm={eliminarMensaje}
+          onConfirm={handleDelete}
           onCancel={() => setShowDeleteConfirm(false)}
         />
       )}

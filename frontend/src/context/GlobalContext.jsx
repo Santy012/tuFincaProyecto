@@ -4,6 +4,7 @@ import { usePropiedades } from "../hooks/usePropiedades";
 import { useEtiquetas } from "../hooks/useEtiquetas";
 import { useAdmins } from "../hooks/useAdmin";
 import { useMedias } from "../hooks/useMedias";
+import { useMensajes } from "../hooks/useMensajes";
 
 const GlobalContext = createContext();
 
@@ -12,8 +13,8 @@ export const GlobalProvider = ({ children }) => {
   const etiquetas = useEtiquetas();
   const admins = useAdmins();
   const medias = useMedias();
-
-  const [mensajes, setMensajes] = useState([]);
+  const mensajes = useMensajes();
+  
   const [admin, setAdmin] = useState(() => {
     const storedAdmin = localStorage.getItem("admin");
     return storedAdmin ? JSON.parse(storedAdmin) : null;
@@ -68,8 +69,14 @@ export const GlobalProvider = ({ children }) => {
         resetErrorMedias: medias.resetError,
 
         // Mensajes
-        mensajes,
-        setMensajes,
+        mensajes: mensajes.mensajes,
+        loadingMensajes: mensajes.loading,
+        errorMensajes: mensajes.error,
+        crearMensaje: mensajes.crearMensaje,
+        actualizarMensaje: mensajes.actualizarMensaje,
+        eliminarMensaje: mensajes.eliminarMensaje,
+        fetchMensajes: mensajes.fetchMensajes,
+        reloadMensajes: mensajes.reloadData,
 
         // Autenticación
         admin,
