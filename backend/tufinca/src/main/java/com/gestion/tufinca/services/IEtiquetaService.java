@@ -1,6 +1,7 @@
 package com.gestion.tufinca.services;
 
 import com.gestion.tufinca.models.EtiquetaModel;
+import com.gestion.tufinca.models.MediaModel;
 import com.gestion.tufinca.models.enums.TipoEtiqueta;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface IEtiquetaService {
 
     List<EtiquetaModel> getEtiquetaByTipoEtiqueta(TipoEtiqueta tipoEtiqueta);
 
-    void saveEtiqueta(EtiquetaModel etiqueta);
+    EtiquetaModel saveEtiqueta(EtiquetaModel etiqueta);
 
     void deleteEtiquetaById(Integer id);
 }

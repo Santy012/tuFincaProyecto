@@ -41,8 +41,9 @@ public class EtiquetaController {
 
     @PostMapping(path="/save")
     public ResponseEntity<?> saveEtiqueta(@RequestBody EtiquetaDTO etiquetaDTO) throws URISyntaxException {
-        etiquetaService.saveEtiqueta(buildEtiqueta(etiquetaDTO));
-        return ResponseEntity.created(new URI("api/etiqueta/save")).build();
+        EtiquetaModel nuevaEtiqueta = etiquetaService.saveEtiqueta(buildEtiqueta(etiquetaDTO));
+        EtiquetaDTO etiquetaCreadaDTO = buildEtiquetaDTO(nuevaEtiqueta);
+        return ResponseEntity.created(new URI("api/etiqueta/save")).body(etiquetaCreadaDTO);
     }
 
     @DeleteMapping(path="/delete/{id}")

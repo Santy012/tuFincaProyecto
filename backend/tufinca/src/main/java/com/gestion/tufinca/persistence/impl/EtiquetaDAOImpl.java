@@ -37,8 +37,8 @@ public class EtiquetaDAOImpl implements IEtiquetaDAO {
     }
 
     @Override
-    public void saveEtiqueta(EtiquetaModel etiqueta) {
-        etiquetaRepository.save(etiqueta);
+    public EtiquetaModel saveEtiqueta(EtiquetaModel etiqueta) {
+        return etiquetaRepository.save(etiqueta);
     }
 
     @Override

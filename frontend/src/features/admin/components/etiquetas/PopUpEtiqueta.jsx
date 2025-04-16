@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-
+import { useGlobalContext } from "../../../../context/GlobalContext";
 const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
+  const { reloadEtiquetas } = useGlobalContext(); // Asegúrate de que esta función esté disponible en tu contexto
   const [nombreEtiqueta, setNombreEtiqueta] = useState("");
   const [guardando, setGuardando] = useState(false);
   const [esPropiedad, setEsPropiedad] = useState(false);
@@ -15,9 +16,14 @@ const PopUpEtiqueta = ({ cerrar, guardarEtiqueta }) => {
   
     setGuardando(true);
     try {
-      const exito = await guardarEtiqueta(nombreEtiqueta, esPropiedad ? "propiedad" : "categoria");
-      if (exito) {
-        cerrar(); // Aseguramos que se cierre correctamente
+      const etiquetaData = {
+        nombre: nombreEtiqueta.trim(),
+        tipoEtiqueta: esPropiedad ? "propiedad" : "categoria",
+      };
+      const nuevaEtiqueta = await guardarEtiqueta(etiquetaData); // Devuelve la etiqueta creada
+      if (nuevaEtiqueta) {
+        await reloadEtiquetas(); // Recarga las etiquetas después de guardar
+        cerrar(); // Cierra el popup
       }
     } finally {
       setTimeout(() => setGuardando(false), 300); // Pequeño delay para evitar errores de estado

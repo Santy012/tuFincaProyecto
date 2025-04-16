@@ -36,8 +36,8 @@ public class EtiquetaServiceImpl implements IEtiquetaService {
     }
 
     @Override
-    public void saveEtiqueta(EtiquetaModel Etiqueta) {
-        EtiquetaDAO.saveEtiqueta(Etiqueta);
+    public EtiquetaModel saveEtiqueta(EtiquetaModel Etiqueta) {
+        return EtiquetaDAO.saveEtiqueta(Etiqueta);
     }
 
     @Override

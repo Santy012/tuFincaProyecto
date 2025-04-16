@@ -152,14 +152,16 @@ const PopUpDetalles = ({
         className="relative bg-white p-6 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
       >
         {/* Botón de cierre */}
-        <div className="sticky top-0 flex justify-end z-20 pointer-events-none">
-          <button
-            onClick={() => setPropiedadSeleccionada(null)}
-            className="text-gray-600 hover:text-gray-900 cursor-pointer transition bg-white rounded-full p-2 shadow-md pointer-events-auto"
-          >
-            <X size={24} />
-          </button>
-        </div>
+        {!editando && (
+          <div className="sticky top-0 flex justify-end z-20 pointer-events-none">
+            <button
+              onClick={() => setPropiedadSeleccionada(null)}
+              className="text-gray-600 hover:text-gray-900 cursor-pointer transition bg-white rounded-full p-2 shadow-md pointer-events-auto"
+            >
+              <X size={24} />
+            </button>
+          </div>
+        )}
 
         {/* Carrusel de imágenes */}
         <div className="relative">

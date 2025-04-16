@@ -14,7 +14,7 @@ public interface IEtiquetaDAO {
 
     Optional<EtiquetaModel> getEtiquetaById(Integer id);
 
-    void saveEtiqueta(EtiquetaModel etiqueta);
+    EtiquetaModel saveEtiqueta(EtiquetaModel etiqueta);
 
     void deleteEtiquetaById(Integer id);
 
