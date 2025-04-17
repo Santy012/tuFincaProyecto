@@ -53,6 +53,16 @@ const PropertyPage = () => {
         </button>
         </Link>
 
+        {/* Botón de contactar */}
+        <button
+          onClick={() =>
+            navigate("/mensaje", { state: { propiedad_id: propiedad.codigo } })
+          }
+          className="mb-6 bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Contactar sobre esta propiedad
+        </button>
+
         {/* Encabezado con título y ubicación */}
         <div className="mb-6 border-b pb-4">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
