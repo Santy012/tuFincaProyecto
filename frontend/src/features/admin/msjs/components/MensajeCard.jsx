@@ -1,20 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import PopUpMensaje from "../subcomponents/PopUpMensajes";
 import PopUpConfirmar from "../../perfil/subcomponents/PopUpConfirmar";
 
 const MensajeCard = ({ mensaje, isSelected, onSelect }) => {
-  const { eliminarMensaje, propiedades, admins } = useGlobalContext();
+  const { eliminarMensaje, propiedades, admins, fetchAdminById } = useGlobalContext();
   const [isOpen, setIsOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [currentMensaje, setCurrentMensaje] = useState(mensaje);
 
   const propiedadRelacionada = mensaje?.propiedad
     ? propiedades.find((p) => p.id === mensaje.propiedad.id)
     : null;
 
-  const administradorRelacionado = mensaje?.administrador?.id
-    ? admins.find((a) => a.id === mensaje.administrador.id)
+  const administradorRelacionado = mensaje?.administradorId
+    ? admins.find((a) => a.id === mensaje.administradorId)
     : null;
+
+    useEffect(() => {
+        const fetchAdmin = async () => {
+          // Usar administradorId si ese es el nombre correcto
+          if (currentMensaje.administradorId) {
+            try {
+              const admin = await fetchAdminById(currentMensaje.administradorId);
+              setCurrentMensaje(admin);
+            } catch (error) {
+              console.error("Error al buscar el administrador:", error);
+            }
+          }
+        };
+      
+        fetchAdmin();
+      }, [currentMensaje.administradorId, fetchAdminById]); // Cambiar la dependencia aquí
 
   const formatFecha = (fechaString) => {
     const fecha = new Date(fechaString);
@@ -166,7 +183,8 @@ const MensajeCard = ({ mensaje, isSelected, onSelect }) => {
           onClose={() => setIsOpen(false)}
           onDelete={() => setShowDeleteConfirm(true)}
           propiedadRelacionada={propiedadRelacionada}
-          administradorRelacionado={administradorRelacionado}
+          adminData={administradorRelacionado}
+          setAdminData={setCurrentMensaje} // Cambiar el estado del administrador relacionado aquí
         />
       )}
 

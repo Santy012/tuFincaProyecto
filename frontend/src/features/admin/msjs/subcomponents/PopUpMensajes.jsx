@@ -6,11 +6,13 @@ const PopUpMensaje = ({
   onClose,
   onDelete,
   propiedadRelacionada,
+  adminData,
+  setAdminData,
 }) => {
   const { actualizarMensaje, reloadMensajes, admin, fetchAdminById } = useGlobalContext();
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentMensaje, setCurrentMensaje] = useState(mensaje);
-  const [adminData, setAdminData] = useState(null);
+
   const formatFechaDetallada = (fechaString) => {
     const fecha = new Date(fechaString);
     return fecha.toLocaleDateString("es-ES", {
@@ -22,8 +24,6 @@ const PopUpMensaje = ({
       minute: "2-digit",
     });
   };
-
-  console.log(mensaje)
 
   // Buscar los datos del administrador por ID
   useEffect(() => {
