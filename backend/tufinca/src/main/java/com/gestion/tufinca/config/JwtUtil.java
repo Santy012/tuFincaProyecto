@@ -22,7 +22,9 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        // Convierte el secretString (Base64) a una SecretKey
+        if (secretString == null || secretString.isEmpty()) {
+            throw new IllegalArgumentException("JWT secret is not configured");
+        }
         this.secretKey = Keys.hmacShaKeyFor(secretString.getBytes());
     }
 

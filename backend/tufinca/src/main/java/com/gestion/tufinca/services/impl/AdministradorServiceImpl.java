@@ -47,6 +47,8 @@ public class AdministradorServiceImpl implements IAdministradorService {
 
     @Override
     public void saveAdministrador(AdministradorModel administrador) {
+        //validar que el user sea unico
+        //validar que contraseña sea mayor de 4 y menor que 30
         String contraseñaEncriptada = passwordEncoder.encode(administrador.getContraseña());
         administrador.setContraseña(contraseñaEncriptada);
         AdministradorDAO.saveAdministrador(administrador);

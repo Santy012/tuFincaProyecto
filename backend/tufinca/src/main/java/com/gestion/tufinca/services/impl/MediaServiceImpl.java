@@ -41,6 +41,7 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public MediaModel saveMedia(MediaModel Media) {
+        //validar que la url (string) sea diferente
         return MediaDAO.saveMedia(Media);
     }
 
