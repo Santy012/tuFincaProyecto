@@ -1,20 +1,142 @@
-import { useMessageForm } from "../../hooks/useMessageForm";
+import { useState, useEffect } from "react";
 import Header from "../home/components/Header";
 import Footer from "../home/components/Footer";
 import FormInput from "./components/FormInput";
 import FormTextarea from "./components/FormTextArea";
 import UserIcon from "./components/UserIcon";
-
+import { useGlobalContext } from "../../context/GlobalContext";
+import { useNavigate } from "react-router-dom";
 
 const MessagePage = () => {
-  const {
-    formData,
-    formErrors,
-    isSubmitting,
-    submitSuccess,
-    handleChange,
-    handleSubmit
-  } = useMessageForm();
+  const { propiedades, crearMensaje, admin } = useGlobalContext();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    nombreCliente: "",
+    apellidoCliente: "",
+    celular: "",
+    correo: "",
+    propiedad_id: "",
+    detalle: "",
+    gestion: "porLeer",
+    administrador: admin || null,
+    propiedad: null
+  });
+
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [propiedadEncontrada, setPropiedadEncontrada] = useState(null);
+
+  // Validar código de propiedad si existe
+  useEffect(() => {
+    if (formData.propiedad_id && formData.propiedad_id.trim() !== "") {
+      const propiedad = propiedades.find(
+        p => p.codigo === formData.propiedad_id.trim()
+      );
+      setPropiedadEncontrada(propiedad || null);
+    } else {
+      setPropiedadEncontrada(null);
+    }
+  }, [formData.propiedad_id, propiedades]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Limpiar error al escribir
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const requiredFields = [
+      "nombreCliente",
+      "apellidoCliente",
+      "celular",
+      "correo",
+      "detalle"
+    ];
+
+    requiredFields.forEach(field => {
+      if (!formData[field] || formData[field].trim() === "") {
+        errors[field] = "Este campo es requerido";
+      }
+    });
+
+    // Validar formato de correo
+    if (formData.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
+      errors.correo = "Ingrese un correo válido";
+    }
+
+    // Validar celular (9 dígitos)
+    if (formData.celular && !/^\d{10}$/.test(formData.celular)) {
+      errors.celular = "Ingrese un número de 10 dígitos";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Preparar datos para enviar
+      const mensajeData = {
+        nombreCliente: formData.nombreCliente.trim(),
+        apellidoCliente: formData.apellidoCliente.trim(),
+        celular: formData.celular.trim(),
+        correo: formData.correo.trim(),
+        detalle: formData.detalle.trim(),
+        gestion: "porLeer",
+        propiedad: propiedadEncontrada || null,
+        administrador: null
+      };
+
+      await crearMensaje(mensajeData);
+      setSubmitSuccess(true);
+
+      // Resetear formulario después de 3 segundos
+      setTimeout(() => {
+        setFormData({
+          nombreCliente: "",
+          apellidoCliente: "",
+          celular: "",
+          correo: "",
+          propiedad_id: "",
+          detalle: "",
+          gestion: "porLeer",
+          administrador: null,
+          propiedad: null
+        });
+        setSubmitSuccess(false);
+        navigate("/"); // Redirigir a home
+      }, 3000);
+
+    } catch (error) {
+      console.error("Error al enviar mensaje:", error);
+      setFormErrors({
+        general: "Ocurrió un error al enviar el mensaje. Por favor intente nuevamente."
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (submitSuccess) {
     return (
@@ -72,6 +194,12 @@ const MessagePage = () => {
 
             {/* Formulario */}
             <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+              {formErrors.general && (
+                <div className="p-4 bg-red-100 text-red-700 rounded-md">
+                  {formErrors.general}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
                   label="Nombre"
@@ -106,8 +234,9 @@ const MessagePage = () => {
                   value={formData.celular}
                   onChange={handleChange}
                   required
-                  prepend={<span className="text-gray-500">+51</span>}
+                  prepend={<span className="text-gray-500">+57</span>}
                   error={formErrors.celular}
+                  maxLength="10"
                 />
 
                 <FormInput
@@ -129,9 +258,20 @@ const MessagePage = () => {
                 name="propiedad_id"
                 value={formData.propiedad_id}
                 onChange={handleChange}
-                placeholder="Ej: PROD-12345"
+                placeholder="Ej: 0005"
                 error={formErrors.propiedad_id}
               />
+
+              {propiedadEncontrada && (
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                  <p className="text-blue-600 font-medium">
+                    Propiedad encontrada: {propiedadEncontrada.titulo}
+                  </p>
+                  <p className="text-sm text-blue-500">
+                    {propiedadEncontrada.ubicacion} - Código: {propiedadEncontrada.codigo}
+                  </p>
+                </div>
+              )}
 
               <FormTextarea
                 label="Tu mensaje"
@@ -142,9 +282,9 @@ const MessagePage = () => {
                 required
                 placeholder="Describe tu consulta con detalles..."
                 error={formErrors.detalle}
+                rows="5"
               />
 
-              {/* Botón de submit permanece igual */}
               <div className="pt-4">
                 <button
                   type="submit"
