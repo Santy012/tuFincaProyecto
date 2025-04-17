@@ -98,7 +98,7 @@ export const GlobalProvider = ({ children }) => {
         setAdmins: admins.setAdmins,
         fetchAdmins: admins.fetchAdmins,
         fetchAdminById: admins.fetchAdminById,
-        createAdmin: admins.createAdmin,
+        registerAdmin: admins.saveAdmin,
         updateAdmin: admins.updateAdmin,
         deleteAdmin: admins.deleteAdmin,
         loadingAdmins: admins.loading,

@@ -9,6 +9,7 @@ import Indicadores from "../../subcomponents/Indicadores";
 import PopupImages from "../PopupImages";
 import SelectorEtiquetas from "./SelectorEtiquetas";
 import ConfirmDialog from "../../../../../components/ConfirmDialog";
+import MessageDialog from "../../../../../components/MessageDialog";
 
 const PopUpDetalles = ({
   propiedadSeleccionada,
@@ -16,6 +17,10 @@ const PopUpDetalles = ({
   obtenerNombresEtiquetas,
 }) => {
   const { actualizarPropiedad, eliminarPropiedad, etiquetas, setEtiquetas, crearEtiqueta } = useGlobalContext();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
@@ -27,11 +32,13 @@ const PopUpDetalles = ({
   const handleDelete = async () => {
     try {
       await eliminarPropiedad(propiedad.id);
-      alert("Propiedad eliminada correctamente.");
-      setPropiedadSeleccionada(null); // Cierra el popup
+      setSuccessMessage("Propiedad eliminada correctamente.");
+      setShowSuccess(true);
+      setPropiedadSeleccionada(null);
     } catch (error) {
+      setErrorMessage("Error al eliminar la propiedad. Por favor, inténtalo de nuevo.");
+      setShowError(true);
       console.error("Error al eliminar la propiedad:", error);
-      alert("Hubo un error al eliminar la propiedad. Por favor, inténtalo de nuevo.");
     }
   };
   
@@ -80,14 +87,13 @@ const PopUpDetalles = ({
       });
 
       setPropiedadSeleccionada(propiedadActualizada);
+      setSuccessMessage("Propiedad actualizada correctamente.");
+      setShowSuccess(true);
       setEditando(false);
-
-      alert("Propiedad actualizada correctamente.");
     } catch (error) {
+      setErrorMessage("Hubo un error al actualizar la propiedad. Por favor, inténtalo de nuevo.");
+      setShowError(true);
       console.error("Error al actualizar la propiedad:", error);
-      alert(
-        "Hubo un error al actualizar la propiedad. Por favor, inténtalo de nuevo."
-      );
     }
   };
 
@@ -123,13 +129,15 @@ const PopUpDetalles = ({
     const nombreLimpio = etiquetaData.nombre.trim();
   
     if (!nombreLimpio) {
-      alert("El nombre de la etiqueta no puede estar vacío");
+      setErrorMessage("El nombre de la etiqueta no puede estar vacío");
+      setShowError(true);
       return false;
     }
   
     // Validar que no exista ya
     if (etiquetas.some((e) => e.nombre.toLowerCase() === nombreLimpio.toLowerCase())) {
-      alert("Esta etiqueta ya existe");
+      setErrorMessage("Esta etiqueta ya existe");
+      setShowError(true);
       return false;
     }
   
@@ -151,8 +159,9 @@ const PopUpDetalles = ({
   
       return true;
     } catch (error) {
+      setErrorMessage("Error al guardar la etiqueta. Por favor, inténtalo de nuevo.");
+      setShowError(true);
       console.error("Error al guardar la etiqueta:", error);
-      alert("Hubo un error al guardar la etiqueta. Por favor, inténtalo de nuevo.");
       return false;
     }
   };
@@ -367,8 +376,12 @@ const PopUpDetalles = ({
 
       {/* Confirmación de eliminación */}
       {mostrarConfirmacion && (
-        <ConfirmDialog
+        <MessageDialog
+          isOpen={mostrarConfirmacion}
+          type="confirmation"
           message="¿Estás seguro de que deseas eliminar esta propiedad?"
+          confirmText="Eliminar"
+          cancelText="Cancelar"
           onConfirm={() => {
             setMostrarConfirmacion(false);
             handleDelete();
@@ -376,6 +389,22 @@ const PopUpDetalles = ({
           onCancel={() => setMostrarConfirmacion(false)}
         />
       )}
+
+      <MessageDialog
+        isOpen={showSuccess}
+        type="success"
+        message={successMessage}
+        confirmText="Aceptar"
+        onConfirm={() => setShowSuccess(false)}
+      />
+
+      <MessageDialog
+        isOpen={showError}
+        type="error"
+        message={errorMessage}
+        confirmText="Entendido"
+        onConfirm={() => setShowError(false)}
+      />
     </div>
   );
 };

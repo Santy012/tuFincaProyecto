@@ -6,6 +6,7 @@ import Navbar from "./components/AdminNavBar";
 import ListaPropiedades from "../admin/propiedades/ListaPropiedades";
 import ListaMensajes from "../admin/msjs/ListaMensajes";
 import PerfilAdminPage from "./perfil/PerfilAdminPage";
+import RegistroAdminForm from "./components/RegistroAdminForm";
 
 const AdminPage = () => {
   const [selectedSection, setSelectedSection] = useState("propiedades");
@@ -51,7 +52,7 @@ const AdminPage = () => {
                 transition={{ duration: 0.4 }}
               >
                 <TituloSeccion titulo={"Listado de Propiedades"} />
-                <ListaPropiedades/>
+                <ListaPropiedades />
               </motion.section>
             )}
             {selectedSection === "mensajes" && (
@@ -63,8 +64,7 @@ const AdminPage = () => {
                 transition={{ duration: 0.4 }}
               >
                 <TituloSeccion titulo={"Mensajes / Comentarios"} />
-                <ListaMensajes /> 
-                
+                <ListaMensajes />
               </motion.section>
             )}
             {selectedSection === "Mi Perfil" && (
@@ -76,7 +76,19 @@ const AdminPage = () => {
                 transition={{ duration: 0.4 }}
               >
                 <TituloSeccion titulo={"Mi perfil"} />
-                <PerfilAdminPage/>
+                <PerfilAdminPage />
+              </motion.section>
+            )}
+            {selectedSection === "Registro" && (
+              <motion.section
+                key="Registro"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <TituloSeccion titulo={"Registro De Admin"} />
+                <RegistroAdminForm /> {/* Aquí va el nuevo componente */}
               </motion.section>
             )}
           </AnimatePresence>
