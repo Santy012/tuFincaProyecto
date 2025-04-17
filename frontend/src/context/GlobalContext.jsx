@@ -14,10 +14,7 @@ export const GlobalProvider = ({ children }) => {
   const medias = useMedias();
 
   const [mensajes, setMensajes] = useState([]);
-  const [admin, setAdmin] = useState(() => {
-    const storedAdmin = localStorage.getItem("admin");
-    return storedAdmin ? JSON.parse(storedAdmin) : null;
-  });
+  const [admin, setAdmin] = useState();
 
   return (
     <GlobalContext.Provider

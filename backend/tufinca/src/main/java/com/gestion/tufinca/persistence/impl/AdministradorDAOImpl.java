@@ -31,6 +31,11 @@ public class AdministradorDAOImpl implements IAdministradorDAO {
     }
 
     @Override
+    public Optional<AdministradorModel> getAdministradorByUsuario(String usuario) {
+        return administradorRepository.findByUsuario(usuario);
+    }
+
+    @Override
     public void saveAdministrador(AdministradorModel administrador) {
         administradorRepository.save(administrador);
     }

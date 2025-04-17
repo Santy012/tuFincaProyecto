@@ -40,7 +40,7 @@ public class AdministradorController {
 
     @PostMapping(path="/save")
     public ResponseEntity<?> saveAdministrador(@RequestBody AdministradorDTO administradorDTO) throws URISyntaxException {
-        //acá va lógica de seguridad? encriptar? que la contraseña tenga minimos requirements? que el correo tenga un arroba valido?
+        //que el response de save en servicio llegue acá
         administradorService.saveAdministrador(buildAdministrador(administradorDTO));
         return ResponseEntity.created(new URI("api/administrador/save")).build();
     }
