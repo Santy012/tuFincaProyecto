@@ -6,7 +6,8 @@ import {
   getAdminById,
   createAdmin,
   updateAdmin,
-  deleteAdmin
+  deleteAdmin,
+  login
 } from '../api/admin';
 
 export const useAdmins = () => {
@@ -59,6 +60,18 @@ export const useAdmins = () => {
     });
   };
 
+  const loginAdmin = async (authData) => {
+    return asyncHandler.execute(async () => {
+      try {
+        const response = await login(authData); // Llama al endpoint de login
+        return response; // Devuelve la respuesta del backend
+      } catch (error) {
+        console.error('Error en loginAdmin:', error.message || error);
+        throw error; // Lanza el error para que sea manejado en el cliente
+      }
+    });
+  };
+
   // Cargar administradores al iniciar
   useEffect(() => {
     fetchAdmins();
@@ -70,6 +83,7 @@ export const useAdmins = () => {
     fetchAdmins,
     fetchAdminById,
     saveAdmin,
+    loginAdmin,
     updateAdmin: updateAdminData,
     deleteAdmin: deleteAdminData,
     loading: asyncHandler.loading,

@@ -21,6 +21,11 @@ export const updateAdmin = async (id, adminData) => {
   return response;
 };
 
+export const login = async (authData) => {
+  const response = await apiClient.post('/auth/login', authData); // No requiere token
+  return response;
+};
+
 export const deleteAdmin = async (id) => {
   const response = await apiClient.delete(`/admins/delete/${id}`);
   return response;

@@ -13,7 +13,7 @@ public interface IAdministradorDAO {
 
     Optional<AdministradorModel> getAdministradorByUsuario(String usuario);
 
-    void saveAdministrador(AdministradorModel administrador);
+    AdministradorModel saveAdministrador(AdministradorModel administrador);
 
     void deleteAdministradorById(Integer id);
 }

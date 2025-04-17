@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { createContext, useContext } from "react";
+import Cookies from "js-cookie";
 import { usePropiedades } from "../hooks/usePropiedades";
 import { useEtiquetas } from "../hooks/useEtiquetas";
 import { useAdmins } from "../hooks/useAdmin";
 import { useMedias } from "../hooks/useMedias";
 import { useMensajes } from "../hooks/useMensajes";
+import apiClient from "../api/apiClient";
 
 const GlobalContext = createContext();
 
@@ -14,11 +17,45 @@ export const GlobalProvider = ({ children }) => {
   const admins = useAdmins();
   const medias = useMedias();
   const mensajes = useMensajes();
-  
-  const [admin, setAdmin] = useState(() => {
-    const storedAdmin = localStorage.getItem("admin");
-    return storedAdmin ? JSON.parse(storedAdmin) : null;
-  });
+  const [_, forceUpdate] = useState({});
+
+  const [admin, setAdmin] = useState(null);
+
+  const loginAdmin = async (authData) => {
+    try {
+      const response = await admins.loginAdmin(authData);
+      const { token, ...adminData } = response;
+      Cookies.set('authToken', token, { expires: 1 });
+      setAdmin({ ...adminData, token });
+      return response;
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    const token = Cookies.get("authToken");
+    if (token) {
+      apiClient
+        .get("/auth/validate-token")
+        .then((res) => {
+          setAdmin({ token });
+        })
+        .catch((err) => {
+          Cookies.remove("authToken");
+          setAdmin(null);
+        });
+    } else {
+      console.log("No se encontró token al cargar."); // <--- Añade este log
+    }
+  }, []);
+
+  const logoutAdmin = () => {
+    Cookies.remove("authToken"); // Elimina la cookie del token
+    setAdmin(null); // Limpia el estado del admin
+    forceUpdate({});
+  };
 
   return (
     <GlobalContext.Provider
@@ -81,6 +118,8 @@ export const GlobalProvider = ({ children }) => {
         // Autenticación
         admin,
         setAdmin,
+        loginAdmin,
+        logoutAdmin,
       }}
     >
       {children}

@@ -2,21 +2,27 @@ import { User } from "lucide-react";
 import PopUpBorrarPerfil from "../subcomponents/PopUpBorrarPerfil";
 import PopUpConfirmar from "../subcomponents/PopUpConfirmar";
 import { useState } from "react";
+import { useGlobalContext } from "../../../../context/GlobalContext";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 const PerfilInfo = ({ admin, onEdit }) => {
+  const { logoutAdmin } = useGlobalContext();
   const [mostrarPopUpBorrar, setMostrarPopUpBorrar] = useState(false);
   const [mostrarPopUpCerrarSesion, setMostrarPopUpCerrarSesion] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const navigate = useNavigate(); // Inicializa useNavigate
 
-  const handleLogout = async () => {
+  const handleLogoutConfirm = async () => {
     setIsLoggingOut(true);
     try {
-      // Forzar recarga para limpiar completamente el estado
-      window.location.href = '/login';
+      await logoutAdmin(); // Llama a la función del contexto
+      navigate('/login'); // Redirige después de cerrar sesión
     } catch (error) {
       console.error("Error al cerrar sesión", error);
+      // Opcional: Mostrar un mensaje de error al usuario
     } finally {
       setIsLoggingOut(false);
+      setMostrarPopUpCerrarSesion(false); // Cierra el popup después de intentar cerrar sesión
     }
   };
 
@@ -27,7 +33,7 @@ const PerfilInfo = ({ admin, onEdit }) => {
         <User size={72} className="text-gray-400" />
       </div>
       <h2 className="text-2xl font-bold text-gray-800 mt-4">{admin.usuario || "Usuario no disponible"}</h2>
-      
+
       <div className="flex w-full justify-between mt-6">
         {/* Sección de Información */}
         <div className="flex-1 text-center border-r border-gray-300 pr-6">
@@ -37,7 +43,7 @@ const PerfilInfo = ({ admin, onEdit }) => {
           <p className="text-lg font-semibold text-gray-500 mt-2">Correo</p>
           <p className="text-xl text-gray-800 font-medium">{admin.correo || "Correo no disponible"}</p>
         </div>
-        
+
         {/* Sección de Gestión de Perfil */}
         <div className="flex-1 flex flex-col items-center pl-6">
           <h3 className="text-lg font-bold text-gray-600 mb-2">Gestión de Perfil:</h3>
@@ -69,7 +75,7 @@ const PerfilInfo = ({ admin, onEdit }) => {
       {mostrarPopUpCerrarSesion && (
         <PopUpConfirmar
           mensaje="¿Estás seguro de cerrar sesión?"
-          onConfirm={handleLogout}
+          onConfirm={handleLogoutConfirm} // Usa la nueva función que llama a logoutAdmin
           onCancel={() => setMostrarPopUpCerrarSesion(false)}
           isLoading={isLoggingOut}
         />
