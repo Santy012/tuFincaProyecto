@@ -14,18 +14,17 @@ const apiClient = axios.create({
 // Interceptor para agregar el token de autorización
 apiClient.interceptors.request.use(
   (config) => {
+    // Excluir endpoints públicos del envío automático del token
+    console.log('Solicitud:', config);
     if (!config.url.includes('/auth/login')) {
-    const token = Cookies.get('authToken'); // Recupera el token de las cookies
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Agrega el token al encabezado Authorization
+      const token = Cookies.get('authToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-  }
     return config;
   },
-  (error) => {
-    // Manejo de errores en la solicitud
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Interceptor para manejar respuestas y errores globales

@@ -1,5 +1,6 @@
 package com.gestion.tufinca.config;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -42,7 +44,8 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/",
                                 "/swagger-ui/**",      // Swagger
-                                "/v3/api-docs/**"      // OpenAPI
+                                "/v3/api-docs/**",
+                                "/mensajes/**"// OpenAPI
                         ).permitAll()
 
                         // Permitir TODOS los endpoints de mensaje-controller (cualquier método HTTP)

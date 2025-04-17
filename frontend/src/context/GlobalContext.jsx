@@ -25,26 +25,31 @@ export const GlobalProvider = ({ children }) => {
   const loginAdmin = async (authData) => {
     try {
       const response = await admins.loginAdmin(authData);
-      const { token, ...adminData } = response;
+      // Asegúrate de que la respuesta del backend incluya el ID
+      const { token, id, usuario, nombre, correo } = response; 
       Cookies.set('authToken', token, { expires: 1 });
-      setAdmin({ ...adminData, token });
+      setAdmin({ id, usuario, nombre, correo }); // <--- Incluir el ID
       return response;
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       throw error;
     } finally {
-      setAuthLoading(false); // La carga termina después del intento de login (éxito o fallo)
+      setAuthLoading(false);
     }
   };
 
   useEffect(() => {
     const token = Cookies.get("authToken");
     if (token) {
-      apiClient
-        .get("/auth/validate-token")
+      apiClient.get("/auth/validate-token")
         .then((res) => {
-          // Asumiendo que 'res' ahora contiene la información completa del admin
-          setAdmin(res);
+          // Asegúrate de que el backend devuelva el ID
+          setAdmin({
+            id: res.id,
+            usuario: res.usuario,
+            nombre: res.nombre,
+            correo: res.correo
+          });
         })
         .catch((err) => {
           Cookies.remove("authToken");

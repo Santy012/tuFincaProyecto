@@ -18,6 +18,6 @@ public class MensajeDTO {
     private String detalle;
     private Gestion gestion;
     private ZonedDateTime fecha;
-    private AdministradorModel administrador;
+    private Integer administradorId;
     private PropiedadModel propiedad;
 }
