@@ -1,7 +1,6 @@
 package com.gestion.tufinca.controllers;
 
 import com.gestion.tufinca.controllers.dto.MensajeDTO;
-import com.gestion.tufinca.models.AdministradorModel;
 import com.gestion.tufinca.models.MensajeModel;
 import com.gestion.tufinca.models.enums.Gestion;
 import com.gestion.tufinca.services.IAdministradorService;
@@ -50,14 +49,12 @@ public class MensajeController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateMensajeById( @RequestBody MensajeDTO request, @PathVariable Integer id, @RequestParam Integer administradorId) {
+    public ResponseEntity<?> updateMensajeById( @RequestBody MensajeDTO request, @PathVariable Integer id) {
         Optional<MensajeModel> mensajeOptional = mensajeService.getMensajeById(id);
 
         if (mensajeOptional.isPresent()) {
             MensajeModel mensajeToUpdate = mensajeOptional.get();
             mensajeToUpdate = setMensajeUpdateValues(request, mensajeToUpdate);
-            Optional<AdministradorModel> nuevoAdmin = administradorService.getAdministradorById(administradorId);
-            nuevoAdmin.ifPresent(mensajeToUpdate::setAdministrador);
             // Guardar los cambios en la base de datos
             mensajeService.saveMensaje(mensajeToUpdate);
 
@@ -101,6 +98,8 @@ public class MensajeController {
         mensajeToUpdate.setCelular(mensajeDTO.getCelular());
         mensajeToUpdate.setCorreo(mensajeDTO.getCorreo());
         mensajeToUpdate.setDetalle(mensajeDTO.getDetalle());
+        mensajeToUpdate.setAdministrador(mensajeDTO.getAdministrador());
+        mensajeToUpdate.setPropiedad(mensajeDTO.getPropiedad());
 
         // SIEMPRE cambiar la gestión a la opuesta
         if (mensajeToUpdate.getGestion() == Gestion.realizado) {
@@ -123,6 +122,8 @@ public class MensajeController {
                 .detalle(mensajeDTO.getDetalle())
                 .gestion(mensajeDTO.getGestion())
                 .fecha(mensajeDTO.getFecha())
+                .administrador(mensajeDTO.getAdministrador())
+                .propiedad(mensajeDTO.getPropiedad())
                 .build();
     }
 
@@ -144,6 +145,8 @@ public class MensajeController {
                 .detalle(mensaje.getDetalle())
                 .gestion(mensaje.getGestion())
                 .fecha(mensaje.getFecha())
+                .administrador(mensaje.getAdministrador())
+                .propiedad(mensaje.getPropiedad())
                 .build();
     }
 }
