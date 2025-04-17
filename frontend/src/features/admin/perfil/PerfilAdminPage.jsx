@@ -4,12 +4,20 @@ import PopUpPerfil from "./subcomponents/PopUpPerfil";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const PerfilAdminPage = () => {
-  const { admin, setAdmin } = useGlobalContext();
+  const { admin, setAdmin, authLoading } = useGlobalContext();
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
+
+  if (authLoading) {
+    return (
+      <div className="flex flex-col items-center p-6">
+        <p>Verificando sesión...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center p-6">
-      <PerfilInfo admin={admin} onEdit={() => setMostrarPopUp(true)} />
+      {admin && <PerfilInfo admin={admin} onEdit={() => setMostrarPopUp(true)} />}
       {mostrarPopUp && (
         <PopUpPerfil
           admin={admin}

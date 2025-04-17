@@ -73,8 +73,22 @@ public class AuthController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             if (jwtUtil.validateToken(token)) {
-                // El token es válido
-                return ResponseEntity.ok().build(); // O podrías devolver información del usuario
+                // El token es válido, recupera la información del usuario
+                String username = jwtUtil.getUsernameFromToken(token);
+                Optional<AdministradorModel> adminOptional = administradorService.getAdministradorByUsuario(username);
+
+                if (adminOptional.isPresent()) {
+                    AdministradorModel admin = adminOptional.get();
+                    return ResponseEntity.ok(Map.of(
+                            "token", token,
+                            "usuario", admin.getUsuario(),
+                            "nombre", admin.getNombre(),
+                            "correo", admin.getCorreo()
+                    ));
+                } else {
+                    // El usuario asociado al token no se encontró (situación rara, pero manejable)
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+                }
             }
         }
         // El token no es válido

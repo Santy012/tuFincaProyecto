@@ -20,6 +20,7 @@ export const GlobalProvider = ({ children }) => {
   const [_, forceUpdate] = useState({});
 
   const [admin, setAdmin] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true); // Nuevo estado de carga
 
   const loginAdmin = async (authData) => {
     try {
@@ -31,6 +32,8 @@ export const GlobalProvider = ({ children }) => {
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       throw error;
+    } finally {
+      setAuthLoading(false); // La carga termina después del intento de login (éxito o fallo)
     }
   };
 
@@ -40,20 +43,24 @@ export const GlobalProvider = ({ children }) => {
       apiClient
         .get("/auth/validate-token")
         .then((res) => {
-          setAdmin({ token });
+          // Asumiendo que 'res' ahora contiene la información completa del admin
+          setAdmin(res);
         })
         .catch((err) => {
           Cookies.remove("authToken");
           setAdmin(null);
+        })
+        .finally(() => {
+          setAuthLoading(false);
         });
     } else {
-      console.log("No se encontró token al cargar."); // <--- Añade este log
+      setAuthLoading(false);
     }
   }, []);
 
   const logoutAdmin = () => {
-    Cookies.remove("authToken"); // Elimina la cookie del token
-    setAdmin(null); // Limpia el estado del admin
+    Cookies.remove("authToken");
+    setAdmin(null);
     forceUpdate({});
   };
 
@@ -120,6 +127,7 @@ export const GlobalProvider = ({ children }) => {
         setAdmin,
         loginAdmin,
         logoutAdmin,
+        authLoading, // Exponemos el estado authLoading
       }}
     >
       {children}

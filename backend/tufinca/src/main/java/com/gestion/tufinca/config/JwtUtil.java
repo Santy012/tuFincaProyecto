@@ -46,6 +46,21 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    public String getUsernameFromToken(String token) {
+        try {
+            Claims body = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return body.getSubject();
+        } catch (JwtException e) {
+            // Manejar cualquier error al parsear el token
+            System.err.println("Error al extraer el nombre de usuario del token: " + e.getMessage());
+            return null;
+        }
+    }
+
     // Método para validar el token de forma explícita
     public boolean validateToken(String token) {
         try {
