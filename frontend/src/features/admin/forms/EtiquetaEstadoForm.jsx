@@ -5,7 +5,7 @@ import PopUpEtiqueta from "../components/etiquetas/PopUpEtiqueta";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
-  const { etiquetas, setEtiquetas, crearEtiqueta } = useGlobalContext();
+  const { etiquetas, setEtiquetas, crearEtiqueta, eliminarEtiqueta:eliminarEtiquetaBackend } = useGlobalContext();
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState(
     propiedadData.etiquetas || []
   );
@@ -28,8 +28,31 @@ const EtiquetasEstadoForm = ({ propiedadData, handleChange }) => {
     );
   };
 
-  const eliminarEtiquetaDisponible = (nombreEtiqueta) => {
-    setEtiquetas(prev => prev.filter(e => e.nombre !== nombreEtiqueta));
+  const eliminarEtiquetaDisponible = async (nombreEtiqueta) => {
+    try {
+      // Encontrar la etiqueta completa
+      const etiquetaObj = etiquetas.find(e => e.nombre === nombreEtiqueta);
+      
+      if (!etiquetaObj) {
+        console.error("Etiqueta no encontrada:", nombreEtiqueta);
+        return;
+      }
+
+      // Eliminar del backend
+      await eliminarEtiquetaBackend(etiquetaObj.id);
+
+      // Actualizar estado global
+      setEtiquetas(prev => prev.filter(e => e.id !== etiquetaObj.id));
+
+      // Si estaba seleccionada, quitarla de las seleccionadas
+      setEtiquetasSeleccionadas(prev => 
+        prev.filter(e => e !== nombreEtiqueta)
+      );
+
+    } catch (error) {
+      console.error("Error al eliminar etiqueta:", error);
+      alert("No se pudo eliminar la etiqueta. Por favor, inténtalo de nuevo.");
+    }
   };
 
   const agregarNuevaEtiqueta = async (etiquetaData) => {

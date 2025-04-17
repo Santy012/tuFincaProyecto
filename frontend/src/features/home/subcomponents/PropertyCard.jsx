@@ -10,7 +10,7 @@ const PropertyCard = ({ propiedad }) => {
     <div className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
       {/* Carrusel de imágenes o marcador de posición */}
       {propiedad && propiedad.imagenes && propiedad.imagenes.length > 0 ? (
-        <ImageCarrousel propiedad={propiedad} />
+        <ImageCarrousel propiedad={propiedad} clickeable={false} />
       ) : (
         <div className="h-48 bg-gray-100 flex items-center justify-center">
           <p className="text-gray-500">Imagen no disponible</p>

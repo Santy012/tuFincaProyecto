@@ -15,7 +15,7 @@ const PopUpDetalles = ({
   setPropiedadSeleccionada,
   obtenerNombresEtiquetas,
 }) => {
-  const { actualizarPropiedad, eliminarPropiedad, etiquetas, setEtiquetas } = useGlobalContext();
+  const { actualizarPropiedad, eliminarPropiedad, etiquetas, setEtiquetas, crearEtiqueta } = useGlobalContext();
   const [imagenActual, setImagenActual] = useState(0);
   const [editando, setEditando] = useState(false);
   const [propiedad, setPropiedad] = useState(propiedadSeleccionada);
@@ -117,6 +117,44 @@ const PopUpDetalles = ({
       }
       return prev;
     });
+  };
+
+  const onAgregarNuevaEtiqueta = async (etiquetaData) => {
+    const nombreLimpio = etiquetaData.nombre.trim();
+  
+    if (!nombreLimpio) {
+      alert("El nombre de la etiqueta no puede estar vacío");
+      return false;
+    }
+  
+    // Validar que no exista ya
+    if (etiquetas.some((e) => e.nombre.toLowerCase() === nombreLimpio.toLowerCase())) {
+      alert("Esta etiqueta ya existe");
+      return false;
+    }
+  
+    try {
+      // Primero creamos la etiqueta en el backend
+      const etiquetaBackend = await crearEtiqueta({
+        nombre: nombreLimpio,
+        tipoEtiqueta: etiquetaData.tipoEtiqueta
+      });
+  
+      // Luego actualizamos el estado local con la respuesta del backend
+      setEtiquetas((prev) => [...prev, etiquetaBackend]);
+  
+      // Actualizar las etiquetas de la propiedad
+      setPropiedadSeleccionada((prev) => ({
+        ...prev,
+        etiquetas: [...prev.etiquetas, etiquetaBackend.id],
+      }));
+  
+      return true;
+    } catch (error) {
+      console.error("Error al guardar la etiqueta:", error);
+      alert("Hubo un error al guardar la etiqueta. Por favor, inténtalo de nuevo.");
+      return false;
+    }
   };
 
   useEffect(() => {
@@ -323,6 +361,7 @@ const PopUpDetalles = ({
           obtenerNombresEtiquetas={obtenerNombresEtiquetas}
           etiquetas={etiquetas}
           setEtiquetas={setEtiquetas}
+          onAgregarNuevaEtiqueta={onAgregarNuevaEtiqueta} // Pasa la función aquí
         />
       )}
 

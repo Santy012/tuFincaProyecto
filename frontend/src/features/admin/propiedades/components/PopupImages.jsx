@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 
 const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSeleccionada }) => {
   const { uploadMedia, deleteMedia } = useGlobalContext();
-  const [localImages, setLocalImages] = useState(imagenes); // Estado local para manejar las imágenes
+  const [localImages, setLocalImages] = useState(imagenes);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
-    setLocalImages(imagenes); // Sincroniza el estado local con las imágenes recibidas como prop
+    setLocalImages(imagenes);
   }, [imagenes]);
 
   const isVideo = (file) => {
@@ -47,20 +49,27 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
     return null;
   };
 
-  const handleAddImage = async (archivo) => {
-    if (archivo instanceof File || archivo instanceof Blob) {
-      try {
-        const propiedadId = propiedadSeleccionada.id;
-        const response = await uploadMedia([archivo], propiedadId);
+  const handleAddImages = async (files) => {
+    if (!files || files.length === 0) return;
 
-        setLocalImages((prev) => [...prev, response[0]]); // Actualiza el estado local
-        onAddImage(response[0]); // Propaga el cambio al componente padre
-      } catch (error) {
-        console.error("Error al subir el archivo:", error);
-        alert("Hubo un error al subir el archivo. Por favor, inténtalo de nuevo.");
-      }
-    } else {
-      console.error("Archivo no válido:", archivo);
+    try {
+      setIsUploading(true);
+      setUploadProgress(0);
+
+      const propiedadId = propiedadSeleccionada.id;
+      const responses = await uploadMedia(files, propiedadId, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      setLocalImages((prev) => [...prev, ...responses]);
+      responses.forEach((response) => onAddImage(response));
+      
+    } catch (error) {
+      console.error("Error al subir los archivos:", error);
+      alert("Hubo un error al subir los archivos. Por favor, inténtalo de nuevo.");
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -69,9 +78,9 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
     if (!confirmDelete) return;
 
     try {
-      await deleteMedia(mediaId); // Llama a la función para eliminar la media en el backend
-      setLocalImages((prev) => prev.filter((_, i) => i !== index)); // Actualiza el estado local
-      onRemoveImage(index); // Propaga el cambio al componente padre
+      await deleteMedia(mediaId);
+      setLocalImages((prev) => prev.filter((_, i) => i !== index));
+      onRemoveImage(index);
       alert("Imagen eliminada exitosamente.");
     } catch (error) {
       console.error("Error al eliminar la imagen:", error);
@@ -94,6 +103,18 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
         >
           <X size={24} />
         </button>
+
+        <h2 className="text-xl font-semibold mb-4">Galería de medios</h2>
+
+        {/* Barra de progreso durante la subida */}
+        {isUploading && (
+          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+            <div 
+              className="bg-blue-600 h-2.5 rounded-full" 
+              style={{ width: `${uploadProgress}%` }}
+            ></div>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {localImages.length > 0 ? (
@@ -129,15 +150,17 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
             </p>
           )}
 
-          <label className="w-full h-40 flex items-center justify-center border-2 border-dashed border-gray-400 text-gray-600 rounded-lg shadow hover:bg-gray-100 transition cursor-pointer">
+          <label className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 text-gray-600 rounded-lg shadow hover:bg-gray-100 transition cursor-pointer">
             <Plus size={40} />
+            <span className="mt-2 text-sm">Subir archivos</span>
+            <span className="text-xs text-gray-500">(Arrastra o haz clic)</span>
             <input
               type="file"
               accept="image/*,video/*"
               className="hidden"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                  handleAddImage(e.target.files[0]);
+                  handleAddImages(Array.from(e.target.files));
                 }
               }}
               multiple
@@ -145,12 +168,36 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
           </label>
         </div>
 
+        {/* Área de arrastrar y soltar */}
+        <div 
+          className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-lg text-center"
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.add("border-blue-500", "bg-blue-50");
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
+            if (e.dataTransfer.files.length > 0) {
+              handleAddImages(Array.from(e.dataTransfer.files));
+            }
+          }}
+        >
+          <p>Arrastra y suelta archivos aquí</p>
+          <p className="text-sm text-gray-500">(Imágenes o videos)</p>
+        </div>
+
         <div className="flex justify-end mt-6">
           <button
             onClick={onClose}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+            disabled={isUploading}
           >
-            Guardar
+            {isUploading ? "Subiendo..." : "Guardar"}
           </button>
         </div>
       </motion.div>

@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import ListaTotalEtiquetas from "../../../components/etiquetas/ListaTotalEtiquetas";
 import ListaEtiquetas from "../../../components/etiquetas/ListaEtiquetas";
 import PopUpEtiqueta from "../../../components/etiquetas/PopUpEtiqueta";
+import { useGlobalContext } from "../../../../../context/GlobalContext";
 
 const SelectorEtiquetas = ({
   propiedad,
@@ -12,7 +13,9 @@ const SelectorEtiquetas = ({
   obtenerNombresEtiquetas,
   etiquetas,
   setEtiquetas,
+  onAgregarNuevaEtiqueta
 }) => {
+  const { eliminarEtiqueta } = useGlobalContext();
   const [mostrarPopupNuevaEtiqueta, setMostrarPopupNuevaEtiqueta] =
     useState(false);
 
@@ -23,9 +26,18 @@ const SelectorEtiquetas = ({
       (nombre) => !obtenerNombresEtiquetas(propiedad.etiquetas).includes(nombre)
     );
 
-  const eliminarEtiquetaDisponible = (nombreEtiqueta) => {
-    setEtiquetas(prev => prev.filter(e => e.nombre !== nombreEtiqueta));
-  };
+    const eliminarEtiquetaDisponible = async (nombreEtiqueta) => {
+      try {
+        const etiquetaObj = etiquetas.find(e => e.nombre === nombreEtiqueta);
+        if (etiquetaObj) {
+          await eliminarEtiqueta(etiquetaObj.id);
+          setEtiquetas(prev => prev.filter(e => e.id !== etiquetaObj.id));
+        }
+      } catch (error) {
+        console.error("Error al eliminar etiqueta:", error);
+        alert("No se pudo eliminar la etiqueta");
+      }
+    };
 
   // Agregar etiqueta a la propiedad
   const agregarEtiqueta = (etiqueta) => {
@@ -45,7 +57,7 @@ const SelectorEtiquetas = ({
   };
 
   // Eliminar etiqueta de la propiedad
-  const eliminarEtiqueta = (nombreEtiqueta) => {
+  const eliminarEtiqueta_ = (nombreEtiqueta) => {
     setPropiedad((prev) => {
       const etiquetaObj = etiquetas.find((e) => e.nombre === nombreEtiqueta);
       if (etiquetaObj) {
@@ -126,7 +138,7 @@ const SelectorEtiquetas = ({
           </h3>
           <ListaEtiquetas
             etiquetas={obtenerNombresEtiquetas(propiedad.etiquetas)}
-            onRemove={eliminarEtiqueta}
+            onRemove={eliminarEtiqueta_}
             editando={true}
             mostrarAgregar={false}
           />
@@ -144,7 +156,7 @@ const SelectorEtiquetas = ({
         {mostrarPopupNuevaEtiqueta && (
           <div className="fixed inset-0 z-50">
             <PopUpEtiqueta
-              guardarEtiqueta={manejarGuardarEtiqueta}
+              guardarEtiqueta={onAgregarNuevaEtiqueta}
               cerrar={() => setMostrarPopupNuevaEtiqueta(false)}
             />
           </div>

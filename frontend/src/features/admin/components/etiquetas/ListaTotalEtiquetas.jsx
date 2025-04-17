@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PopUpConfirmar from "../../perfil/subcomponents/PopUpConfirmar";
 import { X } from "lucide-react";
-
 const ListaTotalEtiquetas = ({
   etiquetasDisponibles,
   agregarEtiqueta,
@@ -12,12 +11,12 @@ const ListaTotalEtiquetas = ({
   const [showConfirmacion, setShowConfirmacion] = useState(false);
 
   const handleAgregarEtiqueta = (etiqueta) => {
-  if (!etiqueta || !etiqueta.trim()) {
-    console.error("Etiqueta inválida:", etiqueta);
-    return;
-  }
-  agregarEtiqueta(etiqueta);
-};
+    if (!etiqueta || !etiqueta.trim()) {
+      console.error("Etiqueta inválida:", etiqueta);
+      return;
+    }
+    agregarEtiqueta(etiqueta);
+  };
 
   const handleEliminarEtiqueta = () => {
     eliminarEtiqueta(etiquetaAEliminar);
@@ -31,7 +30,7 @@ const ListaTotalEtiquetas = ({
       <div className="flex flex-wrap gap-2 mt-2">
         {etiquetasDisponibles.map((etiqueta, index) => (
           <div
-            key={etiqueta} // Usa el string como clave si es único
+            key={`${etiqueta}-${index}`} // Usamos el texto de la etiqueta + índice como key
             className="flex items-center gap-1 bg-gray-800 text-white px-3 py-1 rounded"
           >
             <button
