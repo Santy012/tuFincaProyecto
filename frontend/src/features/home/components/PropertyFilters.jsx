@@ -12,7 +12,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
     etiquetas: [],
     codigo: "",
     ubicacion: "",
-    tipo: "",
+    tipoPropiedad: "",
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
@@ -109,7 +109,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
 
           {/* Select para tipo de propiedad */}
           <PropertyTypeFilter
-            value={filters.tipo}
+            value={filters.tipoPropiedad}
             onChange={(value) => handleInputChange("tipoPropiedad", value)}
             options={etiquetasPropiedad}
           />
