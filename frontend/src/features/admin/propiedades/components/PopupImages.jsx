@@ -3,6 +3,7 @@ import { X, Plus } from "lucide-react";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import { useState, useEffect } from "react";
 import MessageDialog from "../../../../components/MessageDialog";
+
 const PopupImages = ({
   imagenes,
   onClose,
@@ -14,7 +15,6 @@ const PopupImages = ({
   const [localImages, setLocalImages] = useState(imagenes);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  // Estados para los diálogos
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -29,15 +29,27 @@ const PopupImages = ({
   const isVideo = (file) => {
     if (!file) return false;
 
+    // Si es un objeto File o Blob
     if (file instanceof File || file instanceof Blob) {
       return file.type.includes("video");
     }
 
+    // Si es una cadena (URL)
     if (typeof file === "string") {
-      if (file.startsWith("data:")) {
-        return file.split(";")[0].includes("video");
-      }
       return file.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
+
+    // Si es un objeto con propiedad tipo o url
+    if (typeof file === "object") {
+      if (file.tipo) {
+        return file.tipo === "video";
+      }
+      if (file.url) {
+        return file.url.match(/\.(mp4|webm|ogg|mov)$/i);
+      }
+      if (file.mimeType) {
+        return file.mimeType.includes("video");
+      }
     }
 
     return false;
@@ -46,14 +58,17 @@ const PopupImages = ({
   const getMediaSource = (media) => {
     const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 
+    // Si es una cadena (URL)
     if (typeof media === "string") {
       return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
     }
 
+    // Si es un objeto File o Blob
     if (media instanceof File || media instanceof Blob) {
       return URL.createObjectURL(media);
     }
 
+    // Si es un objeto con propiedad url
     if (typeof media === "object" && media.url) {
       return media.url.startsWith("/uploads")
         ? `${baseUrl}${media.url}`
@@ -62,6 +77,41 @@ const PopupImages = ({
 
     console.error("Tipo de media no válido:", media);
     return null;
+  };
+
+  const renderMedia = (media) => {
+    const source = getMediaSource(media);
+    if (!source) {
+      return (
+        <div className="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span className="text-gray-500">Media no disponible</span>
+        </div>
+      );
+    }
+
+    if (isVideo(media)) {
+      return (
+        <div className="w-full h-40 bg-gray-900 rounded-lg flex items-center justify-center">
+          <video
+            src={source}
+            className="max-w-full max-h-full"
+            controls
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        </div>
+      );
+    } else {
+      return (
+        <img
+          src={source}
+          alt="Media"
+          className="w-full h-40 object-cover rounded-lg shadow"
+        />
+      );
+    }
   };
 
   const handleAddImages = async (files) => {
@@ -145,58 +195,13 @@ const PopupImages = ({
           {localImages.length > 0 ? (
             localImages.map((media, index) => (
               <div key={index} className="relative group">
-                {isVideo(media) ? (
-                  <video
-                    src={getMediaSource(media)}
-                    className="w-full h-40 object-cover rounded-lg shadow"
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                  />
-                ) : (
-                  <img
-                    src={getMediaSource(media)}
-                    alt={`Media ${index + 1}`}
-                    className="w-full h-40 object-cover rounded-lg shadow"
-                  />
-                )}
+                {renderMedia(media)}
                 <button
                   onClick={() => confirmDelete(media.id, index)}
                   className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
                 >
                   <X size={16} />
                 </button>
-
-                {/* Diálogos de mensajes */}
-                <MessageDialog
-                  isOpen={showConfirmDelete}
-                  type="confirmation"
-                  message="¿Estás seguro de que deseas eliminar este archivo?"
-                  confirmText="Eliminar"
-                  cancelText="Cancelar"
-                  onConfirm={() => {
-                    setShowConfirmDelete(false);
-                    handleDeleteImage(mediaToDelete.id, mediaToDelete.index);
-                  }}
-                  onCancel={() => setShowConfirmDelete(false)}
-                />
-
-                <MessageDialog
-                  isOpen={showSuccess}
-                  type="success"
-                  message={successMessage}
-                  confirmText="Aceptar"
-                  onConfirm={() => setShowSuccess(false)}
-                />
-
-                <MessageDialog
-                  isOpen={showError}
-                  type="error"
-                  message={errorMessage}
-                  confirmText="Entendido"
-                  onConfirm={() => setShowError(false)}
-                />
               </div>
             ))
           ) : (
@@ -255,6 +260,36 @@ const PopupImages = ({
             {isUploading ? "Subiendo..." : "Guardar"}
           </button>
         </div>
+
+        {/* Diálogos de mensajes */}
+        <MessageDialog
+          isOpen={showConfirmDelete}
+          type="confirmation"
+          message="¿Estás seguro de que deseas eliminar este archivo?"
+          confirmText="Eliminar"
+          cancelText="Cancelar"
+          onConfirm={() => {
+            setShowConfirmDelete(false);
+            handleDeleteImage(mediaToDelete.id, mediaToDelete.index);
+          }}
+          onCancel={() => setShowConfirmDelete(false)}
+        />
+
+        <MessageDialog
+          isOpen={showSuccess}
+          type="success"
+          message={successMessage}
+          confirmText="Aceptar"
+          onConfirm={() => setShowSuccess(false)}
+        />
+
+        <MessageDialog
+          isOpen={showError}
+          type="error"
+          message={errorMessage}
+          confirmText="Entendido"
+          onConfirm={() => setShowError(false)}
+        />
       </motion.div>
     </div>
   );
