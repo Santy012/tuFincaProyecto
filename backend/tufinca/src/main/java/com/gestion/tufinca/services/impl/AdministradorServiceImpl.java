@@ -47,6 +47,10 @@ public class AdministradorServiceImpl implements IAdministradorService {
 
     @Override
     public AdministradorModel saveAdministrador(AdministradorModel administrador) {
+        return AdministradorDAO.saveAdministrador(administrador);
+    }
+
+    public AdministradorModel registrarAdministrador(AdministradorModel administrador) {
 
         String contraseña = administrador.getContraseña();
 

@@ -43,7 +43,7 @@ public class AdministradorController {
     @PostMapping(path="/save")
     public ResponseEntity<?> saveAdministrador(@RequestBody AdministradorDTO administradorDTO) throws URISyntaxException {
         //que el response de save en servicio llegue acá
-        administradorService.saveAdministrador(buildAdministrador(administradorDTO));
+        administradorService.registrarAdministrador(buildAdministrador(administradorDTO));
         return ResponseEntity.created(new URI("api/administrador/save")).build();
     }
 
