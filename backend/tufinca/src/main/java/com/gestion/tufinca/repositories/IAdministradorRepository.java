@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface IAdministradorRepository extends JpaRepository<AdministradorModel, Integer> {
     Optional<AdministradorModel> findByUsuario(String usuario);
+    Optional<AdministradorModel> findByCorreo(String correo);
 }

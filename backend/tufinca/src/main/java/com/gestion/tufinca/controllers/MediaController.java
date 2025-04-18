@@ -72,6 +72,7 @@ public class MediaController {
             @ApiResponse(responseCode = "200", description = "Archivos subidos exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error al subir archivos")
     })
+
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<MediaDTO>> uploadMedia(
             @Parameter(description = "Archivos multimedia", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
@@ -110,6 +111,10 @@ public class MediaController {
 
                 MediaModel savedMedia = mediaService.saveMedia(buildMedia(mediaDTO));
                 uploadedFiles.add(buildMediaDTO(savedMedia));
+            } catch (IllegalArgumentException ex) {
+                // ⛔️ Re-lanza la excepción para que sea atrapada por @ControllerAdvice y Swagger la vea
+                throw ex;
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -117,6 +122,11 @@ public class MediaController {
         }
 
         return ResponseEntity.ok(uploadedFiles);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @DeleteMapping("/{id}")

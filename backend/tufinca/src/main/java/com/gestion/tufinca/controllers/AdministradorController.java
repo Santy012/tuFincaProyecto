@@ -47,6 +47,12 @@ public class AdministradorController {
         return ResponseEntity.created(new URI("api/administrador/save")).build();
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+
     @PutMapping(path="/update/{id}")
     public ResponseEntity<?> updateAdministrador(@RequestBody AdministradorDTO request, @PathVariable("id") Integer id){
         Optional<AdministradorModel> administradorOptional = administradorService.getAdministradorById(id);
