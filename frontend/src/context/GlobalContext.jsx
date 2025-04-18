@@ -23,45 +23,64 @@ export const GlobalProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(true); // Nuevo estado de carga
 
   const loginAdmin = async (authData) => {
-    try {
-      const response = await admins.loginAdmin(authData);
-      // Asegúrate de que la respuesta del backend incluya el ID
-      const { token, id, usuario, nombre, correo } = response; 
-      Cookies.set('authToken', token, { expires: 1 });
-      setAdmin({ id, usuario, nombre, correo }); // <--- Incluir el ID
-      return response;
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      throw error;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
+  try {
+    const response = await admins.loginAdmin(authData);
+    // Asegúrate de que la respuesta del backend incluya el ID
+    const { token, id, usuario, nombre, correo } = response; 
+    Cookies.set('authToken', token, { expires: 1 });
 
-  useEffect(() => {
-    const token = Cookies.get("authToken");
-    if (token) {
-      apiClient.get("/auth/validate-token")
-        .then((res) => {
-          // Asegúrate de que el backend devuelva el ID
-          setAdmin({
-            id: res.id,
-            usuario: res.usuario,
-            nombre: res.nombre,
-            correo: res.correo
-          });
-        })
-        .catch((err) => {
-          Cookies.remove("authToken");
-          setAdmin(null);
-        })
-        .finally(() => {
-          setAuthLoading(false);
+    // Espera a que fetchAdminById obtenga los datos del administrador
+    const admin_temp = await admins.fetchAdminById(id); // Usa await aquí
+
+    // Ahora puedes acceder a admin_temp.contraseña
+    setAdmin({ 
+      id, 
+      usuario, 
+      nombre, 
+      correo, 
+      contraseña: admin_temp.contraseña, // Incluye la contraseña
+      mensajes: admin_temp.mensajes // Incluye los mensajes
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    throw error;
+  } finally {
+    setAuthLoading(false);
+  }
+};
+
+useEffect(() => {
+  const token = Cookies.get("authToken");
+  if (token) {
+    apiClient
+      .get("/auth/validate-token")
+      .then(async (res) => {
+        // Usa fetchAdminById para obtener los datos completos del administrador
+        const admin_temp = await admins.fetchAdminById(res.id);
+
+        // Guarda los datos completos del administrador en el estado global
+        setAdmin({
+          id: admin_temp.id,
+          usuario: admin_temp.usuario,
+          nombre: admin_temp.nombre,
+          correo: admin_temp.correo,
+          contraseña: admin_temp.contraseña, // Incluye la contraseña
+          mensajes: admin_temp.mensajes, // Incluye los mensajes
         });
-    } else {
-      setAuthLoading(false);
-    }
-  }, []);
+      })
+      .catch((err) => {
+        Cookies.remove("authToken");
+        setAdmin(null);
+      })
+      .finally(() => {
+        setAuthLoading(false);
+      });
+  } else {
+    setAuthLoading(false);
+  }
+}, []);
 
   const logoutAdmin = () => {
     Cookies.remove("authToken");

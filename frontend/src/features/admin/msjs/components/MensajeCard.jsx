@@ -4,7 +4,8 @@ import PopUpMensaje from "../subcomponents/PopUpMensajes";
 import PopUpConfirmar from "../../perfil/subcomponents/PopUpConfirmar";
 
 const MensajeCard = ({ mensaje, isSelected, onSelect }) => {
-  const { eliminarMensaje, propiedades, admins, fetchAdminById } = useGlobalContext();
+  const { eliminarMensaje, propiedades, admins, fetchAdminById } =
+    useGlobalContext();
   const [isOpen, setIsOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentMensaje, setCurrentMensaje] = useState(mensaje);
@@ -17,33 +18,33 @@ const MensajeCard = ({ mensaje, isSelected, onSelect }) => {
     ? admins.find((a) => a.id === mensaje.administradorId)
     : null;
 
-    useEffect(() => {
-        const fetchAdmin = async () => {
-          // Usar administradorId si ese es el nombre correcto
-          if (currentMensaje.administradorId) {
-            try {
-              const admin = await fetchAdminById(currentMensaje.administradorId);
-              setCurrentMensaje(admin);
-            } catch (error) {
-              console.error("Error al buscar el administrador:", error);
-            }
-          }
-        };
-      
-        fetchAdmin();
-      }, [currentMensaje.administradorId, fetchAdminById]); // Cambiar la dependencia aquí
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      // Usar administradorId si ese es el nombre correcto
+      if (currentMensaje.administradorId) {
+        try {
+          const admin = await fetchAdminById(currentMensaje.administradorId);
+          setCurrentMensaje(admin);
+        } catch (error) {
+          console.error("Error al buscar el administrador:", error);
+        }
+      }
+    };
+
+    fetchAdmin();
+  }, [currentMensaje.administradorId, fetchAdminById]); // Cambiar la dependencia aquí
 
   const formatFecha = (fechaString) => {
-    const fecha = new Date(fechaString);
-    return fecha.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
+    const [fecha, hora] = fechaString.split("T");
+    const [hh, mm] = hora.split(":");
+    let horas = parseInt(hh, 10);
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    horas = horas % 12 || 12; // Convierte 0 a 12
+    return `${fecha} ${horas}:${mm} ${ampm}`;
+  }
+  
+  
+  
   const handleCardClick = (e) => {
     if (e.target.type !== "checkbox") {
       setIsOpen(true);

@@ -14,16 +14,13 @@ const PopUpMensaje = ({
   const [currentMensaje, setCurrentMensaje] = useState(mensaje);
 
   const formatFechaDetallada = (fechaString) => {
-    const fecha = new Date(fechaString);
-    return fecha.toLocaleDateString("es-ES", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+    const [fecha, hora] = fechaString.split("T");
+    const [hh, mm] = hora.split(":");
+    let horas = parseInt(hh, 10);
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    horas = horas % 12 || 12; // Convierte 0 a 12
+    return `${fecha} ${horas}:${mm} ${ampm}`;
+  }
 
   // Buscar los datos del administrador por ID
   useEffect(() => {

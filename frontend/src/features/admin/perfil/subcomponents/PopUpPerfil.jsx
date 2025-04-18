@@ -14,6 +14,7 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
     nombre: admin.nombre,
     correo: admin.correo,
     usuario: admin.usuario,
+    contraseña: admin.contraseña,
     mensajes: admin.mensajes,
   });
   const [errorCorreo, setErrorCorreo] = useState("");
@@ -51,7 +52,6 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
     try {
       setIsLoading(true);
       const adminActualizado = await updateAdmin(admin.id, formData);
-      console.log("Admin actualizado:", adminActualizado);
       
       setAdmin(adminActualizado);
       setShowSuccessDialog(true);
@@ -118,6 +118,7 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
                 setEditando(false);
                 setErrorCorreo("");
                 setFormData({
+                  id: admin.id,
                   nombre: admin.nombre,
                   correo: admin.correo,
                   usuario: admin.usuario,

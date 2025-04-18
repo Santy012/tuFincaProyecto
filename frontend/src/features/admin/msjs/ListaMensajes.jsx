@@ -25,6 +25,7 @@ const ListaMensajes = () => {
 
   const mensajesFiltrados = mensajes.filter((mensaje) => {
     if (filtro === "todos") return true;
+    console.log(mensaje.fecha);
     return mensaje.gestion === filtro;
   });
 
