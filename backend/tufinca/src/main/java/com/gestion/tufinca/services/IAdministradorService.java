@@ -14,5 +14,7 @@ public interface IAdministradorService {
 
     AdministradorModel saveAdministrador(AdministradorModel administrador);
 
+    AdministradorModel registrarAdministrador(AdministradorModel administrador);
+
     void deleteAdministradorById(Integer id);
 }
