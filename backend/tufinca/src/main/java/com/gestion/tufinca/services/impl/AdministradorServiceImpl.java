@@ -50,7 +50,7 @@ public class AdministradorServiceImpl implements IAdministradorService {
 
         String contraseña = administrador.getContraseña();
 
-        if (contraseña == null || contraseña.length() < 5 || contraseña.length() > 30) {
+        if (contraseña == null || contraseña.length() < 4 || contraseña.length() > 30) {
             throw new IllegalArgumentException("La contraseña debe tener entre 5 y 30 caracteres.");
         }
 
