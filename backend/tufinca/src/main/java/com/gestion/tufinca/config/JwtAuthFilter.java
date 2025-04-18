@@ -34,8 +34,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            if (jwtUtil.validateToken(token)) { // Validación explícita
+            System.out.println("Token recibido: " + token); // Log del token recibido
+            if (jwtUtil.validateToken(token)) {
                 username = jwtUtil.extractUsername(token);
+                System.out.println("Usuario extraído del token: " + username); // Log del usuario extraído
+            } else {
+                System.out.println("Token inválido"); // Log si el token no es válido
             }
         }
 
@@ -48,6 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("Contexto de seguridad configurado para el usuario: " + username); // Log del contexto de seguridad
             }
         }
 

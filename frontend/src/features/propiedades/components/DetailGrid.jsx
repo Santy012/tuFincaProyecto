@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const DetailGrid = ({ propiedad, etiquetas }) => {
+  const navigate = useNavigate();
+
   // Función para formatear números con separadores de miles
   const formatNumber = (num) => {
     return num ? num.toLocaleString() : "N/A";
   };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Columna izquierda - Descripción y características */}
@@ -83,8 +86,13 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
           </h3>
 
           <div className="space-y-4">
-            <Link to={`/mensaje?codigo=${encodeURIComponent(propiedad.codigo)}`} className="flex items-center">
-            <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium flex items-center justify-center">
+            {/* Botón de enviar mensaje */}
+            <button
+              onClick={() =>
+                navigate("/mensaje", { state: { propiedad_id: propiedad.codigo } }) // Convertir a cadena
+              }
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors font-medium flex items-center justify-center"
+            >
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -100,7 +108,6 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
               </svg>
               Enviar mensaje
             </button>
-            </Link>
           </div>
         </div>
 

@@ -2,12 +2,25 @@ import { motion } from "framer-motion";
 import { X, Plus } from "lucide-react";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import { useState, useEffect } from "react";
-
-const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSeleccionada }) => {
+import MessageDialog from "../../../../components/MessageDialog";
+const PopupImages = ({
+  imagenes,
+  onClose,
+  onAddImage,
+  onRemoveImage,
+  propiedadSeleccionada,
+}) => {
   const { uploadMedia, deleteMedia } = useGlobalContext();
   const [localImages, setLocalImages] = useState(imagenes);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  // Estados para los diálogos
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [mediaToDelete, setMediaToDelete] = useState({ index: null, id: null });
 
   useEffect(() => {
     setLocalImages(imagenes);
@@ -42,7 +55,9 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
     }
 
     if (typeof media === "object" && media.url) {
-      return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;
+      return media.url.startsWith("/uploads")
+        ? `${baseUrl}${media.url}`
+        : media.url;
     }
 
     console.error("Tipo de media no válido:", media);
@@ -63,10 +78,14 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
 
       setLocalImages((prev) => [...prev, ...responses]);
       responses.forEach((response) => onAddImage(response));
-      
+      setSuccessMessage("Archivos subidos exitosamente!");
+      setShowSuccess(true);
     } catch (error) {
+      setErrorMessage(
+        "Error al subir los archivos. Por favor, inténtalo de nuevo."
+      );
+      setShowError(true);
       console.error("Error al subir los archivos:", error);
-      alert("Hubo un error al subir los archivos. Por favor, inténtalo de nuevo.");
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -74,18 +93,24 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
   };
 
   const handleDeleteImage = async (mediaId, index) => {
-    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta imagen?");
-    if (!confirmDelete) return;
-
     try {
       await deleteMedia(mediaId);
       setLocalImages((prev) => prev.filter((_, i) => i !== index));
       onRemoveImage(index);
-      alert("Imagen eliminada exitosamente.");
+      setSuccessMessage("Imagen eliminada exitosamente.");
+      setShowSuccess(true);
     } catch (error) {
+      setErrorMessage(
+        "Error al eliminar la imagen. Por favor, inténtalo de nuevo."
+      );
+      setShowError(true);
       console.error("Error al eliminar la imagen:", error);
-      alert("Hubo un error al eliminar la imagen. Por favor, inténtalo de nuevo.");
     }
+  };
+
+  const confirmDelete = (mediaId, index) => {
+    setMediaToDelete({ id: mediaId, index });
+    setShowConfirmDelete(true);
   };
 
   return (
@@ -109,8 +134,8 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
         {/* Barra de progreso durante la subida */}
         {isUploading && (
           <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-            <div 
-              className="bg-blue-600 h-2.5 rounded-full" 
+            <div
+              className="bg-blue-600 h-2.5 rounded-full"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>
@@ -137,11 +162,41 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
                   />
                 )}
                 <button
-                  onClick={() => handleDeleteImage(media.id, index)}
+                  onClick={() => confirmDelete(media.id, index)}
                   className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
                 >
                   <X size={16} />
                 </button>
+
+                {/* Diálogos de mensajes */}
+                <MessageDialog
+                  isOpen={showConfirmDelete}
+                  type="confirmation"
+                  message="¿Estás seguro de que deseas eliminar este archivo?"
+                  confirmText="Eliminar"
+                  cancelText="Cancelar"
+                  onConfirm={() => {
+                    setShowConfirmDelete(false);
+                    handleDeleteImage(mediaToDelete.id, mediaToDelete.index);
+                  }}
+                  onCancel={() => setShowConfirmDelete(false)}
+                />
+
+                <MessageDialog
+                  isOpen={showSuccess}
+                  type="success"
+                  message={successMessage}
+                  confirmText="Aceptar"
+                  onConfirm={() => setShowSuccess(false)}
+                />
+
+                <MessageDialog
+                  isOpen={showError}
+                  type="error"
+                  message={errorMessage}
+                  confirmText="Entendido"
+                  onConfirm={() => setShowError(false)}
+                />
               </div>
             ))
           ) : (
@@ -169,7 +224,7 @@ const PopupImages = ({ imagenes, onClose, onAddImage, onRemoveImage, propiedadSe
         </div>
 
         {/* Área de arrastrar y soltar */}
-        <div 
+        <div
           className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-lg text-center"
           onDragOver={(e) => {
             e.preventDefault();

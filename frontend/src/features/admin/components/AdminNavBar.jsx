@@ -1,9 +1,9 @@
 import {
-  FaHome,
   FaComments,
   FaPlus,
   FaRegUser,
 } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa6";
 import { BsHousesFill, BsHouseDoorFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import logo from '../../../assets/imgs/TuFincaLogo.jpeg';
@@ -47,6 +47,13 @@ const Navbar = ({ onSectionChange }) => {
         >
           <FaPlus className="text-xl" />
           <span className="text-xs">Agregar</span>
+        </button>
+        <button
+          className="flex flex-col items-center text-gray-700 hover:text-yellow-500"
+          onClick={() => onSectionChange("Registro")}
+        >
+          <FaUserPlus className="text-xl" />
+          <span className="text-xs">Registrar Admin</span>
         </button>
       </nav>
     </>
@@ -101,7 +108,6 @@ const NavContent = ({ onSectionChange, navigate }) => {
 
       {/* Línea separadora */}
       <hr className="border-t border-gray-300 my-4" />
-
       {/* Sección Administrar Cuentas */}
       <h2 className="text-lg font-semibold text-gray-700 mb-2">
         Administrar La Cuenta
@@ -112,6 +118,14 @@ const NavContent = ({ onSectionChange, navigate }) => {
           className={navItemClass}
         >
           <FaRegUser className="mr-3" /> Mi Perfil
+        </button>
+      </nav>
+      <nav className="flex flex-col space-y-4 mb-4">
+        <button
+          onClick={() => onSectionChange("Registro")}
+          className={navItemClass}
+        >
+          <FaUserPlus className="mr-3" /> Registro Admin
         </button>
       </nav>
     </div>

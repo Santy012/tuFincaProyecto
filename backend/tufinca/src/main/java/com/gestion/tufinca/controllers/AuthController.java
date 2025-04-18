@@ -59,6 +59,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(admin.getUsuario());
             return ResponseEntity.ok(Map.of(
                     "token", token,
+                    "id", admin.getId(),
                     "usuario", admin.getUsuario(),
                     "nombre", admin.getNombre(), // Añade el nombre
                     "correo", admin.getCorreo()  // Añade el correo
@@ -81,6 +82,7 @@ public class AuthController {
                     AdministradorModel admin = adminOptional.get();
                     return ResponseEntity.ok(Map.of(
                             "token", token,
+                            "id", admin.getId(),
                             "usuario", admin.getUsuario(),
                             "nombre", admin.getNombre(),
                             "correo", admin.getCorreo()

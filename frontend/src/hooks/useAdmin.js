@@ -12,6 +12,8 @@ import {
 
 export const useAdmins = () => {
   const [admins, setAdmins] = useState([]);
+  const [adminCache, setAdminCache] = useState({});
+  
   const asyncHandler = useAsyncHandler();
 
   // Obtener todos los administradores
@@ -23,13 +25,20 @@ export const useAdmins = () => {
     });
   };
 
-  // Obtener un administrador por ID
-  const fetchAdminById = async (id) => {
-    return asyncHandler.execute(async () => {
-      const response = await getAdminById(id);
-      return response;
-    });
-  };
+  // Obtener un administrador por ID con caché
+const fetchAdminById = async (id) => {
+  // Verifica si el administrador ya está en caché
+  if (adminCache[id]) {
+    return adminCache[id]; // Devuelve el administrador desde el caché
+  }
+
+  // Si no está en caché, realiza la solicitud al backend
+  return asyncHandler.execute(async () => {
+    const response = await getAdminById(id);
+    setAdminCache((prevCache) => ({ ...prevCache, [id]: response })); // Guarda en caché
+    return response;
+  });
+};
 
   // Crear nuevo administrador
   const saveAdmin = async (adminData) => {

@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../home/components/Header";
 import Footer from "../home/components/Footer";
 import FormInput from "./components/FormInput";
 import FormTextarea from "./components/FormTextArea";
 import UserIcon from "./components/UserIcon";
 import { useGlobalContext } from "../../context/GlobalContext";
-import { useNavigate } from "react-router-dom";
 
 const MessagePage = () => {
-  const { propiedades, crearMensaje, admin } = useGlobalContext();
+  const location = useLocation();
+  const { propiedades, crearMensaje } = useGlobalContext();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -16,11 +17,11 @@ const MessagePage = () => {
     apellidoCliente: "",
     celular: "",
     correo: "",
-    propiedad_id: "",
+    propiedad_id: String(location.state?.propiedad_id || ""), // Convertir a cadena
     detalle: "",
     gestion: "porLeer",
-    administrador: admin || null,
-    propiedad: null
+    administrador: null,
+    propiedad: null,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -30,10 +31,9 @@ const MessagePage = () => {
 
   // Validar código de propiedad si existe
   useEffect(() => {
-    if (formData.propiedad_id && formData.propiedad_id.trim() !== "") {
-      const propiedad = propiedades.find(
-        p => p.codigo === formData.propiedad_id.trim()
-      );
+    const propiedadId = String(formData.propiedad_id || "").trim(); // Asegurar que sea una cadena
+    if (propiedadId !== "") {
+      const propiedad = propiedades.find((p) => p.codigo === propiedadId);
       setPropiedadEncontrada(propiedad || null);
     } else {
       setPropiedadEncontrada(null);
@@ -42,16 +42,16 @@ const MessagePage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     // Limpiar error al escribir
     if (formErrors[name]) {
-      setFormErrors(prev => ({
+      setFormErrors((prev) => ({
         ...prev,
-        [name]: ""
+        [name]: "",
       }));
     }
   };
@@ -63,10 +63,10 @@ const MessagePage = () => {
       "apellidoCliente",
       "celular",
       "correo",
-      "detalle"
+      "detalle",
     ];
 
-    requiredFields.forEach(field => {
+    requiredFields.forEach((field) => {
       if (!formData[field] || formData[field].trim() === "") {
         errors[field] = "Este campo es requerido";
       }
@@ -77,7 +77,7 @@ const MessagePage = () => {
       errors.correo = "Ingrese un correo válido";
     }
 
-    // Validar celular (9 dígitos)
+    // Validar celular (10 dígitos)
     if (formData.celular && !/^\d{10}$/.test(formData.celular)) {
       errors.celular = "Ingrese un número de 10 dígitos";
     }
@@ -88,7 +88,7 @@ const MessagePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -96,16 +96,9 @@ const MessagePage = () => {
     setIsSubmitting(true);
 
     try {
-      // Preparar datos para enviar
       const mensajeData = {
-        nombreCliente: formData.nombreCliente.trim(),
-        apellidoCliente: formData.apellidoCliente.trim(),
-        celular: formData.celular.trim(),
-        correo: formData.correo.trim(),
-        detalle: formData.detalle.trim(),
-        gestion: "porLeer",
+        ...formData,
         propiedad: propiedadEncontrada || null,
-        administrador: null
       };
 
       await crearMensaje(mensajeData);
@@ -122,16 +115,16 @@ const MessagePage = () => {
           detalle: "",
           gestion: "porLeer",
           administrador: null,
-          propiedad: null
+          propiedad: null,
         });
         setSubmitSuccess(false);
         navigate("/"); // Redirigir a home
       }, 3000);
-
     } catch (error) {
       console.error("Error al enviar mensaje:", error);
       setFormErrors({
-        general: "Ocurrió un error al enviar el mensaje. Por favor intente nuevamente."
+        general:
+          "Ocurrió un error al enviar el mensaje. Por favor intente nuevamente.",
       });
     } finally {
       setIsSubmitting(false);
@@ -268,7 +261,8 @@ const MessagePage = () => {
                     Propiedad encontrada: {propiedadEncontrada.titulo}
                   </p>
                   <p className="text-sm text-blue-500">
-                    {propiedadEncontrada.ubicacion} - Código: {propiedadEncontrada.codigo}
+                    {propiedadEncontrada.ubicacion} - Código:{" "}
+                    {propiedadEncontrada.codigo}
                   </p>
                 </div>
               )}
