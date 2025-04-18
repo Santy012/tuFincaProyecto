@@ -2,15 +2,25 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import CampoEditable from "../../propiedades/subcomponents/CampoEditable";
+import { useGlobalContext } from "../../../../context/GlobalContext";
+import MessageDialog from "../../../../components/MessageDialog";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
+  const { updateAdmin } = useGlobalContext();
   const [editando, setEditando] = useState(false);
   const [formData, setFormData] = useState({
+    id: admin.id,
     nombre: admin.nombre,
     correo: admin.correo,
     usuario: admin.usuario,
+    mensajes: admin.mensajes,
   });
   const [errorCorreo, setErrorCorreo] = useState("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -27,7 +37,7 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
     setFormData((prev) => ({ ...prev, [campo]: valor }));
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (!formData.correo) {
       setErrorCorreo("El correo electrónico es requerido");
       return;
@@ -37,9 +47,21 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
       setErrorCorreo("Por favor ingresa un correo válido");
       return;
     }
-    
-    setAdmin((prev) => ({ ...prev, ...formData }));
-    setEditando(false);
+
+    try {
+      setIsLoading(true);
+      const adminActualizado = await updateAdmin(admin.id, formData);
+      console.log("Admin actualizado:", adminActualizado);
+      
+      setAdmin(adminActualizado);
+      setShowSuccessDialog(true);
+      setEditando(false);
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || "Error al actualizar el perfil");
+      setShowErrorDialog(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -107,14 +129,14 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
             </button>
             <button
               onClick={handleGuardar}
-              disabled={!!errorCorreo || !formData.correo}
+              disabled={!!errorCorreo || !formData.correo || isLoading}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition ${
-                errorCorreo || !formData.correo
+                errorCorreo || !formData.correo || isLoading
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-green-600 text-white hover:bg-green-500"
               }`}
             >
-              Guardar
+              {isLoading ? <LoadingSpinner size="small" /> : "Guardar"}
             </button>
           </div>
         ) : (
@@ -125,6 +147,28 @@ const PopUpPerfil = ({ admin, setAdmin, onClose }) => {
             Editar Perfil
           </button>
         )}
+
+        {/* Diálogos de mensajes */}
+        <MessageDialog
+          isOpen={showSuccessDialog}
+          type="success"
+          message="Perfil actualizado correctamente!"
+          confirmText="Aceptar"
+          onConfirm={() => setShowSuccessDialog(false)}
+        />
+
+        <MessageDialog
+          isOpen={showErrorDialog}
+          type="error"
+          message={errorMessage}
+          confirmText="Reintentar"
+          cancelText="Cancelar"
+          onConfirm={() => {
+            setShowErrorDialog(false);
+            handleGuardar();
+          }}
+          onCancel={() => setShowErrorDialog(false)}
+        />
       </motion.div>
     </div>
   );
