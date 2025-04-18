@@ -34,7 +34,7 @@ public class AdministradorModel {
     @Column(nullable = false)
     private String contraseña;
 
-    @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "administrador")
     @JsonIgnore
     private List<PropiedadModel> propiedades = new ArrayList<>();
 
