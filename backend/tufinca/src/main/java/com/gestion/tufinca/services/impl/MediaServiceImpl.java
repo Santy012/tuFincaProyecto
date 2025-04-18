@@ -41,7 +41,11 @@ public class MediaServiceImpl implements IMediaService {
 
     @Override
     public MediaModel saveMedia(MediaModel Media) {
-        //validar que la url (string) sea diferente
+
+        if (MediaDAO.getMediaByUrl(Media.getUrl()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe una media registrada con esa URL.");
+        }
+
         return MediaDAO.saveMedia(Media);
     }
 

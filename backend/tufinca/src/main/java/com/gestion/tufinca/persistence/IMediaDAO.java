@@ -11,6 +11,8 @@ public interface IMediaDAO {
 
     Optional<MediaModel> getMediaById(Integer id);
 
+    Optional<MediaModel> getMediaByUrl(String url);
+
     List<MediaModel> getMediasByPropiedadId(Integer propiedadId);
 
     MediaModel saveMedia(MediaModel media);
