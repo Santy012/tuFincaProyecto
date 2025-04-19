@@ -125,7 +125,6 @@ useEffect(() => {
         reloadPropiedades: propiedades.reloadData,
         loadPaginatedData: propiedades.loadPaginatedData,
         applyFilters: propiedades.applyFilters,
-        filteredProperties: propiedades.filteredProperties,
         pagination: propiedades.pagination,
         resetErrorPropiedades: propiedades.resetError,
 

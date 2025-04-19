@@ -22,9 +22,9 @@ export const getPaginatedPropiedades = async (page = 0, size = 7, filters = {}) 
       page,
       size,
       ...filters,
-      etiqueta: filters.etiqueta?.join(','), // Convertir arrays a strings
+      etiqueta: filters.etiquetas?.join(',') // Convertir arrays a strings
     };
-
+    console.log("etiquetas api: ",filters.etiquetas?.join(','))
     const response = await apiClient.get(`/propiedades/paginate`, { params });
     
     if (!response?.content) throw new Error("Respuesta paginada inválida");

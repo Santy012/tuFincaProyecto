@@ -22,11 +22,17 @@ const FiltroEtiquetas = ({
       : [...etiquetasSeleccionadas, id];
     
     setEtiquetasSeleccionadas(nuevasEtiquetas);
-    // Aplicar filtros inmediatamente al cambiar etiquetas
-    onApplyFilters({
+    console.log("nuevas etiquetas", nuevasEtiquetas);
+    const newBusquedas = {
       ...busquedas,
       etiquetas: nuevasEtiquetas
+    };
+    setBusquedas(newBusquedas);
+    console.log("new busquedas", newBusquedas);
+    onApplyFilters({
+      newBusquedas
     });
+    
   };
 
   const handleInputChange = (e, campo) => {
@@ -239,6 +245,7 @@ const FiltroEtiquetas = ({
                     ...busquedas,
                     estado: e.target.value || undefined
                   };
+                  console.log("new busquedas", newBusquedas);
                   setBusquedas(newBusquedas);
                   onApplyFilters({
                     ...newBusquedas,
@@ -249,7 +256,6 @@ const FiltroEtiquetas = ({
                 <option value="">Todos los estados</option>
                 <option value="disponible">Disponible</option>
                 <option value="vendido">Vendido</option>
-                <option value="reservado">Reservado</option>
               </select>
             </div>
           </div>

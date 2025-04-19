@@ -11,7 +11,6 @@ import { useAsyncHandler } from "./useAsyncHandler";
 export const usePropiedades = () => {
   const [propiedades, setPropiedades] = useState([]);
   const [allProperties, setAllProperties] = useState([]); // Nuevo estado para todas las propiedades
-  const [filteredProperties, setFilteredProperties] = useState([]); // Mover el estado aquí
   const [pagination, setPagination] = useState({
     currentPage: 0,
     totalPages: 1,
@@ -75,11 +74,27 @@ export const usePropiedades = () => {
   };
 
 
-  const loadPaginatedData = async (page = 0, size = 6, filters = {}) => {
+  const loadPaginatedData = async (page = 0, size = 2, filters = {}) => {
 
     try {
+      console.log("Cargando propiedades paginadas con filtros:", filters.etiquetas);
+      const etiquetasNombres = filters.etiquetas?.map(
+        (id) =>
+          allProperties
+            .flatMap((propiedad) => propiedad.etiquetasNombres || [])
+            .find((nombre) =>
+              allProperties.some((prop) => prop.etiquetas.includes(id) && prop.etiquetasNombres.includes(nombre))
+            )
+      ).filter(Boolean); // Filtrar valores nulos o indefinidos
+  
+      // Actualizar los filtros con los nombres de las etiquetas
+      const backendFilters = {
+        ...filters,
+        etiquetas: etiquetasNombres, // Reemplazar IDs con nombres
+      };
+      
       const response = await execute(() =>
-        getPaginatedPropiedades(page, size, filters)
+        getPaginatedPropiedades(page, size, backendFilters)
       );
   
       if (!response) throw new Error("Respuesta inválida");
@@ -111,12 +126,14 @@ export const usePropiedades = () => {
   // Actualizar applyFilters para usar paginación con filtros
   const applyFilters = async (filters) => {
     try {
+
+      
       const backendFilters = {
         nombre: filters.nombre || undefined,
         codigo: filters.codigo || undefined,
         ubicacion: filters.ubicacion || undefined,
         estado: filters.estado || undefined,
-        etiquetas: filters.etiquetas?.join(',') // Cambiar nombre del parámetro
+        etiquetas: filters.etiquetas || undefined
       };
   
       await loadPaginatedData(0, pagination.pageSize, backendFilters);
@@ -177,7 +194,6 @@ export const usePropiedades = () => {
 
   return {
     propiedades,
-    filteredProperties, // Mover este estado aquí
     pagination,
     allProperties,
     setPropiedades,

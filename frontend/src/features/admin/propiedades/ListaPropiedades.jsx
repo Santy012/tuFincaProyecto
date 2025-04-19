@@ -10,7 +10,8 @@ const ListaPropiedades = () => {
     propiedades, 
     etiquetas = [],
     pagination,
-    loadPaginatedData
+    loadPaginatedData,
+    applyFilters
   } = useGlobalContext() || { propiedades: [], etiquetas: [] };
   
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
@@ -23,10 +24,8 @@ const ListaPropiedades = () => {
   });
 
   const handlePageChange = (newPage) => {
-    loadPaginatedData(newPage, pagination.pageSize, {
-      ...busquedas,
-      etiquetas: etiquetasSeleccionadas
-    });
+    console.log("busquedas", busquedas);
+    loadPaginatedData(newPage, pagination.pageSize, busquedas);
   };
 
   // Separar etiquetas por tipo
@@ -40,26 +39,6 @@ const ListaPropiedades = () => {
       .filter(Boolean);
   };
 
-  // Aplicar filtros localmente para vista previa
-  const propiedadesFiltradas = propiedades.filter((propiedad) => {
-    const cumpleEtiquetas =
-      etiquetasSeleccionadas.length === 0 ||
-      etiquetasSeleccionadas.every((id) => propiedad.etiquetas.includes(id));
-      console.log(etiquetasSeleccionadas)
-
-    const cumpleCodigo =
-      !busquedas.codigo || propiedad.codigo.toLowerCase() === busquedas.codigo.toLowerCase();
-
-    const cumpleEstado = !busquedas.estado || propiedad.estado === busquedas.estado;
-
-    const cumpleNombre =
-      !busquedas.nombre ||
-      propiedad.titulo.toLowerCase().includes(busquedas.nombre.toLowerCase());
-
-    return cumpleEtiquetas && cumpleCodigo && cumpleEstado && cumpleNombre;
-  });
-  
-
   return (
     <div className="max-w-6xl mx-auto p-6">
       <FiltroEtiquetas
@@ -69,15 +48,15 @@ const ListaPropiedades = () => {
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
         busquedas={busquedas}
         setBusquedas={setBusquedas}
-        onApplyFilters={handlePageChange}
+        onApplyFilters={(busquedas) => applyFilters(busquedas)}
       />
 
-      {propiedadesFiltradas.length === 0 ? (
+      {propiedades.length === 0 ? (
         <p className="text-gray-500">No hay propiedades disponibles.</p>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {propiedadesFiltradas.map((propiedad) => (
+            {propiedades.map((propiedad) => (
               <PropiedadCard
                 key={propiedad.id}
                 propiedad={{ 
