@@ -80,29 +80,25 @@ export const usePropiedades = () => {
         getPaginatedPropiedades(page, size, filters)
       );
   
-      if (!response?.content) throw new Error("Respuesta inválida");
+      if (!response) throw new Error("Respuesta inválida");
   
-      // Calcular valores basados en la respuesta
-      const totalPages = Number(response.totalPages) || 1;
-      const totalElements = Number(response.totalElements) || 0;
-      
-      // Ajustar página actual manualmente
-      let currentPage = page;
-      if (page >= totalPages) {
-        currentPage = Math.max(0, totalPages - 1);
-      }
+      // Extraer datos de paginación directamente de la respuesta
+      const totalElements = response.totalItems || 0;
+      const totalPages = response.totalPages || 1;
+      const currentPage = response.number || 0;
+      const pageSize = response.size || size;
+
   
-      const formatted = response.content.map(formatPropiedad);
+      const formatted = response.content?.map(formatPropiedad) || [];
       setPropiedades(formatted);
   
-      // Forzar actualización de paginación
-      setPagination(prev => ({
-        ...prev,
-        currentPage, // Usar el valor ajustado
+      // Actualizar estado de paginación
+      setPagination({
+        currentPage,
         totalPages,
         totalItems: totalElements,
-        pageSize: Number(response.size) || size
-      }));
+        pageSize
+      });
   
       return { propiedades: formatted, pagination: response };
     } catch (err) {
@@ -110,7 +106,6 @@ export const usePropiedades = () => {
       throw err;
     }
   };
-
 
   // Actualizar applyFilters para usar paginación con filtros
   const applyFilters = async (filters) => {
