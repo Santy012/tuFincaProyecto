@@ -8,6 +8,7 @@ import { useAdmins } from "../hooks/useAdmin";
 import { useMedias } from "../hooks/useMedias";
 import { useMensajes } from "../hooks/useMensajes";
 import apiClient from "../api/apiClient";
+import { jwtDecode } from 'jwt-decode';
 
 const GlobalContext = createContext();
 
@@ -27,10 +28,20 @@ export const GlobalProvider = ({ children }) => {
     const response = await admins.loginAdmin(authData);
     // Asegúrate de que la respuesta del backend incluya el ID
     const { token, id, usuario, nombre, correo } = response; 
-    Cookies.set('authToken', token, { expires: 1 });
+
+    const expirationDate = new Date(Date.now() + 5 * 60 * 1000); 
+
+    Cookies.set('authToken', token, { expires: expirationDate });
 
     // Espera a que fetchAdminById obtenga los datos del administrador
     const admin_temp = await admins.fetchAdminById(id); // Usa await aquí
+
+    const decodedToken = jwtDecode(token);
+    const expiresIn = decodedToken.exp * 1000 - Date.now(); // Milisegundos restantes
+
+    setTimeout(() => {
+      logoutAdmin();
+    }, expiresIn);
 
     // Ahora puedes acceder a admin_temp.contraseña
     setAdmin({ 
@@ -51,9 +62,20 @@ export const GlobalProvider = ({ children }) => {
   }
 };
 
+
 useEffect(() => {
   const token = Cookies.get("authToken");
   if (token) {
+
+    const decoded = jwtDecode(token);
+    const expiresIn = decoded.exp * 1000 - Date.now();
+    if (expiresIn <= 0) {
+      logoutAdmin();
+    } else {
+      setTimeout(logoutAdmin, expiresIn);
+      // además podrías volver a cargar los datos de admin aquí
+    }
+
     apiClient
       .get("/auth/validate-token")
       .then(async (res) => {
