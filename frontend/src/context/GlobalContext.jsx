@@ -29,7 +29,7 @@ export const GlobalProvider = ({ children }) => {
     // Asegúrate de que la respuesta del backend incluya el ID
     const { token, id, usuario, nombre, correo } = response; 
 
-    const expirationDate = new Date(Date.now() + 5 * 60 * 1000); 
+    const expirationDate = new Date(Date.now() + 60 * 60 * 1000);
 
     Cookies.set('authToken', token, { expires: expirationDate });
 
