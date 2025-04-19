@@ -45,6 +45,7 @@ const ListaPropiedades = () => {
     const cumpleEtiquetas =
       etiquetasSeleccionadas.length === 0 ||
       etiquetasSeleccionadas.every((id) => propiedad.etiquetas.includes(id));
+      console.log(etiquetasSeleccionadas)
 
     const cumpleCodigo =
       !busquedas.codigo || propiedad.codigo.toLowerCase() === busquedas.codigo.toLowerCase();
@@ -57,6 +58,7 @@ const ListaPropiedades = () => {
 
     return cumpleEtiquetas && cumpleCodigo && cumpleEstado && cumpleNombre;
   });
+  
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -67,18 +69,15 @@ const ListaPropiedades = () => {
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
         busquedas={busquedas}
         setBusquedas={setBusquedas}
-        onApplyFilters={() => loadPaginatedData(0, pagination.pageSize, {
-          ...busquedas,
-          etiquetas: etiquetasSeleccionadas
-        })}
+        onApplyFilters={handlePageChange}
       />
 
-      {propiedades.length === 0 ? (
+      {propiedadesFiltradas.length === 0 ? (
         <p className="text-gray-500">No hay propiedades disponibles.</p>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {propiedades.map((propiedad) => (
+            {propiedadesFiltradas.map((propiedad) => (
               <PropiedadCard
                 key={propiedad.id}
                 propiedad={{ 

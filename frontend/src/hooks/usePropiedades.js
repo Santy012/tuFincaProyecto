@@ -74,7 +74,9 @@ export const usePropiedades = () => {
     }
   };
 
-  const loadPaginatedData = async (page = 0, size = 12, filters = {}) => {
+
+  const loadPaginatedData = async (page = 0, size = 6, filters = {}) => {
+
     try {
       const response = await execute(() =>
         getPaginatedPropiedades(page, size, filters)

@@ -213,7 +213,6 @@ const PopupImages = ({
           <label className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 text-gray-600 rounded-lg shadow hover:bg-gray-100 transition cursor-pointer">
             <Plus size={40} />
             <span className="mt-2 text-sm">Subir archivos</span>
-            <span className="text-xs text-gray-500">(Arrastra o haz clic)</span>
             <input
               type="file"
               accept="image/*,video/*"
@@ -226,29 +225,6 @@ const PopupImages = ({
               multiple
             />
           </label>
-        </div>
-
-        {/* Área de arrastrar y soltar */}
-        <div
-          className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-lg text-center"
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.currentTarget.classList.add("border-blue-500", "bg-blue-50");
-          }}
-          onDragLeave={(e) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove("border-blue-500", "bg-blue-50");
-            if (e.dataTransfer.files.length > 0) {
-              handleAddImages(Array.from(e.dataTransfer.files));
-            }
-          }}
-        >
-          <p>Arrastra y suelta archivos aquí</p>
-          <p className="text-sm text-gray-500">(Imágenes o videos)</p>
         </div>
 
         <div className="flex justify-end mt-6">
