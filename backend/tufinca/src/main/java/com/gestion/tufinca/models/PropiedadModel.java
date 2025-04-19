@@ -59,7 +59,7 @@ public class PropiedadModel {
     @JsonIgnore
     private List<MediaModel> medias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "propiedad")
     @JsonIgnore
     private List<MensajeModel> mensajes = new ArrayList<>();
 

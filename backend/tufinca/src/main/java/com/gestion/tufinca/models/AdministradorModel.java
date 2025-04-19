@@ -38,7 +38,7 @@ public class AdministradorModel {
     @JsonIgnore
     private List<PropiedadModel> propiedades = new ArrayList<>();
 
-    @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "administrador")
     @JsonIgnore
     private List<MensajeModel> mensajes = new ArrayList<>();
 }

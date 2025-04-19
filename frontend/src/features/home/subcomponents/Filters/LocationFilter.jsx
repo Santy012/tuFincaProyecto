@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 const LocationFilter = ({ value, onChange, propiedades }) => {
   const [ubicaciones, setUbicaciones] = useState([]);
+  
 
   // Extraer ubicaciones únicas de las propiedades
   useEffect(() => {

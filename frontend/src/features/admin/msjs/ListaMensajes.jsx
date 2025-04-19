@@ -131,6 +131,7 @@ const ListaMensajes = () => {
               label="Todos"
               color="blue"
               onClick={() => setFiltro("todos")}
+              deseleccionarTodos={deseleccionarTodos} // Pasa la función como prop
             />
             <FiltroButton
               estado="porLeer"
@@ -138,6 +139,7 @@ const ListaMensajes = () => {
               label="Por leer"
               color="red"
               onClick={() => setFiltro("porLeer")}
+              deseleccionarTodos={deseleccionarTodos} // Pasa la función como prop
             />
             <FiltroButton
               estado="realizado"
@@ -145,6 +147,7 @@ const ListaMensajes = () => {
               label="Leídos"
               color="green"
               onClick={() => setFiltro("realizado")}
+              deseleccionarTodos={deseleccionarTodos} // Pasa la función como prop
             />
           </div>
         </div>
@@ -178,7 +181,7 @@ const ListaMensajes = () => {
   );
 };
 
-const FiltroButton = ({ estado, current, label, color, onClick }) => (
+const FiltroButton = ({ estado, current, label, color, onClick, deseleccionarTodos }) => (
   <button
     onClick={() => {
       onClick();
