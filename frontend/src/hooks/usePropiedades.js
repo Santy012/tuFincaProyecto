@@ -85,9 +85,8 @@ export const usePropiedades = () => {
       // Extraer datos de paginación directamente de la respuesta
       const totalElements = response.totalItems || 0;
       const totalPages = response.totalPages || 1;
-      const currentPage = response.number || 0;
+      const currentPage = response.currentPage || 0;
       const pageSize = response.size || size;
-
   
       const formatted = response.content?.map(formatPropiedad) || [];
       setPropiedades(formatted);
