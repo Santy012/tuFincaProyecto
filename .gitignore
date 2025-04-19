@@ -36,4 +36,5 @@ Thumbs.db
 docker-compose.override.yml
 
 ### Uploads ###
-backend/tuFunca/uploads/  # Ruta exacta según tu estructura
+**/uploads/  # Ruta exacta según tu estructura
+.qodo
