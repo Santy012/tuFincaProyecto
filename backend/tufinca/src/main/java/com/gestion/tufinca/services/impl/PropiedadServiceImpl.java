@@ -1,6 +1,5 @@
 package com.gestion.tufinca.services.impl;
 
-import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.persistence.IPropiedadDAO;
@@ -11,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class PropiedadServiceImpl implements IPropiedadService {

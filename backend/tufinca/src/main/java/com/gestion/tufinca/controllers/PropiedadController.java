@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,18 +22,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.criteria.Predicate; // o javax.persistence.criteria.Predicate (depende de tu versión de Spring Boot/Jakarta)
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/propiedades")
 public class PropiedadController {
 
     private final IPropiedadService propiedadService;
+
+    @Value("${upload.directory}")
+    private String uploadDirectory;
 
     @Autowired
     public PropiedadController(IPropiedadService propiedadService) {
@@ -101,6 +109,27 @@ public class PropiedadController {
     @DeleteMapping(path="/delete/{id}")
     public ResponseEntity<?> deletePropiedadById(@PathVariable Integer id){
         if(id!=null){
+
+            Optional<PropiedadModel> propiedadOpt = propiedadService.getPropiedadById(id);
+
+            if (!propiedadOpt.isPresent()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            PropiedadModel propiedad = propiedadOpt.get();
+
+            // Borrar archivos físicos de las medias
+            propiedad.getMedias().forEach(media -> {
+
+                String fileName = media.getUrl().replace("/uploads/", "");
+                Path filePath = Paths.get(uploadDirectory + File.separator + fileName);
+                try {
+                    boolean deleted = Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    System.err.println("Error al eliminar archivo: " + e.getMessage());
+                }
+            });
+
             propiedadService.deletePropiedadById(id);
             return ResponseEntity.ok("Propiedad con id " + id + " eliminada exitosamente");
         }
@@ -143,6 +172,34 @@ public class PropiedadController {
     @DeleteMapping(path="/delete/codigo/{codigo}")
     public ResponseEntity<?> deletePropiedadByCodigo(@PathVariable String codigo){
         if(codigo!=null){
+
+            Optional<PropiedadModel> propiedadOpt = propiedadService.getPropiedadByCodigo(codigo);
+
+            if (!propiedadOpt.isPresent()) {
+                System.err.println("Propiedad no encontrada con codigo: " + codigo);
+                return ResponseEntity.badRequest().build();
+            }
+
+            PropiedadModel propiedad = propiedadOpt.get();
+
+            // Borrar archivos físicos de las medias
+            propiedad.getMedias().forEach(media -> {
+
+                String fileName = media.getUrl().replace("/uploads/", "");
+                Path filePath = Paths.get(uploadDirectory + File.separator + fileName);
+                try {
+                    boolean deleted = Files.deleteIfExists(filePath);
+                    if (deleted) {
+                        System.out.println("Archivo eliminado: " + filePath);
+                    } else {
+                        System.out.println("Archivo no encontrado (ya eliminado?): " + filePath);
+                    }
+                } catch (IOException e) {
+                    System.err.println("Error al eliminar archivo: " + filePath + " - " + e.getMessage());
+                    // puedes loguear esto en vez de imprimir
+                }
+            });
+
             propiedadService.deletePropiedadByCodigo(codigo);
             return ResponseEntity.ok("Propiedad con codigo " + codigo + " eliminada exitosamente");
         }

@@ -22,7 +22,7 @@ export const usePropiedades = () => {
 
   // Función de formateo mejorada
   const formatPropiedad = (prop) => {
-    // Normalizar imágenes
+    // Normalizar imágenes (incluyendo videos si es necesario)
     const imagenes = Array.isArray(prop?.imagenes)
       ? prop.imagenes
           .filter((img) => {
@@ -31,17 +31,17 @@ export const usePropiedades = () => {
             return false;
           })
           .map((img) => (typeof img === "string" ? { url: img } : img))
-      : prop?.medias?.filter((m) => m?.tipo?.toLowerCase() === "imagen") || [];
-
+      : prop?.medias?.filter((m) => m?.tipo?.toLowerCase() === "imagen" || m?.tipo?.toLowerCase() === "video") || []; // Incluye imágenes y videos
+  
     // Normalizar etiquetas
     const etiquetas = Array.isArray(prop?.etiquetas)
       ? prop.etiquetas.map((e) => e?.id || e).filter((e) => e)
       : [];
-
-      const etiquetasNombres = Array.isArray(prop?.etiquetas)
-    ? prop.etiquetas.map(e => e?.nombre || e.nombre)
-    : [];
-
+  
+    const etiquetasNombres = Array.isArray(prop?.etiquetas)
+      ? prop.etiquetas.map((e) => e?.nombre || e.nombre)
+      : [];
+  
     return {
       id: prop?.id || 0,
       titulo: prop?.titulo || "Sin título",
@@ -50,11 +50,11 @@ export const usePropiedades = () => {
       areaTotal: prop?.areaTotal || 0,
       areaConstruida: prop?.areaConst || 0,
       ubicacion: prop?.ubicacion || "Desconocida",
-      estado: (prop?.estado || "").toLowerCase(),
-      imagenes,
-      etiquetas,
-      etiquetasNombres,
-      administradorId: prop?.administrador?.id || null,
+      estado: prop?.estado?.toLowerCase() || "desconocido",
+      imagenes, // Incluye imágenes y videos
+      etiquetas, // IDs de etiquetas
+      etiquetasNombres, // Nombres de etiquetas
+      administradorId: prop?.administrador?.id || null, // ID del administrador
     };
   };
 

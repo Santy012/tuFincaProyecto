@@ -8,15 +8,21 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
   const isVideo = (media) => {
     if (!media) return false;
     
-    if (media instanceof File || media instanceof Blob) {
-      return media.type.startsWith('video/');
+    // Si es un objeto con propiedad tipo
+    if (typeof media === 'object' && media.tipo === 'video') {
+      return true;
     }
     
+    // Si es un objeto con URL de video
+    if (typeof media === 'object' && media.url) {
+      const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
+      return videoExtensions.some(ext => media.url.toLowerCase().endsWith(ext));
+    }
+    
+    // Si es una URL string
     if (typeof media === 'string') {
-      if (media.startsWith('data:')) {
-        return media.split(';')[0].includes('video');
-      }
-      return media.match(/\.(mp4|webm|ogg|mov)$/i);
+      const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
+      return videoExtensions.some(ext => media.toLowerCase().endsWith(ext));
     }
     
     return false;
@@ -24,28 +30,23 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
 
   const getMediaSource = (media) => {
     const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-
-    if (typeof media === "string") {
-      // Si es una URL relativa, prepéndele el dominio base
-      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
+    
+    // Si es un objeto con URL
+    if (typeof media === 'object' && media.url) {
+      return media.url.startsWith('/uploads') ? `${baseUrl}${media.url}` : media.url;
     }
-
-    if (media instanceof File || media instanceof Blob) {
-      // Si es un objeto File o Blob, usa URL.createObjectURL
-      return URL.createObjectURL(media);
+    
+    // Si es una URL string
+    if (typeof media === 'string') {
+      return media.startsWith('/uploads') ? `${baseUrl}${media}` : media;
     }
-
-    if (typeof media === "object" && media.url) {
-      // Si es un objeto con un campo `url`, construye la URL
-      return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;
-    }
-
-    console.error("Tipo de media no válido:", media);
+    
+    console.error("Formato de media no soportado:", media);
     return null;
   };
 
   const handleClick = () => {
-    if (setMostrarGaleria) {
+    if (setMostrarGaleria && !editando) {
       setMostrarGaleria(true);
     }
   };
@@ -89,6 +90,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
   };
 
   const currentMedia = propiedadSeleccionada.imagenes[imagenActual];
+  const mediaSource = getMediaSource(currentMedia);
 
   return (
     <div 
@@ -107,19 +109,24 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
           {currentMedia && isVideo(currentMedia) ? (
             <div className="w-full h-full flex items-center justify-center bg-gray-900">
               <video
-                src={getMediaSource(currentMedia)}
+                src={mediaSource}
                 className="max-w-full max-h-full"
                 controls
                 autoPlay
                 loop
                 muted
-              />
+                playsInline
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                Tu navegador no soporta videos HTML5
+              </video>
             </div>
           ) : currentMedia ? (
             <img
-              src={getMediaSource(currentMedia)}
+              src={mediaSource}
               alt={propiedadSeleccionada.titulo || "Imagen de la propiedad"}
               className="w-full h-full object-cover"
+              onContextMenu={(e) => e.preventDefault()}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -134,12 +141,14 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
           <button
             onClick={anteriorImagen}
             className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-900/60 text-white p-2 rounded-full hover:bg-gray-900 transition z-10"
+            aria-label="Anterior"
           >
             <ArrowLeft size={20} />
           </button>
           <button
             onClick={siguienteImagen}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-900/60 text-white p-2 rounded-full hover:bg-gray-900 transition z-10"
+            aria-label="Siguiente"
           >
             <ArrowRight size={20} />
           </button>
