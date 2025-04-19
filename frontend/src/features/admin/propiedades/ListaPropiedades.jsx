@@ -3,14 +3,33 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import PropiedadCard from "./components/PropiedadCard";
 import FiltroEtiquetas from "./components/FiltroEtiquetas";
 import PopUpDetalles from "./components/PopUpDetalles/PopUpDetalles";
+import Pagination from "../../../components/Pagination";
 
 const ListaPropiedades = () => {
-  const { propiedades, etiquetas = [] } = useGlobalContext() || { propiedades: [], etiquetas: [] };
+  const { 
+    propiedades, 
+    etiquetas = [],
+    pagination,
+    loadPaginatedData
+  } = useGlobalContext() || { propiedades: [], etiquetas: [] };
+  
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState([]);
-  const [busquedas, setBusquedas] = useState({ nombre: "", codigo: "", estado: "" });
+  const [busquedas, setBusquedas] = useState({ 
+    nombre: "", 
+    codigo: "", 
+    estado: "",
+    etiquetas: []
+  });
 
-    // Separar etiquetas por tipo
+  const handlePageChange = (newPage) => {
+    loadPaginatedData(newPage, pagination.pageSize, {
+      ...busquedas,
+      etiquetas: etiquetasSeleccionadas
+    });
+  };
+
+  // Separar etiquetas por tipo
   const etiquetasPropiedad = etiquetas.filter(e => e.tipoEtiqueta === 'propiedad');
   const etiquetasCategoria = etiquetas.filter(e => e.tipoEtiqueta === 'categoria');
 
@@ -21,7 +40,7 @@ const ListaPropiedades = () => {
       .filter(Boolean);
   };
 
-  // Filtrar propiedades según etiquetas, código, estado y nombre
+  // Aplicar filtros localmente para vista previa
   const propiedadesFiltradas = propiedades.filter((propiedad) => {
     const cumpleEtiquetas =
       etiquetasSeleccionadas.length === 0 ||
@@ -48,23 +67,37 @@ const ListaPropiedades = () => {
         setEtiquetasSeleccionadas={setEtiquetasSeleccionadas}
         busquedas={busquedas}
         setBusquedas={setBusquedas}
+        onApplyFilters={() => loadPaginatedData(0, pagination.pageSize, {
+          ...busquedas,
+          etiquetas: etiquetasSeleccionadas
+        })}
       />
 
-      {propiedadesFiltradas.length === 0 ? (
-        <p className="text-gray-500">No hay propiedades disponibles con esos filtros.</p>
+      {propiedades.length === 0 ? (
+        <p className="text-gray-500">No hay propiedades disponibles.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {propiedadesFiltradas.map((propiedad) => (
-            <PropiedadCard
-              key={propiedad.id}
-              propiedad={{ 
-                ...propiedad, 
-                etiquetas: obtenerNombresEtiquetas(propiedad.etiquetas || []) 
-              }}
-              onClick={() => setPropiedadSeleccionada(propiedad)}
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {propiedades.map((propiedad) => (
+              <PropiedadCard
+                key={propiedad.id}
+                propiedad={{ 
+                  ...propiedad, 
+                  etiquetas: obtenerNombresEtiquetas(propiedad.etiquetas || []) 
+                }}
+                onClick={() => setPropiedadSeleccionada(propiedad)}
+              />
+            ))}
+          </div>
+          
+          <div className="mt-8">
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
             />
-          ))}
-        </div>
+          </div>
+        </>
       )}
 
       {propiedadSeleccionada && (
