@@ -1,0 +1,14 @@
+**/.env
+**/secrets.*
+**/node_modules/
+**/*.log
+**/.git
+**/target/
+**/build/
+**/dist/
+**/.idea
+**/*.iml
+**/docker-compose*.yml
+**/Dockerfile*
+**/.dockerignore
+**/README.md

@@ -1,0 +1,62 @@
+version: '3.8'
+
+# Project: TuFinca v1.0
+# Author: Santiago Castellanos, Catalina Gutiérrez, Camilo Millan
+# Description: Sistema de gestión inmobiliaria
+# Date: 2025-04
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/tuFinca?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      UPLOAD_DIRECTORY: /app/uploads
+    volumes:
+      - uploads_volume:/app/uploads
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - finca-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - finca-network
+
+  database:
+    build:
+      context: ./database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: tuFinca
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - finca-network
+
+volumes:
+  db_data:
+  uploads_volume:
+
+networks:
+  finca-network:
+    driver: bridge
