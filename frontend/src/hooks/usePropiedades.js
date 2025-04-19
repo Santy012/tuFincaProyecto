@@ -79,20 +79,31 @@ export const usePropiedades = () => {
       const response = await execute(() =>
         getPaginatedPropiedades(page, size, filters)
       );
-
-      if (!response?.content) throw new Error("Respuesta paginada inválida");
-
+  
+      if (!response?.content) throw new Error("Respuesta inválida");
+  
+      // Calcular valores basados en la respuesta
+      const totalPages = Number(response.totalPages) || 1;
+      const totalElements = Number(response.totalElements) || 0;
+      
+      // Ajustar página actual manualmente
+      let currentPage = page;
+      if (page >= totalPages) {
+        currentPage = Math.max(0, totalPages - 1);
+      }
+  
       const formatted = response.content.map(formatPropiedad);
       setPropiedades(formatted);
-      setFilteredProperties(formatted);
-
-      setPagination({
-        currentPage: Number(response.number) || 0,
-        totalPages: Number(response.totalPages) || 1,
-        totalItems: Number(response.totalElements) || 0,
-        pageSize: Number(response.size) || 7
-      });
-
+  
+      // Forzar actualización de paginación
+      setPagination(prev => ({
+        ...prev,
+        currentPage, // Usar el valor ajustado
+        totalPages,
+        totalItems: totalElements,
+        pageSize: Number(response.size) || size
+      }));
+  
       return { propiedades: formatted, pagination: response };
     } catch (err) {
       console.error("Error loading paginated data:", err);
