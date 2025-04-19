@@ -4,6 +4,7 @@ import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,7 +28,8 @@ import java.util.Optional;
  */
 
 @Repository
-public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Integer> {
+public interface IPropiedadRepository extends JpaRepository<PropiedadModel, Integer>, JpaSpecificationExecutor<PropiedadModel> {
+
     Optional<PropiedadModel> findByCodigo(String codigo);
 
     List<PropiedadModel> findAllByEstado(EstadoPropiedad estado);

@@ -16,6 +16,32 @@ export const getPropiedades = async () => {
   }
 };
 
+export const getPaginatedPropiedades = async (page = 0, size = 7, filters = {}) => {
+  try {
+    const params = {
+      page,
+      size,
+      ...filters,
+      etiqueta: filters.etiqueta?.join(','), // Convertir arrays a strings
+    };
+
+    const response = await apiClient.get(`/propiedades/paginate`, { params });
+    
+    if (!response?.content) throw new Error("Respuesta paginada inválida");
+    
+    return {
+      content: response.content,
+      currentPage: response.number,
+      totalPages: response.totalPages,
+      totalItems: response.totalElements,
+      pageSize: response.size
+    };
+  } catch (error) {
+    console.error('Error fetching paginated properties:', error);
+    throw error;
+  }
+}
+
 export const updatePropiedad = async (id, propiedadData) => {
   return apiClient.put(`/propiedades/update/${id}`, propiedadData);
 };

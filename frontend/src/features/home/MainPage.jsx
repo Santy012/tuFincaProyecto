@@ -6,73 +6,40 @@ import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../context/GlobalContext";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorMessage from "../../components/ErrorMessage";
+import Pagination from "../../components/Pagination";
 
 const MainPage = () => {
-  const { 
+  const {
     propiedades,
-    loadingPropiedades,
+    allProperties,
+    filteredProperties,
     errorPropiedades,
     reloadPropiedades,
     resetErrorPropiedades,
-    etiquetas
+    etiquetas,
+    loadPaginatedData,
+    pagination,
+    applyFilters,
   } = useGlobalContext();
-  
-  const [filteredProperties, setFilteredProperties] = useState([]);
 
-  // Inicializar filteredProperties con propiedades disponibles
-  useEffect(() => {
-    if (propiedades && !loadingPropiedades) {
-      const propiedadesDisponibles = propiedades.filter(
-        propiedad => propiedad.estado === "disponible"
-      );
-      setFilteredProperties(propiedadesDisponibles);
-    }
-  }, [propiedades, loadingPropiedades]);
-
-  const handleFilter = (filters) => {
-    if (!propiedades || loadingPropiedades) return;
-  
-    const filtered = propiedades.filter((propiedad) => {
-      if (propiedad.estado !== "disponible") return false;
-      
-      // Filtros
-      const matchesNombre = filters.nombre === "" || 
-        propiedad.titulo.toLowerCase().includes(filters.nombre.toLowerCase());
-      const matchesCodigo = filters.codigo === "" || 
-        propiedad.codigo === filters.codigo;
-      const matchesUbicacion = filters.ubicacion === "" || 
-        propiedad.ubicacion === filters.ubicacion;
-      const matchesTipoPropiedad = filters.tipoPropiedad === "" || 
-        propiedad.etiquetas.includes(parseInt(filters.tipoPropiedad));
-      const matchesEtiqueta = filters.etiquetas.length === 0 || 
-        filters.etiquetas.every(etiquetaId => 
-          propiedad.etiquetas.includes(parseInt(etiquetaId))
-        );
-      
-      return matchesNombre && matchesCodigo && matchesUbicacion && 
-             matchesTipoPropiedad && matchesEtiqueta;
-    });
-  
-    setFilteredProperties(filtered);
+  const handlePageChange = (newPage) => {
+    loadPaginatedData(newPage, pagination.pageSize);
   };
 
-  if (loadingPropiedades) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner message="Cargando propiedades..." />
-      </div>
-    );
-  }
+  // Manejar filtros
+  const handleFilter = (filters) => {
+    applyFilters(filters);
+  };
 
   if (errorPropiedades) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <ErrorMessage 
-          message={errorPropiedades} 
+        <ErrorMessage
+          message={errorPropiedades}
           onRetry={() => {
             resetErrorPropiedades();
             reloadPropiedades();
-          }} 
+          }}
           retryText="Volver a cargar propiedades"
         />
       </div>
@@ -82,12 +49,17 @@ const MainPage = () => {
   return (
     <main>
       <Header rutaLogo="src/assets/TuFincaLogo.jpeg" />
-      <PropertyFilters 
-        onFilter={handleFilter} 
+      <PropertyFilters
+        onFilter={handleFilter}
         etiquetas={etiquetas}
-        propiedades={propiedades} 
+        propiedades={allProperties}
       />
-      <PropertyGrid propiedades={filteredProperties} />
+      <PropertyGrid propiedades={propiedades} pagination={pagination} />
+      <Pagination
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        onPageChange={handlePageChange}
+      />
       <Footer />
     </main>
   );

@@ -7,6 +7,9 @@ import com.gestion.tufinca.persistence.IPropiedadDAO;
 import com.gestion.tufinca.services.IPropiedadService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +33,11 @@ public class PropiedadServiceImpl implements IPropiedadService {
         propiedades.forEach(p -> System.out.println("Propiedad: " + p.getTitulo()));
 
         return propiedades;
+    }
+
+    @Override
+    public Page<PropiedadModel> getAllPropiedadesPaginated(Pageable pageable) {
+        return propiedadDAO.getAllPropiedadesPaginated(pageable);
     }
 
     @Override
@@ -71,5 +79,10 @@ public class PropiedadServiceImpl implements IPropiedadService {
     @Transactional
     public void deletePropiedadByCodigo(String codigo) {
         propiedadDAO.deletePropiedadByCodigo(codigo);
+    }
+
+    @Override
+    public Page<PropiedadModel> getPropiedadesPaginated(Specification<PropiedadModel> spec, Pageable pageable) {
+        return propiedadDAO.getPropiedadesPaginated(spec, pageable);
     }
 }

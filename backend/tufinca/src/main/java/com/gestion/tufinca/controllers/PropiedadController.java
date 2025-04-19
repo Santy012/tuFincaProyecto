@@ -1,5 +1,7 @@
 package com.gestion.tufinca.controllers;
 
+import com.gestion.tufinca.models.enums.TipoEtiqueta;
+import com.gestion.tufinca.specifications.PropiedadSpecifications;
 import com.gestion.tufinca.controllers.dto.PropiedadDTO;
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.MediaModel;
@@ -7,12 +9,23 @@ import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.services.IPropiedadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.persistence.criteria.Predicate; // o javax.persistence.criteria.Predicate (depende de tu versión de Spring Boot/Jakarta)
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,6 +46,28 @@ public class PropiedadController {
                 .map(this::buildPropiedadDTO)
                 .toList();
         return ResponseEntity.ok(propiedadList); // Siempre devuelve 200 OK con la lista
+    }
+
+    @GetMapping("/paginate")
+    public ResponseEntity<Page<PropiedadDTO>> getPropiedadesFiltradas(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String codigo,
+            @RequestParam(required = false) String ubicacion,
+            @RequestParam(required = false) EstadoPropiedad estado,
+            @RequestParam(required = false) List<String> etiquetas) { // Unificar parámetro
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Specification<PropiedadModel> spec = PropiedadSpecifications.conFiltros(
+                nombre, codigo, ubicacion, estado, etiquetas
+        );
+
+        Page<PropiedadDTO> result = propiedadService.getPropiedadesPaginated(spec, pageable)
+                .map(this::buildPropiedadDTO);
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")

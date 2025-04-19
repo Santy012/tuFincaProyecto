@@ -93,6 +93,7 @@ useEffect(() => {
       value={{
         // Propiedades
         propiedades: propiedades.propiedades,
+        allProperties: propiedades.allProperties,
         setPropiedades: propiedades.setPropiedades,
         crearPropiedad: propiedades.crearPropiedad,
         actualizarPropiedad: propiedades.actualizarPropiedad,
@@ -100,6 +101,10 @@ useEffect(() => {
         loadingPropiedades: propiedades.loading,
         errorPropiedades: propiedades.error,
         reloadPropiedades: propiedades.reloadData,
+        loadPaginatedData: propiedades.loadPaginatedData,
+        applyFilters: propiedades.applyFilters,
+        filteredProperties: propiedades.filteredProperties,
+        pagination: propiedades.pagination,
         resetErrorPropiedades: propiedades.resetError,
 
         // Etiquetas

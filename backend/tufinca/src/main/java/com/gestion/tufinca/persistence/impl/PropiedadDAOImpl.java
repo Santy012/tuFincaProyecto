@@ -7,7 +7,11 @@ import com.gestion.tufinca.models.enums.EstadoPropiedad;
 import com.gestion.tufinca.persistence.IPropiedadDAO;
 import com.gestion.tufinca.repositories.IPropiedadRepository;
 
+import com.gestion.tufinca.services.IPropiedadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,6 +30,11 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     @Override
     public List<PropiedadModel> getPropiedades() {
         return propiedadRepository.findAll();
+    }
+
+    @Override
+    public Page<PropiedadModel> getAllPropiedadesPaginated(Pageable pageable) {
+        return propiedadRepository.findAll(pageable);
     }
 
     @Override
@@ -66,5 +75,10 @@ public class PropiedadDAOImpl implements IPropiedadDAO {
     @Override
     public void deletePropiedadByCodigo(String codigo) {
         propiedadRepository.deleteByCodigo(codigo);
+    }
+
+    @Override
+    public Page<PropiedadModel> getPropiedadesPaginated(Specification<PropiedadModel> spec, Pageable pageable) {
+        return propiedadRepository.findAll(spec, pageable);
     }
 }
