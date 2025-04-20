@@ -1,24 +1,32 @@
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import logo from '../../../assets/imgs/TuFincaLogo.jpeg';
 
 const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+    <header className="bg-white p-4 shadow-md sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img
             src={logo}
             alt="TuFinca Logo"
-            className="h-25 w-auto" // Ajusta la altura según necesites
+            className="h-10 w-auto mr-2" // Reduje un poco la altura del logo y agregué margen derecho
           />
-          <span className="text-2xl font-bold text-blue-800">
-            TU<span className="text-green-800">FINCA</span><span className="text-blue-800">Inmobiliaria</span>
+          <span className="text-xl md:text-2xl font-bold text-blue-800">
+            TU<span className="text-green-800">FINCA</span>
+            <span className="hidden sm:inline text-blue-800">Inmobiliaria</span> {/* Ocultar en pantallas muy pequeñas */}
           </span>
         </Link>
 
-        {/* Navegación para desktop */}
-        <nav className="hidden md:flex space-x-8 text-lg">
+        {/* Navegación principal (oculta en móvil) */}
+        <nav className="hidden md:flex space-x-6 lg:space-x-8 text-lg">
           <Link
             to="/"
             className="text-gray-700 hover:text-blue-600 font-medium transition-colors relative group"
@@ -44,14 +52,19 @@ const Header = () => {
 
         {/* Botón de contacto y menú móvil */}
         <div className="flex items-center space-x-4">
-        <Link to="/mensaje" className="flex items-center">
-          <button className="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-            Contacto
-          </button>
-        </Link>
+          <Link to="/mensaje" className="hidden md:block">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              Contacto
+            </button>
+          </Link>
 
           {/* Botón de menú móvil */}
-          <button className="md:hidden text-gray-700 focus:outline-none">
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden text-gray-700 focus:outline-none"
+            aria-label="Menú"
+            aria-expanded={isMobileMenuOpen}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -63,20 +76,20 @@ const Header = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
+                d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
               />
             </svg>
           </button>
         </div>
       </div>
 
-      {/* Menú móvil (opcional, necesitarías estado para controlarlo) */}
-      {/* <div className="md:hidden bg-white py-2 px-4 shadow-lg">
-        <Link to="/" className="block py-2 text-gray-700 hover:text-blue-600">Inicio</Link>
-        <Link to="/propiedades" className="block py-2 text-gray-700 hover:text-blue-600">Propiedades</Link>
-        <Link to="/servicios" className="block py-2 text-gray-700 hover:text-blue-600">Servicios</Link>
-        <Link to="/sobre-nosotros" className="block py-2 text-gray-700 hover:text-blue-600">Sobre Nosotros</Link>
-      </div> */}
+      {/* Menú móvil */}
+      <div className={`md:hidden bg-white py-2 px-4 shadow-lg ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+        <Link to="/" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Inicio</Link>
+        <Link to="/servicios" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Servicios</Link>
+        <Link to="/sobre-nosotros" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Sobre Nosotros</Link>
+        <Link to="/mensaje" className="block py-2 text-blue-600 font-medium bg-blue-50 rounded-md text-center">Contacto</Link>
+      </div>
     </header>
   );
 };
