@@ -9,18 +9,18 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
   // Función para determinar si un media es un video
   const isVideo = (media) => {
     if (!media) return false;
-    
+
     // Si es un objeto con propiedad tipo
     if (typeof media === 'object' && media.tipo === 'video') {
       return true;
     }
-    
+
     // Si es un objeto con URL de video
     if (typeof media === 'object' && media.url) {
       const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
       return videoExtensions.some(ext => media.url.toLowerCase().endsWith(ext));
     }
-    
+
     return false;
   };
 
@@ -29,9 +29,9 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
     ...media,
     url: media.url?.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url,
     isVideo: isVideo(media)
-  })) || [{ 
-    url: "https://picsum.photos/1200/800?random=10", 
-    isVideo: false 
+  })) || [{
+    url: "https://picsum.photos/1200/800?random=10",
+    isVideo: false
   }];
 
   const hasMultipleItems = mediaItems.length > 1;
@@ -57,7 +57,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
   };
 
   // Estilos condicionales
-  const containerClass = fullSize 
+  const containerClass = fullSize
     ? `relative w-full max-w-4xl mx-auto ${className}`
     : 'relative h-48 overflow-hidden group';
 
@@ -75,7 +75,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
         <div className={`w-full ${isFullscreen ? 'h-[90vh]' : 'h-full'} flex items-center justify-center bg-black`}>
           <video
             src={media.url}
-            className={`${isFullscreen ? 'max-h-[90vh]' : 'max-h-full'} max-w-full`}
+            className={`${isFullscreen ? 'max-h-[90vh] max-w-full' : 'max-h-full max-w-full'}`}
             controls
             autoPlay
             loop
@@ -92,7 +92,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
         <img
           src={media.url}
           alt={propiedad.titulo || "Propiedad"}
-          className={mediaClass}
+          className={`${mediaClass} ${isFullscreen ? 'max-h-[90vh] max-w-full object-contain' : ''}`}
           onError={(e) => {
             e.target.src = "https://picsum.photos/1200/800?random=10";
           }}
@@ -104,7 +104,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
 
   return (
     <>
-      <div className={containerClass} onClick={toggleFullscreen}>
+      <div className={containerClass} onClick={clickeable ? toggleFullscreen : undefined}>
         {/* Media principal (imagen o video) */}
         {renderMedia(currentMedia)}
 
@@ -127,7 +127,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
+
             <button
               onClick={nextItem}
               className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md ${
@@ -150,8 +150,8 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                 key={index}
                 onClick={(e) => goToItem(e, index)}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex 
-                    ? 'bg-white w-4' 
+                  index === currentIndex
+                    ? 'bg-white w-4'
                     : 'bg-white/50 hover:bg-white/70'
                 }`}
                 aria-label={`Ir al media ${index + 1}`}
@@ -191,6 +191,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   onClick={(e) => e.stopPropagation()}
+                  className="flex items-center justify-center max-w-full max-h-[90vh]" // Centrar y limitar el tamaño
                 >
                   {renderMedia(currentMedia, true)}
                 </motion.div>
@@ -209,7 +210,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    
+
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -232,8 +233,8 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                             goToItem(e, index);
                           }}
                           className={`w-3 h-3 rounded-full transition-all ${
-                            index === currentIndex 
-                              ? 'bg-white w-6' 
+                            index === currentIndex
+                              ? 'bg-white w-6'
                               : 'bg-white/50 hover:bg-white/70'
                           }`}
                           aria-label={`Ir al media ${index + 1}`}

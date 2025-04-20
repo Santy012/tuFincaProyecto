@@ -50,7 +50,7 @@ const DetailGrid = ({ propiedad, etiquetas }) => {
               </div>
             </div>
 
-            {propiedad.areaConstruida && (
+            {propiedad.areaConstruida !== undefined && propiedad.areaConstruida !== null && propiedad.areaConstruida !== 0 && (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="text-gray-500 flex items-center">
                   <svg
