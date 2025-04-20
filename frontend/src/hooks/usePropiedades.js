@@ -75,7 +75,7 @@ export const usePropiedades = () => {
   };
 
 
-  const loadPaginatedData = async (page = 0, size = 2, filters = currentFilters) => {
+  const loadPaginatedData = async (page = 0, size = 12, filters = currentFilters) => {
     try {
       console.log("Filtros iniciales:", filters);
   
