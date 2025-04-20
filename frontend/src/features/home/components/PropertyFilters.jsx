@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import NameFilter from "../subcomponents/Filters/NameFilter";
 import CodeFilter from "../subcomponents/Filters/CodeFilter";
 import FilterButtons from "../subcomponents/Filters/FilterButtons";
 import TagsFilterSection from "../subcomponents/Filters/TagFilterSection";
 import LocationFilter from "../subcomponents/Filters/LocationFilter";
 import PropertyTypeFilter from "../subcomponents/Filters/PropertyTypeFilter";
-
+import { debounce } from 'lodash';
 const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
   const [filters, setFilters] = useState({
     nombre: "",
@@ -15,6 +15,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
 
    // Actualizar el efecto para usar nombres
    useEffect(() => {
@@ -36,6 +37,19 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
       setEtiquetasCategoria(contarEtiquetas("categoria"));
     }
   }, [propiedades, etiquetas]);
+
+
+  const debouncedFilter = useCallback(debounce(async (filters) => {
+    try {
+      setIsFiltering(true);
+      await onFilter({
+        ...filters,
+        etiquetas: filters.etiquetas
+      });
+    } finally {
+      setIsFiltering(false);
+    }
+  }, 500), [onFilter]);
 
   const handleInputChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -66,10 +80,8 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onFilter({
-      ...filters,
-      etiquetas: filters.etiquetas
-    });
+    if (isFiltering) return;
+    debouncedFilter(filters);
   };
 
   const resetFilters = () => {
@@ -81,7 +93,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
       tipoPropiedad: "",
     };
     setFilters(resetValues);
-    onFilter(resetValues);
+    debouncedFilter(resetValues);
   };
 
   return (
@@ -120,7 +132,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
             onChange={(value) => handleInputChange("codigo", value)}
           />
 
-          <FilterButtons onReset={resetFilters} />
+          <FilterButtons onReset={resetFilters} isLoading={isFiltering}/>
         </form>
 
         {/* Sección para filtrar por categorías (etiquetas normales) */}

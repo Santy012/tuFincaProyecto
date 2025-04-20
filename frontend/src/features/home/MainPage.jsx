@@ -2,11 +2,11 @@ import Header from "./components/Header";
 import PropertyGrid from "./components/PropertyGrid";
 import Footer from "./components/Footer";
 import PropertyFilters from "./components/PropertyFilters";
-import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../context/GlobalContext";
-import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorMessage from "../../components/ErrorMessage";
 import Pagination from "../../components/Pagination";
+import { useState, useCallback } from "react";
+import { debounce } from 'lodash';
 
 const MainPage = () => {
   const {
@@ -22,9 +22,30 @@ const MainPage = () => {
     currentFilters
   } = useGlobalContext();
 
-  const handlePageChange = (newPage) => {
-    loadPaginatedData(newPage, pagination.pageSize, currentFilters);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Versión debounceada con cancelación
+  const debouncedLoadData = useCallback(debounce(async (newPage, abortController) => {
+    try {
+      setIsLoading(true);
+      await loadPaginatedData(
+        newPage, 
+        pagination.pageSize, 
+        currentFilters
+      );
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Error loading data:', err);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, 500), [loadPaginatedData, pagination.pageSize, currentFilters]);
+
+  const handlePageChange = useCallback((newPage) => {
+    if (isLoading) return;
+    debouncedLoadData(newPage);
+  }, [debouncedLoadData, isLoading]);
 
   // Manejar filtros
   const handleFilter = (filters) => {

@@ -10,6 +10,7 @@ import { useMensajes } from "../hooks/useMensajes";
 import apiClient from "../api/apiClient";
 import { jwtDecode } from 'jwt-decode';
 
+
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {

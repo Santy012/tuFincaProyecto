@@ -10,7 +10,7 @@ import { useAsyncHandler } from "./useAsyncHandler";
 
 export const usePropiedades = () => {
   const [propiedades, setPropiedades] = useState([]);
-  const [allProperties, setAllProperties] = useState([]); // Nuevo estado para todas las propiedades
+  const [allProperties, setAllProperties] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 0,
     totalPages: 1,
