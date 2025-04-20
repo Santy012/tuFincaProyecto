@@ -12,7 +12,6 @@ const MainPage = () => {
   const {
     propiedades,
     allProperties,
-    filteredProperties,
     errorPropiedades,
     reloadPropiedades,
     resetErrorPropiedades,
@@ -20,10 +19,11 @@ const MainPage = () => {
     loadPaginatedData,
     pagination,
     applyFilters,
+    currentFilters
   } = useGlobalContext();
 
   const handlePageChange = (newPage) => {
-    loadPaginatedData(newPage, pagination.pageSize);
+    loadPaginatedData(newPage, pagination.pageSize, currentFilters);
   };
 
   // Manejar filtros

@@ -17,6 +17,7 @@ export const usePropiedades = () => {
     totalItems: 0,
     pageSize: 12,
   });
+  const [currentFilters, setCurrentFilters] = useState({});
   const { execute, loading, error, resetError } = useAsyncHandler();
 
   // Función de formateo mejorada
@@ -74,46 +75,48 @@ export const usePropiedades = () => {
   };
 
 
-  const loadPaginatedData = async (page = 0, size = 2, filters = {}) => {
-
+  const loadPaginatedData = async (page = 0, size = 2, filters = currentFilters) => {
     try {
-      console.log("Cargando propiedades paginadas con filtros:", filters.etiquetas);
-      const etiquetasNombres = filters.etiquetas?.map(
-        (id) =>
-          allProperties
-            .flatMap((propiedad) => propiedad.etiquetasNombres || [])
-            .find((nombre) =>
-              allProperties.some((prop) => prop.etiquetas.includes(id) && prop.etiquetasNombres.includes(nombre))
-            )
-      ).filter(Boolean); // Filtrar valores nulos o indefinidos
+      console.log("Filtros iniciales:", filters);
   
-      // Actualizar los filtros con los nombres de las etiquetas
-      const backendFilters = {
-        ...filters,
-        etiquetas: etiquetasNombres, // Reemplazar IDs con nombres
-      };
-      
-      const response = await execute(() =>
-        getPaginatedPropiedades(page, size, backendFilters)
+      // Preparar los parámetros de consulta
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', page);
+      queryParams.append('size', size);
+  
+      // Añadir filtros si existen
+      if (filters.nombre) queryParams.append('nombre', filters.nombre);
+      if (filters.codigo) queryParams.append('codigo', filters.codigo);
+      if (filters.ubicacion) queryParams.append('ubicacion', filters.ubicacion);
+      if (filters.estado) queryParams.append('estado', filters.estado);
+  
+      // Manejar array de etiquetas correctamente
+      if (filters.etiquetas && filters.etiquetas.length > 0) {
+        filters.etiquetas.forEach(etiqueta => {
+          queryParams.append('etiquetas', etiqueta);
+        });
+      }
+  
+      console.log("Query params:", queryParams.toString());
+  
+      // Llamar al API con los parámetros correctamente formados
+      const response = await execute(() => 
+        getPaginatedPropiedades(queryParams)
       );
+
+      console.log("Respuesta de paginación:", response);
   
       if (!response) throw new Error("Respuesta inválida");
   
-      // Extraer datos de paginación directamente de la respuesta
-      const totalElements = response.totalItems || 0;
-      const totalPages = response.totalPages || 1;
-      const currentPage = response.currentPage || 0;
-      const pageSize = response.size || size;
-  
+      // Procesar respuesta...
       const formatted = response.content?.map(formatPropiedad) || [];
       setPropiedades(formatted);
   
-      // Actualizar estado de paginación
       setPagination({
-        currentPage,
-        totalPages,
-        totalItems: totalElements,
-        pageSize
+        currentPage: response.number || 0,
+        totalPages: response.totalPages || 1,
+        totalItems: response.totalElements || 0,
+        pageSize: response.size || size
       });
   
       return { propiedades: formatted, pagination: response };
@@ -122,21 +125,21 @@ export const usePropiedades = () => {
       throw err;
     }
   };
-
-  // Actualizar applyFilters para usar paginación con filtros
+  
+  // Función applyFilters actualizada
   const applyFilters = async (filters) => {
     try {
-
-      
-      const backendFilters = {
+      // Limpiar filtros - eliminar valores vacíos/undefined
+      const cleanFilters = {
         nombre: filters.nombre || undefined,
         codigo: filters.codigo || undefined,
         ubicacion: filters.ubicacion || undefined,
         estado: filters.estado || undefined,
         etiquetas: filters.etiquetas || undefined
       };
-  
-      await loadPaginatedData(0, pagination.pageSize, backendFilters);
+
+      setCurrentFilters(filters);
+      await loadPaginatedData(0, pagination.pageSize, cleanFilters);
     } catch (err) {
       console.error("Error applying filters:", err);
       throw err;
@@ -195,6 +198,7 @@ export const usePropiedades = () => {
   return {
     propiedades,
     pagination,
+    currentFilters,
     allProperties,
     setPropiedades,
     crearPropiedad,
