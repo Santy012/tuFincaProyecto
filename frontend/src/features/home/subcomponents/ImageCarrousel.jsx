@@ -5,22 +5,16 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+  const maxVisibleDots = 7; // Número máximo de puntos a mostrar
 
   // Función para determinar si un media es un video
   const isVideo = (media) => {
     if (!media) return false;
-
-    // Si es un objeto con propiedad tipo
-    if (typeof media === 'object' && media.tipo === 'video') {
-      return true;
-    }
-
-    // Si es un objeto con URL de video
+    if (typeof media === 'object' && media.tipo === 'video') return true;
     if (typeof media === 'object' && media.url) {
       const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
       return videoExtensions.some(ext => media.url.toLowerCase().endsWith(ext));
     }
-
     return false;
   };
 
@@ -81,6 +75,7 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
             loop
             muted
             playsInline
+            controlsList="nodownload"
             onContextMenu={(e) => e.preventDefault()}
           >
             Tu navegador no soporta videos HTML5
@@ -102,18 +97,99 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
     }
   };
 
+  // Lógica para mostrar un subconjunto de puntos
+  const renderDots = () => {
+    if (!hasMultipleItems) return null;
+
+    const dots = [];
+    const totalDots = mediaItems.length;
+
+    if (totalDots <= maxVisibleDots) {
+      // Mostrar todos los puntos si no hay demasiados
+      for (let i = 0; i < totalDots; i++) {
+        dots.push(
+          <button
+            key={i}
+            onClick={(e) => goToItem(e, i)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              i === currentIndex ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Ir al media ${i + 1}`}
+          />
+        );
+      }
+    } else {
+      // Calcular el rango de puntos a mostrar
+      let start = Math.max(0, currentIndex - Math.floor(maxVisibleDots / 2));
+      let end = Math.min(totalDots - 1, start + maxVisibleDots - 1);
+
+      // Ajustar el inicio si el final está cerca del límite
+      if (end - start + 1 < maxVisibleDots && end === totalDots - 1) {
+        start = Math.max(0, end - maxVisibleDots + 1);
+      }
+
+      // Mostrar el primer punto si no está en el rango
+      if (start > 0) {
+        dots.push(
+          <button
+            key={0}
+            onClick={(e) => goToItem(e, 0)}
+            className={`w-2 h-2 rounded-full transition-all bg-white/50 hover:bg-white/70`}
+            aria-label={`Ir al media 1`}
+          >
+            {currentIndex > Math.floor(maxVisibleDots / 2) && <span>...</span>}
+          </button>
+        );
+        if (currentIndex > Math.floor(maxVisibleDots / 2)) {
+          start++;
+        }
+      }
+
+      // Mostrar los puntos dentro del rango
+      for (let i = start; i <= end; i++) {
+        dots.push(
+          <button
+            key={i}
+            onClick={(e) => goToItem(e, i)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              i === currentIndex ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Ir al media ${i + 1}`}
+          />
+        );
+      }
+
+      // Mostrar el último punto si no está en el rango
+      if (end < totalDots - 1) {
+        if (end < totalDots - 1 - Math.floor(maxVisibleDots / 2)) {
+          dots.push(<span>...</span>);
+          end = totalDots - 2; // Ajustar para mostrar el penúltimo antes del último
+        }
+        dots.push(
+          <button
+            key={totalDots - 1}
+            onClick={(e) => goToItem(e, totalDots - 1)}
+            className={`w-2 h-2 rounded-full transition-all bg-white/50 hover:bg-white/70`}
+            aria-label={`Ir al media ${totalDots}`}
+          />
+        );
+      }
+    }
+
+    return (
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+        {dots}
+      </div>
+    );
+  };
+
   return (
     <>
       <div className={containerClass} onClick={clickeable ? toggleFullscreen : undefined}>
-        {/* Media principal (imagen o video) */}
         {renderMedia(currentMedia)}
-
-        {/* Contador de medios */}
         <div className="absolute bottom-4 right-4 bg-black/60 text-white px-2 py-1 rounded-md text-sm font-medium">
           {currentIndex + 1}/{mediaItems.length}
         </div>
-
-        {/* Flechas de navegación */}
         {hasMultipleItems && (
           <>
             <button
@@ -127,7 +203,6 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-
             <button
               onClick={nextItem}
               className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md ${
@@ -141,27 +216,9 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
             </button>
           </>
         )}
-
-        {/* Puntos de navegación */}
-        {hasMultipleItems && (
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-            {mediaItems.map((_, index) => (
-              <button
-                key={index}
-                onClick={(e) => goToItem(e, index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex
-                    ? 'bg-white w-4'
-                    : 'bg-white/50 hover:bg-white/70'
-                }`}
-                aria-label={`Ir al media ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        {renderDots()}
       </div>
 
-      {/* Popup de media completo */}
       {clickeable && (
         <AnimatePresence>
           {showFullscreen && (
@@ -173,7 +230,6 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
               onClick={toggleFullscreen}
             >
               <div className="relative max-w-full max-h-full">
-                {/* Botón de cerrar */}
                 <button
                   className="absolute top-4 right-4 z-10 text-white hover:text-gray-300"
                   onClick={toggleFullscreen}
@@ -182,8 +238,6 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-
-                {/* Media en tamaño completo */}
                 <motion.div
                   key={currentIndex}
                   initial={{ opacity: 0 }}
@@ -191,12 +245,10 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   onClick={(e) => e.stopPropagation()}
-                  className="flex items-center justify-center max-w-full max-h-[90vh]" // Centrar y limitar el tamaño
+                  className="flex items-center justify-center max-w-full max-h-[90vh]"
                 >
                   {renderMedia(currentMedia, true)}
                 </motion.div>
-
-                {/* Controles de navegación */}
                 {hasMultipleItems && (
                   <>
                     <button
@@ -210,7 +262,6 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -222,24 +273,8 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
-
-                    {/* Indicadores */}
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                      {mediaItems.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            goToItem(e, index);
-                          }}
-                          className={`w-3 h-3 rounded-full transition-all ${
-                            index === currentIndex
-                              ? 'bg-white w-6'
-                              : 'bg-white/50 hover:bg-white/70'
-                          }`}
-                          aria-label={`Ir al media ${index + 1}`}
-                        />
-                      ))}
+                      {renderDots()}
                     </div>
                   </>
                 )}

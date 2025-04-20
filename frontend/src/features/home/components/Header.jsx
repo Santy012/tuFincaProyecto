@@ -21,7 +21,7 @@ const Header = () => {
           />
           <span className="text-xl md:text-2xl font-bold text-blue-800">
             TU<span className="text-green-800">FINCA</span>
-            <span className="hidden sm:inline text-blue-800">Inmobiliaria</span> {/* Ocultar en pantallas muy pequeñas */}
+            <span className=" text-blue-800">Inmobiliaria</span> {/* Ocultar en pantallas muy pequeñas */}
           </span>
         </Link>
 
