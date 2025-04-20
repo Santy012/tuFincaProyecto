@@ -6,12 +6,12 @@ const TagFilterSection = ({ title, etiquetas, selectedTags, onTagClick }) => {
       <h3 className="text-lg font-medium text-gray-800 mb-3">{title}</h3>
       <div className="flex flex-wrap gap-3">
         {etiquetas.map(etiqueta => {
-          const isSelected = selectedTags.includes(etiqueta.id.toString());
+          const isSelected = selectedTags.includes(etiqueta.nombre);
           return (
             <button
               key={etiqueta.id}
               type="button"
-              onClick={() => onTagClick(etiqueta.id)}
+              onClick={() => onTagClick(etiqueta.nombre)}
               className={`inline-flex items-center border text-sm font-medium px-4 py-2 rounded-full shadow-sm transition-colors cursor-pointer ${
                 isSelected
                   ? 'bg-blue-100 border-blue-300 text-blue-800'

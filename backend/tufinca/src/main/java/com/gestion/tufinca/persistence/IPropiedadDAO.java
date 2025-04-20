@@ -3,6 +3,9 @@ package com.gestion.tufinca.persistence;
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +25,8 @@ public interface IPropiedadDAO {
 
     List<PropiedadModel> getPropiedades();
 
+    Page<PropiedadModel> getAllPropiedadesPaginated(Pageable pageable);
+
     Optional<PropiedadModel> getPropiedadById(Integer id);
 
     PropiedadModel savePropiedad(PropiedadModel propiedad);
@@ -38,5 +43,5 @@ public interface IPropiedadDAO {
 
     void deletePropiedadByCodigo(String codigo);
 
-
+    Page<PropiedadModel> getPropiedadesPaginated(Specification<PropiedadModel> spec, Pageable pageable);
 }

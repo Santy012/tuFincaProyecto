@@ -3,12 +3,17 @@ package com.gestion.tufinca.services;
 import com.gestion.tufinca.models.EtiquetaModel;
 import com.gestion.tufinca.models.PropiedadModel;
 import com.gestion.tufinca.models.enums.EstadoPropiedad;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IPropiedadService {
     List<PropiedadModel> getPropiedades();
+
+    Page<PropiedadModel> getAllPropiedadesPaginated(Pageable pageable);
 
     Optional<PropiedadModel> getPropiedadById(Integer id);
 
@@ -25,4 +30,6 @@ public interface IPropiedadService {
     List<PropiedadModel> getPropiedadesByEtiquetaId(Integer id);
 
     void deletePropiedadByCodigo(String codigo);
+
+    Page<PropiedadModel> getPropiedadesPaginated(Specification<PropiedadModel> spec, Pageable pageable);
 }

@@ -9,42 +9,31 @@ import PropertyTypeFilter from "../subcomponents/Filters/PropertyTypeFilter";
 const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
   const [filters, setFilters] = useState({
     nombre: "",
-    etiquetas: [],
+    etiquetas: [], // Ahora almacena nombres de etiquetas
     codigo: "",
     ubicacion: "",
-    tipoPropiedad: "",
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
 
-  useEffect(() => {
-    if (propiedades && propiedades.length > 0 && etiquetas) {
-      // Filtrar solo propiedades disponibles
-      const propiedadesDisponibles = propiedades.filter(
-        propiedad => propiedad.estado === "disponible"
-      );
-      
-      // Separar etiquetas por tipo y calcular conteo solo en propiedades disponibles
-      const propiedadEtiquetas = etiquetas
-        .filter(etiqueta => etiqueta.tipoEtiqueta === "propiedad")
-        .map(etiqueta => ({
-          ...etiqueta,
-          count: propiedadesDisponibles.filter(propiedad => 
-            propiedad.etiquetas.includes(etiqueta.id)
-          ).length
-        }));
-      
-      const categoriaEtiquetas = etiquetas
-        .filter(etiqueta => etiqueta.tipoEtiqueta === "categoria")
-        .map(etiqueta => ({
-          ...etiqueta,
-          count: propiedadesDisponibles.filter(propiedad => 
-            propiedad.etiquetas.includes(etiqueta.id)
-          ).length
-        }));
-      
-      setEtiquetasPropiedad(propiedadEtiquetas);
-      setEtiquetasCategoria(categoriaEtiquetas);
+   // Actualizar el efecto para usar nombres
+   useEffect(() => {
+    if (propiedades && etiquetas) {
+      const propiedadesDisponibles = propiedades.filter(p => p.estado === "disponible");
+
+      // Función para contar etiquetas por tipo
+      const contarEtiquetas = (tipo) => 
+        etiquetas
+          .filter(e => e.tipoEtiqueta === tipo)
+          .map(etiqueta => ({
+            ...etiqueta,
+            count: propiedadesDisponibles.filter(p => 
+              p.etiquetasNombres?.includes(etiqueta.nombre)
+            ).length
+          }));
+
+      setEtiquetasPropiedad(contarEtiquetas("propiedad"));
+      setEtiquetasCategoria(contarEtiquetas("categoria"));
     }
   }, [propiedades, etiquetas]);
 
@@ -52,29 +41,34 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTagClick = (etiquetaId) => {
-    setFilters((prev) => {
-      const idString = etiquetaId.toString();
-      const newEtiquetas = prev.etiquetas.includes(idString)
-        ? prev.etiquetas.filter((id) => id !== idString)
-        : [...prev.etiquetas, idString];
-      return { ...prev, etiquetas: newEtiquetas };
+  const handleTipoPropiedadChange = (nuevasEtiquetas) => {
+    setFilters(prev => {
+      // Filtrar etiquetas de tipo propiedad existentes
+      const otrasEtiquetas = prev.etiquetas.filter(
+        nombre => !etiquetasPropiedad.some(e => e.nombre === nombre)
+      );
+      
+      return {
+        ...prev,
+        etiquetas: [...otrasEtiquetas, ...nuevasEtiquetas]
+      };
     });
+  };
+
+  const handleTagClick = (nombreEtiqueta) => {
+    setFilters(prev => ({
+      ...prev,
+      etiquetas: prev.etiquetas.includes(nombreEtiqueta)
+        ? prev.etiquetas.filter(n => n !== nombreEtiqueta)
+        : [...prev.etiquetas, nombreEtiqueta]
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Asegurarnos de que las etiquetas de tipo propiedad no se incluyan en el filtro de etiquetas
-    const etiquetasFiltradas = filters.etiquetas.filter(
-      (etiquetaId) =>
-        !etiquetasPropiedad.some(
-          (etiqueta) => etiqueta.id.toString() === etiquetaId
-        )
-    );
-
     onFilter({
       ...filters,
-      etiquetas: etiquetasFiltradas,
+      etiquetas: filters.etiquetas
     });
   };
 
@@ -107,10 +101,12 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
             propiedades={propiedades}
           />
 
-          {/* Select para tipo de propiedad */}
+          {/* Selector de Tipo de Propiedad */}
           <PropertyTypeFilter
-            value={filters.tipoPropiedad}
-            onChange={(value) => handleInputChange("tipoPropiedad", value)}
+            value={filters.etiquetas.filter(nombre => 
+              etiquetasPropiedad.some(e => e.nombre === nombre)
+            )}
+            onChange={handleTipoPropiedadChange}
             options={etiquetasPropiedad}
           />
 

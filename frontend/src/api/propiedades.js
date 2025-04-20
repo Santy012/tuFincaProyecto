@@ -16,6 +16,12 @@ export const getPropiedades = async () => {
   }
 };
 
+// En tu archivo de API (api/propiedades.js)
+export const getPaginatedPropiedades = async (queryParams) => {
+  const response = await apiClient.get(`/propiedades/paginate?${queryParams.toString()}`);
+  return response;
+};
+
 export const updatePropiedad = async (id, propiedadData) => {
   return apiClient.put(`/propiedades/update/${id}`, propiedadData);
 };
