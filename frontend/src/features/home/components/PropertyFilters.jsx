@@ -5,13 +5,14 @@ import FilterButtons from "../subcomponents/Filters/FilterButtons";
 import TagsFilterSection from "../subcomponents/Filters/TagFilterSection";
 import LocationFilter from "../subcomponents/Filters/LocationFilter";
 import PropertyTypeFilter from "../subcomponents/Filters/PropertyTypeFilter";
-import { debounce } from 'lodash';
+import { debounce, escape } from 'lodash';
 const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
   const [filters, setFilters] = useState({
     nombre: "",
     etiquetas: [], // Ahora almacena nombres de etiquetas
     codigo: "",
     ubicacion: "",
+    estado: "disponible"
   });
   const [etiquetasPropiedad, setEtiquetasPropiedad] = useState([]);
   const [etiquetasCategoria, setEtiquetasCategoria] = useState([]);
@@ -44,7 +45,8 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
       setIsFiltering(true);
       await onFilter({
         ...filters,
-        etiquetas: filters.etiquetas
+        etiquetas: filters.etiquetas,
+        estado: "disponible"
       });
     } finally {
       setIsFiltering(false);
@@ -91,6 +93,7 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
       codigo: "",
       ubicacion: "",
       tipoPropiedad: "",
+      estado: "disponible"
     };
     setFilters(resetValues);
     debouncedFilter(resetValues);

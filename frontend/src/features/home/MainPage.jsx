@@ -5,7 +5,7 @@ import PropertyFilters from "./components/PropertyFilters";
 import { useGlobalContext } from "../../context/GlobalContext";
 import ErrorMessage from "../../components/ErrorMessage";
 import Pagination from "../../components/Pagination";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { debounce } from 'lodash';
 
 const MainPage = () => {
@@ -24,8 +24,15 @@ const MainPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    // Solo aplica el filtro inicial si no hay filtros definidos
+    if (!currentFilters || Object.keys(currentFilters).length === 0) {
+      applyFilters({ estado: 'disponible' });
+    }
+  }, []);
+
   // Versión debounceada con cancelación
-  const debouncedLoadData = useCallback(debounce(async (newPage, abortController) => {
+  const debouncedLoadData = useCallback(debounce(async (newPage) => {
     try {
       setIsLoading(true);
       await loadPaginatedData(
