@@ -127,6 +127,7 @@ useEffect(() => {
         loadPaginatedData: propiedades.loadPaginatedData,
         applyFilters: propiedades.applyFilters,
         currentFilters: propiedades.currentFilters,
+        setDefaultFilters: propiedades.setDefaultFilters,
         pagination: propiedades.pagination,
         resetErrorPropiedades: propiedades.resetError,
 

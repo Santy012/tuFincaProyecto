@@ -19,16 +19,16 @@ const MainPage = () => {
     loadPaginatedData,
     pagination,
     applyFilters,
-    currentFilters
+    currentFilters,
+    setDefaultFilters
   } = useGlobalContext();
 
   const [isLoading, setIsLoading] = useState(false);
+  
 
   useEffect(() => {
-    // Solo aplica el filtro inicial si no hay filtros definidos
-    if (!currentFilters || Object.keys(currentFilters).length === 0) {
-      applyFilters({ estado: 'disponible' });
-    }
+    setDefaultFilters({ estado: 'disponible' });
+    loadPaginatedData(0, pagination.pageSize, {}, true); // true para usar filtros por defecto
   }, []);
 
   // Versión debounceada con cancelación
@@ -38,7 +38,8 @@ const MainPage = () => {
       await loadPaginatedData(
         newPage, 
         pagination.pageSize, 
-        currentFilters
+        currentFilters,
+        true
       );
     } catch (err) {
       if (err.name !== 'AbortError') {

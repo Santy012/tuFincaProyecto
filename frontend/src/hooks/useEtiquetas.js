@@ -15,7 +15,6 @@ export const useEtiquetas = () => {
   const fetchEtiquetas = async () => {
     return asyncHandler.execute(async () => {
       const data = await getEtiquetas(); // Ya es el array directo, gracias al interceptor
-      console.log('Datos recibidos:', data); // Verificación
       setEtiquetas(Array.isArray(data) ? data : []);
       return data;
     });

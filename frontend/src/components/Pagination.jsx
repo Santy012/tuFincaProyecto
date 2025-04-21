@@ -6,7 +6,6 @@ const Pagination = ({
   onPageChange,
   className = "",
 }) => {
-    console.log("Pagination received:", currentPage, totalPages);
   // Convertir a números y establecer valores por defecto
   const current = Number(currentPage);
   const total = Math.max(1, Number(totalPages));

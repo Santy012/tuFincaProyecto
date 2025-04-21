@@ -29,7 +29,6 @@ export const useMensajes = () => {
   const fetchMensajes = async () => {
     try {
       const response = await execute(() => getMensajes());
-      console.log("Respuesta del backend:", response);
       if (!response || !Array.isArray(response)) {
         throw new Error("La respuesta de la API no es válida");
       }

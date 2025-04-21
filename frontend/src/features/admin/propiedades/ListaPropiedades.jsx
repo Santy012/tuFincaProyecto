@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import PropiedadCard from "./components/PropiedadCard";
 import FiltroEtiquetas from "./components/FiltroEtiquetas";
@@ -11,7 +11,8 @@ const ListaPropiedades = () => {
     etiquetas = [],
     pagination,
     loadPaginatedData,
-    applyFilters
+    applyFilters,
+    setDefaultFilters
   } = useGlobalContext() || { propiedades: [], etiquetas: [] };
   
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
@@ -23,9 +24,16 @@ const ListaPropiedades = () => {
     etiquetas: []
   });
 
+  // Efecto para desactivar filtros por defecto al cargar el componente
+  useEffect(() => {
+    // Solo carga datos iniciales sin resetear filtros
+    loadPaginatedData(0, pagination.pageSize, {}, false);
+  }, []);
+
+
   const handlePageChange = (newPage) => {
     console.log("busquedas", busquedas);
-    loadPaginatedData(newPage, pagination.pageSize, busquedas);
+    loadPaginatedData(newPage, pagination.pageSize, busquedas, false);
   };
 
   // Separar etiquetas por tipo

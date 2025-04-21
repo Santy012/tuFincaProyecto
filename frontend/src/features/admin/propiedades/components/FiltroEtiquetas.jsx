@@ -13,26 +13,25 @@ const FiltroEtiquetas = ({
   const [pestanaActiva, setPestanaActiva] = useState("tags");
   const [valoresInput, setValoresInput] = useState({
     nombre: busquedas.nombre || '',
-    codigo: busquedas.codigo || ''
+    codigo: busquedas.codigo || '',
   });
 
   const toggleEtiqueta = (id) => {
-    const nuevasEtiquetas = etiquetasSeleccionadas.includes(id)
-      ? etiquetasSeleccionadas.filter(etiquetaId => etiquetaId !== id)
-      : [...etiquetasSeleccionadas, id];
+    const etiqueta = [...etiquetasPropiedad, ...etiquetasCategoria].find(e => e.id === id);
+    if (!etiqueta) return;
+  
+    const nuevasEtiquetas = etiquetasSeleccionadas.includes(etiqueta.nombre)
+      ? etiquetasSeleccionadas.filter(nombre => nombre !== etiqueta.nombre)
+      : [...etiquetasSeleccionadas, etiqueta.nombre];
     
     setEtiquetasSeleccionadas(nuevasEtiquetas);
-    console.log("nuevas etiquetas", nuevasEtiquetas);
+  
     const newBusquedas = {
       ...busquedas,
       etiquetas: nuevasEtiquetas
     };
     setBusquedas(newBusquedas);
-    console.log("new busquedas", newBusquedas);
-    onApplyFilters({
-      newBusquedas
-    });
-    
+    onApplyFilters(newBusquedas);
   };
 
   const handleInputChange = (e, campo) => {
@@ -67,7 +66,7 @@ const FiltroEtiquetas = ({
     onApplyFilters({
       ...newBusquedas,
       etiquetas: etiquetasSeleccionadas
-    });
+    }, false);
   };
 
   const limpiarTodosFiltros = () => {
@@ -86,7 +85,7 @@ const FiltroEtiquetas = ({
       codigo: '',
       estado: '',
       etiquetas: []
-    });
+    }, false);
   };
 
   return (
@@ -126,7 +125,7 @@ const FiltroEtiquetas = ({
                     <button
                       key={etiqueta.id}
                       className={`px-4 py-2 text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
-                        etiquetasSeleccionadas.includes(etiqueta.id)
+                        etiquetasSeleccionadas.includes(etiqueta.nombre)
                           ? "bg-blue-500 text-white hover:bg-blue-600"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
@@ -146,7 +145,7 @@ const FiltroEtiquetas = ({
                     <button
                       key={etiqueta.id}
                       className={`px-4 py-2 text-center rounded-lg text-sm font-medium shadow-md transition-all duration-200 ${
-                        etiquetasSeleccionadas.includes(etiqueta.id)
+                        etiquetasSeleccionadas.includes(etiqueta.nombre)
                           ? "bg-blue-500 text-white hover:bg-blue-600"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
@@ -250,7 +249,7 @@ const FiltroEtiquetas = ({
                   onApplyFilters({
                     ...newBusquedas,
                     etiquetas: etiquetasSeleccionadas
-                  });
+                  }, false);
                 }}
               >
                 <option value="">Todos los estados</option>

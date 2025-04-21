@@ -11,7 +11,6 @@ export const useAsyncHandler = () => {
       setError(null);
       console.log('Iniciando petición...'); // Log de depuración
       const result = await asyncFunction(...args);
-      console.log('Petición completada:', result); // Log de depuración
       return result;
     } catch (err) {
       console.error('Error en petición:', err); // Log de depuración

@@ -14,8 +14,6 @@ const apiClient = axios.create({
 // Interceptor para agregar el token de autorización
 apiClient.interceptors.request.use(
   (config) => {
-    // Excluir endpoints públicos del envío automático del token
-    console.log('Solicitud:', config);
     if (!config.url.includes('/auth/login')) {
       const token = Cookies.get('authToken');
       if (token) {

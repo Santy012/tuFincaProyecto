@@ -19,6 +19,7 @@ export const usePropiedades = () => {
   });
   const [currentFilters, setCurrentFilters] = useState({});
   const { execute, loading, error, resetError } = useAsyncHandler();
+  const [defaultFilters, setDefaultFilters] = useState({ estado: 'disponible' }); 
 
   // Función de formateo mejorada
   const formatPropiedad = (prop) => {
@@ -75,24 +76,25 @@ export const usePropiedades = () => {
   };
 
 
-  const loadPaginatedData = async (page = 0, size = 12, filters = currentFilters) => {
+  const loadPaginatedData = async (page = 0, size = 12, filters = currentFilters, useDefaultFilters = true) => {
     try {
       console.log("Filtros iniciales:", filters);
+
+      const combinedFilters = useDefaultFilters ? { ...defaultFilters, ...filters } : filters;
   
       // Preparar los parámetros de consulta
       const queryParams = new URLSearchParams();
       queryParams.append('page', page);
       queryParams.append('size', size);
-  
-      // Añadir filtros si existen
-      if (filters.nombre) queryParams.append('nombre', filters.nombre);
-      if (filters.codigo) queryParams.append('codigo', filters.codigo);
-      if (filters.ubicacion) queryParams.append('ubicacion', filters.ubicacion);
-      if (filters.estado) queryParams.append('estado', filters.estado);
-  
-      // Manejar array de etiquetas correctamente
-      if (filters.etiquetas && filters.etiquetas.length > 0) {
-        filters.etiquetas.forEach(etiqueta => {
+
+      // Aplicar filtros combinados
+      if (combinedFilters.nombre) queryParams.append('nombre', combinedFilters.nombre);
+      if (combinedFilters.codigo) queryParams.append('codigo', combinedFilters.codigo);
+      if (combinedFilters.ubicacion) queryParams.append('ubicacion', combinedFilters.ubicacion);
+      if (combinedFilters.estado) queryParams.append('estado', combinedFilters.estado);
+      
+      if (combinedFilters.etiquetas?.length > 0) {
+        combinedFilters.etiquetas.forEach(etiqueta => {
           queryParams.append('etiquetas', etiqueta);
         });
       }
@@ -103,8 +105,6 @@ export const usePropiedades = () => {
       const response = await execute(() => 
         getPaginatedPropiedades(queryParams)
       );
-
-      console.log("Respuesta de paginación:", response);
   
       if (!response) throw new Error("Respuesta inválida");
   
@@ -127,8 +127,9 @@ export const usePropiedades = () => {
   };
   
   // Función applyFilters actualizada
-  const applyFilters = async (filters) => {
+  const applyFilters = async (filters, defaultFilters = true) => {
     try {
+      console.log("Aplicando filtros:", filters);
       // Limpiar filtros - eliminar valores vacíos/undefined
       const cleanFilters = {
         nombre: filters.nombre || undefined,
@@ -139,7 +140,7 @@ export const usePropiedades = () => {
       };
 
       setCurrentFilters(filters);
-      await loadPaginatedData(0, pagination.pageSize, cleanFilters);
+      await loadPaginatedData(0, pagination.pageSize, cleanFilters, defaultFilters);
     } catch (err) {
       console.error("Error applying filters:", err);
       throw err;
@@ -208,6 +209,8 @@ export const usePropiedades = () => {
     error,
     reloadData: loadAllProperties,
     loadPaginatedData,
+    setDefaultFilters, // Expone la función para modificar filtros por defecto
+    defaultFilters, // Expone los filtros por defecto actuales
     applyFilters, // Nueva función de filtrado
     resetError,
   };
