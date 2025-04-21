@@ -35,7 +35,9 @@ public class EtiquetaModel {
      * Así aparece la variable de relacion en el PropiedadModel: private List<Etiqueta> etiquetas = new ArrayList<>();
      * El nombre de la variable es al que se le hace referencia en el mappedBy, en este caso se referencia a "etiquetas".
      */
-    @ManyToMany(mappedBy = "etiquetas")
+    @OneToMany(mappedBy = "etiqueta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<PropiedadModel> propiedades = new ArrayList<>();
+    private List<PropiedadEtiquetaModel> etiquetas = new ArrayList<>();
+
+
 }

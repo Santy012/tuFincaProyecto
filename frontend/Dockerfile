@@ -1,17 +1,29 @@
-LABEL maintainer="camimillan2003@gmail.com"
-LABEL version="1.0"
-LABEL description="Sistema de gestión inmobiliaria"
+# Usa la versión de Node que coincide con tu entorno local (v20.x)
+FROM node:20-alpine AS build
 
-# Build stage
-FROM node:18-alpine AS build
+LABEL maintainer="camimillan2003@gmail.com" \
+      version="1.0" \
+      description="Sistema de gestión inmobiliaria"
+
 WORKDIR /app
-COPY frontend/package.json frontend/package-lock.json ./
+COPY package*.json ./
 RUN npm ci
-COPY frontend .
+COPY . .
 RUN npm run build
 
-# Production stage
 FROM nginx:alpine
+
+# 1. Elimina la configuración por defecto
+RUN rm -rf /etc/nginx/conf.d/default.conf
+
+# 2. Copia los archivos construidos (observa que usamos dist/assets)
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+
+# 3. Copia tu configuración personalizada
+COPY nginx.conf /etc/nginx/conf.d/
+
+# 4. Verificación adicional (opcional)
+RUN ls -la /usr/share/nginx/html && \
+      ls -la /usr/share/nginx/html/assets
+
 EXPOSE 80

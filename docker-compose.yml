@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Project: TuFinca v1.0
 # Author: Santiago Castellanos, Catalina Gutiérrez, Camilo Millan
 # Description: Sistema de gestión inmobiliaria
@@ -8,27 +6,31 @@ version: '3.8'
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend/tuFinca
+      dockerfile: Dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/tuFinca?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: "jdbc:mysql://database:3306/tuFinca?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=America/Bogota"
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
       JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_EXPIRATION: ${JWT_EXPIRATION_MS}
       UPLOAD_DIRECTORY: /app/uploads
     volumes:
       - uploads_volume:/app/uploads
     ports:
       - "8080:8080"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - finca-network
 
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     environment:
@@ -41,6 +43,7 @@ services:
   database:
     build:
       context: ./database
+      dockerfile: Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: tuFinca
@@ -49,9 +52,15 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - finca-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   db_data:
