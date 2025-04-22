@@ -131,9 +131,9 @@ const PopupImages = ({
       setSuccessMessage("Archivos subidos exitosamente!");
       setShowSuccess(true);
     } catch (error) {
-      setErrorMessage(
-        "Error al subir los archivos. Por favor, inténtalo de nuevo."
-      );
+      let message = "Error al subir los archivos. Por favor, inténtalo de nuevo.";
+  
+      setErrorMessage(error);
       setShowError(true);
       console.error("Error al subir los archivos:", error);
     } finally {

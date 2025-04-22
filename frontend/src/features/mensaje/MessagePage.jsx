@@ -65,24 +65,28 @@ const MessagePage = () => {
       "correo",
       "detalle",
     ];
-
+    
     requiredFields.forEach((field) => {
+
       if (!formData[field] || formData[field].trim() === "") {
         errors[field] = "Este campo es requerido";
       }
     });
-
+  
     // Validar formato de correo
     if (formData.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
-      errors.correo = "Ingrese un correo válido";
+      errors.correo = "Por favor ingresa un correo electrónico válido";
     }
-
+  
     // Validar celular (10 dígitos)
-    if (formData.celular && !/^\d{10}$/.test(formData.celular)) {
-      errors.celular = "Ingrese un número de 10 dígitos";
+    if (!/^\d+$/.test(formData.celular.trim())){
+      errors.celular = "Por favor ingrese su número de celular";
+    } else if (!/^\d{10}$/.test(formData.celular)) {
+      errors.celular = "El número de celular debe tener 10 dígitos";
     }
-
+  
     setFormErrors(errors);
+    console.log("Errores de validación:", errors); // Depuración
     return Object.keys(errors).length === 0;
   };
 
@@ -186,7 +190,7 @@ const MessagePage = () => {
             </div>
 
             {/* Formulario */}
-            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+            <form onSubmit={handleSubmit} noValidate className="p-6 sm:p-8 space-y-6">
               {formErrors.general && (
                 <div className="p-4 bg-red-100 text-red-700 rounded-md">
                   {formErrors.general}

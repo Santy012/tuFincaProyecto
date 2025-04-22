@@ -23,7 +23,7 @@ const FormTextarea = ({
         rows={rows}
         value={value}
         onChange={onChange}
-        required={required}
+        aria-required={required}
         placeholder={placeholder}
         className={`w-full px-4 py-3 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
       />
