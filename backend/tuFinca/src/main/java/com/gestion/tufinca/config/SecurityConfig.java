@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Permitir acceso público a estos endpoints
                         .requestMatchers(
-                          
+        
                                 "/auth/login",
                                 "/",
                                 "/swagger-ui/**",      // Swagger
