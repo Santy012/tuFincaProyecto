@@ -2,13 +2,21 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: '/api',
+  // 'http://localhost:8080/',
   timeout: 10000, // 10 segundos
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true
+  withCredentials: true,
+  transformResponse: [function (data) {
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      throw new Error('Invalid JSON response');
+    }
+  }]
 });
 
 // Interceptor para agregar el token de autorización

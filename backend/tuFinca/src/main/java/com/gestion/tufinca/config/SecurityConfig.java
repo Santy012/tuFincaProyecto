@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Permitir acceso público a estos endpoints
                         .requestMatchers(
+                          
                                 "/auth/login",
                                 "/",
                                 "/swagger-ui/**",      // Swagger
@@ -55,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
 
                         // El resto de endpoints requieren autenticación
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() 
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Sin sesiones HTTP
