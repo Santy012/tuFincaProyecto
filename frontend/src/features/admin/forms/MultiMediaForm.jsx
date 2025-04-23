@@ -34,7 +34,7 @@ const MultimediaForm = ({ propiedadData, handleChange }) => {
   }, [archivos]);
 
   const getMediaSource = (file) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
 
     if (typeof file === "string") {
       return file;

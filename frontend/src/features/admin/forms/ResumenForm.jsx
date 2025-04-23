@@ -30,7 +30,7 @@ const ResumenForm = ({ propiedadData, errors }) => {
   };
 
   const getMediaSource = (file) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
 
     if (file instanceof File || file instanceof Blob) {
       // Si es un archivo, usa URL.createObjectURL
