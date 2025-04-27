@@ -134,17 +134,19 @@ const PropertyFilters = ({ onFilter, etiquetas, propiedades }) => {
             value={filters.codigo}
             onChange={(value) => handleInputChange("codigo", value)}
           />
-
-          <FilterButtons onReset={resetFilters} isLoading={isFiltering}/>
-        </form>
-
-        {/* Sección para filtrar por categorías (etiquetas normales) */}
-        <TagsFilterSection
-          title="Características"
-          etiquetas={etiquetasCategoria}
-          selectedTags={filters.etiquetas}
-          onTagClick={handleTagClick}
-        />
+          </form>
+          {/* Sección para filtrar por categorías (etiquetas normales) */}
+          <TagsFilterSection
+            title="Características"
+            etiquetas={etiquetasCategoria}
+            selectedTags={filters.etiquetas}
+            onTagClick={handleTagClick}
+          />
+          <FilterButtons
+            isLoading={isFiltering}
+            onSubmit={handleSubmit}   // Cambiar a esto
+            onReset={resetFilters}
+          />
       </div>
     </section>
   );
