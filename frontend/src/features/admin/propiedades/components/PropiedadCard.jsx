@@ -6,7 +6,7 @@ const PropiedadCard = ({ propiedad, onClick }) => {
   };
 
   const getMediaSource = (media) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
 
     if (media?.url) {
       return media.url.startsWith("/uploads") ? `${baseUrl}${media.url}` : media.url;

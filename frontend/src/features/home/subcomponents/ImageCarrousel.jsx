@@ -6,7 +6,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeable = true }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
-  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
   const maxVisibleDots = 7; // Número máximo de puntos a mostrar
 
   // Función para determinar si un media es un video

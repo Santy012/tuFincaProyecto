@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: '/api',
   // '/api',
   timeout: 10000, // 10 segundos
   headers: {

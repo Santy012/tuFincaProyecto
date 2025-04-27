@@ -58,7 +58,7 @@ const PopupImages = ({
   };
 
   const getMediaSource = (media) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
 
     // Si es una cadena (URL)
     if (typeof media === "string") {
