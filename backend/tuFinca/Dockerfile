@@ -7,22 +7,22 @@ LABEL description="Sistema de gestión inmobiliaria"
 WORKDIR /app
 
 #Windows
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline -B
-COPY src ./src
-RUN ./mvnw package -DskipTests
-
-#Linux
 #COPY .mvn/ .mvn
 #COPY mvnw pom.xml ./
-
-#RUN chmod +x mvnw && sync
-
 #RUN ./mvnw dependency:go-offline -B
-
 #COPY src ./src
 #RUN ./mvnw package -DskipTests
+
+#Linux
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+RUN chmod +x mvnw && sync
+
+RUN ./mvnw dependency:go-offline -B
+
+COPY src ./src
+RUN ./mvnw package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-jammy
