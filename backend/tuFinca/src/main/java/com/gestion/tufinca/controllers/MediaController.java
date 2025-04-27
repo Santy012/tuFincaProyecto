@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import com.gestion.tufinca.models.enums.Tipo;
 import org.springframework.web.multipart.MultipartFile;
+import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,53 +78,52 @@ public class MediaController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<MediaDTO>> uploadMedia(
-            @Parameter(description = "Archivos multimedia", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart("files") MultipartFile[] files,
-
-            @Parameter(description = "ID de la propiedad asociada", example = "1")
             @RequestParam(value = "propiedadId", required = false) Integer propiedadId) {
 
         List<MediaDTO> uploadedFiles = new ArrayList<>();
 
         for (MultipartFile file : files) {
             try {
-                // Validar tipo de archivo
+                // Validar tipo
                 String contentType = file.getContentType();
                 Tipo tipo = (contentType != null && contentType.startsWith("video")) ? Tipo.video : Tipo.imagen;
 
-                // Crear directorio si no existe
-                File uploadDir = new File(uploadDirectory);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
+                // Solo procesar imágenes (no videos)
+                if (tipo == Tipo.imagen) {
+                    String originalName = file.getOriginalFilename();
+                    String webpName = originalName.replaceFirst("\\.[^.]+$", ".webp");
+                    String filePath = uploadDirectory + File.separator + webpName;
+
+                    // Convertir a WebP con tamaño controlado
+                    Thumbnails.of(file.getInputStream())
+                            .size(1200, 1200)
+                            .outputFormat("webp")
+                            .outputQuality(0.8)
+                            .toFile(filePath);
+
+                    uploadedFiles.add(createMediaRecord(webpName, tipo, propiedadId));
+                } else {
+                    // Manejo de videos (sin conversión)
+                    String fileName = file.getOriginalFilename();
+                    Files.copy(file.getInputStream(), Paths.get(uploadDirectory + File.separator + fileName));
+                    uploadedFiles.add(createMediaRecord(fileName, tipo, propiedadId));
                 }
-
-                // Generar nombre único para el archivo
-                String fileName = file.getOriginalFilename();
-                String filePath = uploadDirectory + File.separator + fileName;
-
-                // Guardar archivo en sistema
-                Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-                // Crear DTO y guardar en BD
-                MediaDTO mediaDTO = MediaDTO.builder()
-                        .url("/uploads/" + fileName)
-                        .tipo(tipo)
-                        .propiedad(propiedadService.getPropiedadById(propiedadId).get())
-                        .build();
-
-                MediaModel savedMedia = mediaService.saveMedia(buildMedia(mediaDTO));
-                uploadedFiles.add(buildMediaDTO(savedMedia));
-            } catch (IllegalArgumentException ex) {
-                // ⛔️ Re-lanza la excepción para que sea atrapada por @ControllerAdvice y Swagger la vea
-                throw ex;
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
         }
-
         return ResponseEntity.ok(uploadedFiles);
+    }
+
+    private MediaDTO createMediaRecord(String fileName, Tipo tipo, Integer propiedadId) {
+        MediaDTO mediaDTO = MediaDTO.builder()
+                .url("/uploads/" + fileName)
+                .tipo(tipo)
+                .propiedad(propiedadService.getPropiedadById(propiedadId).get())
+                .build();
+        return buildMediaDTO(mediaService.saveMedia(buildMedia(mediaDTO)));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -160,7 +162,38 @@ public class MediaController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Media no encontrada con el ID proporcionado");
     }
 
+    @GetMapping("/optimize-existing")
+    public ResponseEntity<String> optimizeExistingImages() {
+        File uploadDir = new File(uploadDirectory);
+        File[] imageFiles = uploadDir.listFiles((dir, name) ->
+                name.toLowerCase().matches(".*\\.(jpg|jpeg|png)$"));
 
+        if (imageFiles != null) {
+            Arrays.stream(imageFiles).forEach(this::convertToWebp);
+            return ResponseEntity.ok("Optimización iniciada para " + imageFiles.length + " imágenes");
+        }
+        return ResponseEntity.ok("No hay imágenes para optimizar");
+    }
+
+    @Async
+    private void convertToWebp(File imageFile) {
+        try {
+            String webpPath = imageFile.getPath().replaceFirst("\\.[^.]+$", ".webp");
+            Thumbnails.of(imageFile)
+                    .size(1200, 1200)
+                    .outputFormat("webp")
+                    .outputQuality(0.8)
+                    .toFile(webpPath);
+
+            // Actualiza la URL en la base de datos
+            mediaService.updateImagePath(
+                    "/uploads/" + imageFile.getName(),
+                    "/uploads/" + new File(webpPath).getName()
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public MediaModel setMediaUpdateValues(MediaDTO mediaDTO, MediaModel mediaToUpdate){
         mediaToUpdate.setUrl(mediaDTO.getUrl());

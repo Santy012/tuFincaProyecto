@@ -244,7 +244,6 @@ const FiltroEtiquetas = ({
                     ...busquedas,
                     estado: e.target.value || undefined
                   };
-                  console.log("new busquedas", newBusquedas);
                   setBusquedas(newBusquedas);
                   onApplyFilters({
                     ...newBusquedas,

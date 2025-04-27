@@ -46,7 +46,6 @@ export const useMedias = () => {
   const uploadMedia = async (files, propiedadId) => {
     return asyncHandler.execute(async () => {
       const response = await uploadMediaAPI(files, propiedadId);
-      console.log("Medias subidas:", response); // Depuración
   
       // Verifica si la respuesta es un array
       if (!Array.isArray(response)) {

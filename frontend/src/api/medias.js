@@ -34,8 +34,6 @@ export const uploadMedia = async (files, propiedadId) => {
         "Content-Type": "multipart/form-data",
       },
     });
-
-    console.log("Respuesta del backend en uploadMedia:", response); // Depuración
     return response; // Asegúrate de devolver la respuesta directamente
   } catch (error) {
     console.error("Error al subir los archivos multimedia:", error);

@@ -78,7 +78,6 @@ export const usePropiedades = () => {
 
   const loadPaginatedData = async (page = 0, size = 12, filters = currentFilters, useDefaultFilters = true) => {
     try {
-      console.log("Filtros iniciales:", filters);
 
       const combinedFilters = useDefaultFilters ? { ...defaultFilters, ...filters } : filters;
   
@@ -99,7 +98,6 @@ export const usePropiedades = () => {
         });
       }
   
-      console.log("Query params:", queryParams.toString());
   
       // Llamar al API con los parámetros correctamente formados
       const response = await execute(() => 
@@ -129,7 +127,6 @@ export const usePropiedades = () => {
   // Función applyFilters actualizada
   const applyFilters = async (filters, defaultFilters = true) => {
     try {
-      console.log("Aplicando filtros:", filters);
       // Limpiar filtros - eliminar valores vacíos/undefined
       const cleanFilters = {
         nombre: filters.nombre || undefined,

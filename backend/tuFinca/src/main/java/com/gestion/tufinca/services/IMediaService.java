@@ -11,6 +11,8 @@ public interface IMediaService {
 
     List<MediaModel> getMediasByPropiedadId(Integer id);
 
+    void updateImagePath(String oldPath, String newPath);
+
     MediaModel saveMedia(MediaModel media);
 
     void deleteMediaById(Integer id);

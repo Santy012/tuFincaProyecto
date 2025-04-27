@@ -5,6 +5,7 @@ import com.gestion.tufinca.persistence.IMediaDAO;
 import com.gestion.tufinca.services.IMediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,17 @@ public class MediaServiceImpl implements IMediaService {
     @Override
     public List<MediaModel> getMediasByPropiedadId(Integer id){
         return MediaDAO.getMediasByPropiedadId(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateImagePath(String oldPath, String newPath) {
+        Optional<MediaModel> mediaOptional = MediaDAO.getMediaByUrl(oldPath);
+        mediaOptional.ifPresent(media -> {
+            media.setUrl(newPath);
+            MediaDAO.saveMedia(media);
+        });
+        // Si no se encuentra la imagen con la ruta antigua, no se hace nada.
     }
 
     @Override

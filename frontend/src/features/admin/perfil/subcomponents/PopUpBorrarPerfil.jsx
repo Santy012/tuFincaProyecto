@@ -15,7 +15,6 @@ const PopUpBorrarPerfil = ({ admin, onCancel }) => {
   const handleVerifyPassword = async (inputPassword) => {
     try {
       const authData = { usuario: admin.usuario, contrasena: inputPassword };
-      console.log("Auth Data:", authData); // Verifica los datos de autenticación
       const loginResponse = await loginAdmin(authData); // Call loginAdmin
   
       if (loginResponse.token) {

@@ -25,7 +25,6 @@ const ListaMensajes = () => {
 
   const mensajesFiltrados = mensajes.filter((mensaje) => {
     if (filtro === "todos") return true;
-    console.log(mensaje.fecha);
     return mensaje.gestion === filtro;
   });
 
@@ -42,7 +41,6 @@ const ListaMensajes = () => {
   const handleRecargarMensajes = async () => {
     try {
       await fetchMensajes(); // Llama a la función para recargar los mensajes
-      console.log("Mensajes recargados exitosamente");
     } catch (error) {
       console.error("Error al recargar los mensajes:", error);
     }

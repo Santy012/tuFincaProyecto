@@ -15,6 +15,8 @@ public interface IMediaDAO {
 
     List<MediaModel> getMediasByPropiedadId(Integer propiedadId);
 
+    void updateImagePath(String oldPath, String newPath);
+
     MediaModel saveMedia(MediaModel media);
 
     void deleteMediaById(Integer id);

@@ -71,14 +71,10 @@ const PopUpDetalles = ({
         mensajes: propiedad.mensajes || [],
       };
 
-      console.log("Propiedad transformada para el backend:", propiedadParaBackend);
-
       const propiedadActualizada = await actualizarPropiedad(
         propiedad.id,
         propiedadParaBackend
       );
-
-      console.log("Propiedad actualizada:", propiedadActualizada);
 
       // Asegúrate de que las medias se mantengan en el estado
       setPropiedad({

@@ -32,7 +32,6 @@ const ListaPropiedades = () => {
 
 
   const handlePageChange = (newPage) => {
-    console.log("busquedas", busquedas);
     loadPaginatedData(newPage, pagination.pageSize, busquedas, false);
   };
 

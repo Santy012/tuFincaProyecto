@@ -9,7 +9,6 @@ export const useAsyncHandler = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Iniciando petición...'); // Log de depuración
       const result = await asyncFunction(...args);
       return result;
     } catch (err) {

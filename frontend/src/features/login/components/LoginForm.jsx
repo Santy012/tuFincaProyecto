@@ -19,7 +19,6 @@ const LoginForm = ({ onLogin, onLogout, admin }) => {
     };
 
     const result = await onLogin({ credentials });
-    console.log("Resultado de onLogin:", result);
     if (!result.success) {
       setError(result.error || "Usuario o contraseña incorrectos");
     }

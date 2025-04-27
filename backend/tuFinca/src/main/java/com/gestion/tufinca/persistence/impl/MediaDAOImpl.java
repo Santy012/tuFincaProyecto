@@ -41,6 +41,16 @@ public class MediaDAOImpl implements IMediaDAO {
     }
 
     @Override
+    public void updateImagePath(String oldPath, String newPath) {
+        Optional<MediaModel> mediaOptional = mediaRepository.findByUrl(oldPath);
+        mediaOptional.ifPresent(media -> {
+            media.setUrl(newPath);
+            mediaRepository.save(media);
+        });
+        // Si no se encuentra la imagen con la ruta antigua, no se hace nada.
+    }
+
+    @Override
     public MediaModel saveMedia(MediaModel media) {
         return mediaRepository.save(media);
     }
