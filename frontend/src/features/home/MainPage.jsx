@@ -52,6 +52,12 @@ const MainPage = () => {
 
   const handlePageChange = useCallback((newPage) => {
     if (isLoading) return;
+
+    // Hacer scroll hacia la parte superior
+    window.scrollTo({
+      top: 0
+    });
+
     debouncedLoadData(newPage);
   }, [debouncedLoadData, isLoading]);
 

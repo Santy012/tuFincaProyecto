@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeable = true }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -84,14 +86,20 @@ const ImageCarrousel = ({ propiedad, fullSize = false, className = '', clickeabl
       );
     } else {
       return (
-        <img
+        <LazyLoadImage
           src={media.url}
           alt={propiedad.titulo || "Propiedad"}
           className={`${mediaClass} ${isFullscreen ? 'max-h-[90vh] max-w-full object-contain' : ''}`}
+          effect="blur" // Efecto de blur mientras carga
+          placeholderSrc="/placeholder.webp" // Imagen pequeña de placeholder
+          width="100%"
+          height="auto"
           onError={(e) => {
             e.target.src = "https://picsum.photos/1200/800?random=10";
           }}
           onContextMenu={(e) => e.preventDefault()}
+          threshold={100} // Carga 100px antes de que sea visible
+          visibleByDefault={isFullscreen} // Carga inmediatamente en fullscreen
         />
       );
     }

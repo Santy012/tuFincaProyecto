@@ -1,46 +1,58 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
-const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMostrarGaleria, editando }) => {
+const Carrusel = ({
+  propiedadSeleccionada,
+  imagenActual,
+  setImagenActual,
+  setMostrarGaleria,
+  editando,
+}) => {
   const [direccion, setDireccion] = useState(1);
 
   const isVideo = (media) => {
     if (!media) return false;
-    
+
     // Si es un objeto con propiedad tipo
-    if (typeof media === 'object' && media.tipo === 'video') {
+    if (typeof media === "object" && media.tipo === "video") {
       return true;
     }
-    
+
     // Si es un objeto con URL de video
-    if (typeof media === 'object' && media.url) {
-      const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
-      return videoExtensions.some(ext => media.url.toLowerCase().endsWith(ext));
+    if (typeof media === "object" && media.url) {
+      const videoExtensions = [".mp4", ".webm", ".ogg", ".mov"];
+      return videoExtensions.some((ext) =>
+        media.url.toLowerCase().endsWith(ext)
+      );
     }
-    
+
     // Si es una URL string
-    if (typeof media === 'string') {
-      const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
-      return videoExtensions.some(ext => media.toLowerCase().endsWith(ext));
+    if (typeof media === "string") {
+      const videoExtensions = [".mp4", ".webm", ".ogg", ".mov"];
+      return videoExtensions.some((ext) => media.toLowerCase().endsWith(ext));
     }
-    
+
     return false;
   };
 
   const getMediaSource = (media) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
-    
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+
     // Si es un objeto con URL
-    if (typeof media === 'object' && media.url) {
-      return media.url.startsWith('/uploads') ? `${baseUrl}${media.url}` : media.url;
+    if (typeof media === "object" && media.url) {
+      return media.url.startsWith("/uploads")
+        ? `${baseUrl}${media.url}`
+        : media.url;
     }
-    
+
     // Si es una URL string
-    if (typeof media === 'string') {
-      return media.startsWith('/uploads') ? `${baseUrl}${media}` : media;
+    if (typeof media === "string") {
+      return media.startsWith("/uploads") ? `${baseUrl}${media}` : media;
     }
-    
+
     console.error("Formato de media no soportado:", media);
     return null;
   };
@@ -51,9 +63,12 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
     }
   };
 
-  if (!propiedadSeleccionada || !Array.isArray(propiedadSeleccionada.imagenes)) {
+  if (
+    !propiedadSeleccionada ||
+    !Array.isArray(propiedadSeleccionada.imagenes)
+  ) {
     return (
-      <div 
+      <div
         className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
         onClick={handleClick}
       >
@@ -64,7 +79,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
 
   if (propiedadSeleccionada.imagenes.length === 0) {
     return (
-      <div 
+      <div
         className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
         onClick={handleClick}
       >
@@ -93,7 +108,7 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
   const mediaSource = getMediaSource(currentMedia);
 
   return (
-    <div 
+    <div
       className="relative w-full h-64 overflow-hidden rounded-lg shadow-md cursor-pointer"
       onClick={handleClick}
     >
@@ -122,10 +137,18 @@ const Carrusel = ({ propiedadSeleccionada, imagenActual, setImagenActual, setMos
               </video>
             </div>
           ) : currentMedia ? (
-            <img
+            <LazyLoadImage
               src={mediaSource}
               alt={propiedadSeleccionada.titulo || "Imagen de la propiedad"}
               className="w-full h-full object-cover"
+              effect="blur"
+              placeholderSrc="/placeholder.webp" // Asegúrate de tener este archivo en tu public/
+              width="100%"
+              height="100%"
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/800x600?text=Imagen+no+disponible";
+              }}
               onContextMenu={(e) => e.preventDefault()}
             />
           ) : (

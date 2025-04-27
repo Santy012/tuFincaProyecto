@@ -3,6 +3,8 @@ import { X, Plus } from "lucide-react";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import { useState, useEffect } from "react";
 import MessageDialog from "../../../../components/MessageDialog";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const PopupImages = ({
   imagenes,
@@ -56,7 +58,7 @@ const PopupImages = ({
   };
 
   const getMediaSource = (media) => {
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || '/api';
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 
     // Si es una cadena (URL)
     if (typeof media === "string") {
@@ -88,7 +90,7 @@ const PopupImages = ({
         </div>
       );
     }
-
+  
     if (isVideo(media)) {
       return (
         <div className="w-full h-40 bg-gray-900 rounded-lg flex items-center justify-center">
@@ -105,10 +107,18 @@ const PopupImages = ({
       );
     } else {
       return (
-        <img
+        <LazyLoadImage
           src={source}
           alt="Media"
           className="w-full h-40 object-cover rounded-lg shadow"
+          effect="blur" // Efecto de desenfoque mientras carga
+          placeholderSrc="/placeholder.webp" // Imagen de placeholder pequeña
+          width="100%"
+          height="100%"
+          threshold={100} // Carga cuando está a 100px de ser visible
+          onError={(e) => {
+            e.target.src = "https://via.placeholder.com/400x300?text=Error+Cargando";
+          }}
         />
       );
     }

@@ -165,7 +165,7 @@ const PopUpDetalles = ({
   useEffect(() => {
     if (propiedadSeleccionada) {
       const baseUrl =
-        import.meta.env.VITE_BACKEND_URL || '/api';
+        import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
       const imagenesConUrlCompleta = propiedadSeleccionada.imagenes.map(
         (img) => ({
           ...img,

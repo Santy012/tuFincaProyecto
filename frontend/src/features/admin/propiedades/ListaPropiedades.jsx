@@ -12,7 +12,6 @@ const ListaPropiedades = () => {
     pagination,
     loadPaginatedData,
     applyFilters,
-    setDefaultFilters
   } = useGlobalContext() || { propiedades: [], etiquetas: [] };
   
   const [propiedadSeleccionada, setPropiedadSeleccionada] = useState(null);
@@ -32,6 +31,13 @@ const ListaPropiedades = () => {
 
 
   const handlePageChange = (newPage) => {
+    // Hacer scroll hacia la parte superior
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Animación suave
+    });
+
+    // Cargar los datos de la nueva página
     loadPaginatedData(newPage, pagination.pageSize, busquedas, false);
   };
 
