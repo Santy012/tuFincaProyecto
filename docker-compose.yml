@@ -71,8 +71,8 @@ services:
       - '443:443'   # Puerto HTTPS
       - '81:81'     # Puerto Admin UI
     volumes:
-      - npm_data:/data
-      - npm_letsencrypt:/etc/letsencrypt
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
     networks:
       - finca-network
 
