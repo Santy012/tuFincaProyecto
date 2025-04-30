@@ -19,8 +19,8 @@ services:
       UPLOAD_DIRECTORY: /app/uploads
     volumes:
       - uploads_volume:/app/uploads
-    ports:
-      - "8080:8080"
+    #ports:
+    #  - "8080:8080"
     depends_on:
       database:
         condition: service_healthy
@@ -31,8 +31,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "80:80"
+    #ports:
+    #  - "80:80"
     environment:
       - VITE_BACKEND_URL=http://backend:8080
     depends_on:
@@ -62,9 +62,25 @@ services:
       retries: 5
       start_period: 20s
 
+    # Nuevo servicio: Nginx Proxy Manager
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'     # Puerto HTTP
+      - '443:443'   # Puerto HTTPS
+      - '81:81'     # Puerto Admin UI
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - finca-network
+
 volumes:
   db_data:
   uploads_volume:
+  npm_data:
+  npm_letsencrypt:
 
 networks:
   finca-network:
