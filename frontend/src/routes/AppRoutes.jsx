@@ -9,11 +9,26 @@ import MessagePage from '../features/mensaje/MessagePage';
 import ServiciosPage from '../features/servicios/ServiciosPage';
 import SobreNosotrosPage from '../features/sobre_nosotros/SobreNosotrosPage';
 import { NotFoundPage } from "../components/PageNotFound";
+import ReactGA from 'react-ga4';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+const RouteTracker = () => {
+    const location = useLocation();
+    
+    useEffect(() => {
+      // Envía evento de vista de página a GA4 cuando cambia la URL
+      ReactGA.send({ hitType: "pageview", page: location.pathname });
+    }, [location]);
+    
+    return null;
+  };
 
 const AppRoutes = () => {
     return(
         <Router>
             <ScrollToTop />
+            <RouteTracker />
             <Routes>
                 <Route path='/' element={<MainPage/>}/>
                 

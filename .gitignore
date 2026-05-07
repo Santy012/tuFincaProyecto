@@ -39,3 +39,14 @@ docker-compose.override.yml
 #**/uploads/
 #/uploads/
 .qodo
+
+# SSL certificates
+letsencrypt/
+
+# Nginx Proxy Manager data
+data/
+
+# Environment/secrets
+*.env
+backend/tuFinca/src/main/resources/application.properties
+
