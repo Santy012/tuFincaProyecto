@@ -16,6 +16,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL-AUTO: validate
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8081}
       UPLOAD_DIRECTORY: /app/uploads
     volumes:
       - uploads_volume:/app/uploads

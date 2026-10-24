@@ -1,233 +1,60 @@
-# 📌 tuFincaProyecto
+# TuFinca: aplicación web de gestión inmobiliaria
 
-## 📋 Prerrequisitos
+Aplicación web para publicar y administrar propiedades rurales. Los visitantes consultan propiedades, las filtran por etiquetas y envían mensajes de contacto; los administradores gestionan propiedades, contenido multimedia, etiquetas y mensajes desde un panel propio.
 
-Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas:
+> Proyecto desarrollado en equipo por Catalina Gutiérrez, Camilo Millán y Santiago Castellanos (2025). El sistema llegó a desplegarse en producción como sitio de la empresa. Este repositorio es una copia del repositorio privado del equipo, publicada con su autorización; de la historia se retiraron los respaldos de la base de datos, la configuración de producción y los archivos del servidor. La sección [Participación](#participación) describe cómo se organizó el trabajo.
 
-## Backend (Java 21 - Spring)
+## Tecnologías
 
-- 🔹 **Java 21** – Requerido para ejecutar el backend con Spring Boot.
+| Capa | Tecnología |
+| --- | --- |
+| Backend | Java 21, Spring Boot 3.4, Spring Security con JWT, JPA |
+| Frontend | React 19, Vite, Tailwind CSS, React Router, Axios |
+| Base de datos | MySQL |
+| Despliegue | Docker Compose, Nginx y Nginx Proxy Manager con HTTPS |
 
-- 🔹 **MySQL Server** – Necesario para importar la base de datos.
-
-## Frontend (React - Node.js)
-
--🔹 **Node.js** – Necesario para ejecutar el frontend en React.
-
--🔹 **pnpm**– Administrador de paquetes (instálalo con npm install -g pnpm si aún no lo tienes).
-  
-## 1: Descargar github:
-
-- **Clonate el proyecto en la carpeta de tu elección**
-  ```bash
-  git clone git@github.com:Catapultaa/tuFincaProyecto.git
-  ```
-  
-- **Navega a la carpeta del proyecto**
-  ```bash
-  cd .\tuFincaProyecto\
-  ```
-
-  
-## Importación de la base de datos MY SQL
-
-## 🗄️ 2. Importar la base de datos en MySQL
-
-### 📌 Importar desde MySQL Workbench
-
-1. Abre MySQL Workbench y ve a Server > Data Import.
-
-2. Si aún no tienes el esquema creado, créalo manualmente con el nombre mifinca.
-
-3. Selecciona el archivo .sql del proyecto.
-
-4. Haz clic en Start Import y espera a que termine el proceso.
-
-### 🔍 Verificación de la importación
-
-Una vez importado, verifica que las tablas estén correctamente creadas ejecutando en MySQL Workbench:
-  
-```bash
-SHOW DATABASES;
-USE mifinca;
-SHOW TABLES;
-```
-### 📌 Debes ver las siguientes tablas en la base de datos:
-
-- administrador
-- administradormensaje
-- etiqueta
-- media
-- mensaje
-- propiedad
-- propiedadetiqueta
-
-- propiedadetiqueta
-## 📤 3. Exportar el esquema de la base de datos
-
-Para exportar el esquema en MySQL Workbench:
-
-1. Ve a Server > Data Export.
-
-2. En Tables to Export, selecciona tufinca.
-
-3. En Export Options, elige Export to Dump Project Folder.
-   
-5. Selecciona Export to Self-Contained File
-
-6. Guarda la exportación en Export to Self-Contained File y selecciona la carpeta /database del proyecto.
-
-7. Selecciona las opciones Create Dump in a Single Transaction (self-contained file only) y Include Create Schema
-
-8. Inicia la exportación 
-
-## 2:🔨 Instalar dependencias de Spring Boot
-### Dependencias del proyecto Spring
-Al generar el proyecto en Spring Initializr, se seleccionaron las siguientes dependencias:
-
-1. ✅ Spring Web → Para construir API RESTful.
-   
-3. ✅ Spring Boot DevTools → Para recarga en caliente durante el desarrollo.
-   
-4. ✅ Lombok → Para reducir el código repetitivo en las clases.
-   
-5. ✅ Spring Data JPA → Para interactuar con la base de datos.
-   
-6. ✅ MySQL Driver → Para conectarte a MySQL.
-    
-7. ✅ Spring Security → Para manejo de autenticación y roles.
-    
-8. ✅ Spring Boot Actuator → Para ver métricas, información del sistema, estado de la aplicación y más.
-
-## Configuración del proyecto
-1. **Luego de clonar el proyecto, deberias ver una carpeta llamada .\backend\ en donde encontraras otra carpeta llamada ./tufinca/ a la cual vas a acceder.**
-```bash
-cd ./backend/tufinca/
-```
-2. El proyecto ya es un entorno de Spring Boot con Maven por lo que deberias ver un pom.xml en la raiz del proyecto.
-   
-   ![Mi Imagen](https://drive.google.com/uc?export=view&id=1kLtjpx2oh2kN9jwDCzvPLpsHn4d_4md6)
-
-4. **Construir el proyecto con Maven.**
-Ejecuta el siguiente comando en la terminal dentro del directorio del proyecto:
-```bash
-./mvnw clean install
-```
-Si estás en Windows, usa:
-```bash
-mvnw.cmd clean install
-```
-Esto descargará las dependencias y compilará el código.
-Si tienes Maven instalado globalmente, también puedes ejecutar:
-```bash
-sudo mvn clean install
-```
-
-En caso de que envíe error en properties application, agregar al archivo pom, en la sección build, antes de plugins:
-```bash
-<resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering> 
-            </resource>
-        </resources>
-```
-
-5. **Abrir el Proyecto en tu IDE (IntelliJ o VSCode)**
-   
-**Si usas IntelliJ IDEA:**
-
-- Abre IntelliJ.
-- Ve a "File" > "Open" y selecciona la carpeta del proyecto clonado.
-- IntelliJ detectará que es un proyecto Maven y descargará las dependencias automáticamente.
-
-**Si usas VSCode:**
-
-- Asegúrate de tener la extensión "Java Extension Pack" instalada.
-- Abre la carpeta del proyecto con "File" > "Open Folder".
-- Usa la terminal integrada para ejecutar los comandos de Maven.
-
-**Para ejecutarlo por comandos linux:**
-```bash
-sudo mvn spring-boot:run
-```
-
-6. **Verificar que todo funciona**
-
-Si la aplicación Spring Boot se ejecuta correctamente, deberías ver logs en la terminal indicando que está corriendo en el puerto 8080. Puedes probarlo abriendo un navegador y visitando:
-```bash
-http://localhost:8080
-```
-Si ves una pagina de login es que todo esta corriendo bien :).
-## 3: Instalar depencias de React
-Deberas acceder a la carpeta del frontend para instalar las dependencias
+## Arquitectura
 
 ```
-cd frontend
-```
-Ya dentro de la carpeta frontend deberas ejecutar el comando npm install
-
-```
-npm install
-```
-Que instalara todas las dependencias del proyecto, luego deberas iniciar el proyecto con el comando npm run dev que te abrira el servidor en el puerto 5173
-
-```
-npm run dev
+frontend (React + Nginx)  ──HTTP──▶  backend (Spring Boot)  ──JPA──▶  MySQL
+                                        controllers → services → DAO / repositories → models
 ```
 
-Y listo, ya podras acceder a la pagina desde localhost:5173
+El backend separa controladores, servicios (interfaz e implementación), una capa DAO sobre los repositorios de Spring Data y especificaciones para los filtros. El frontend se organiza por funcionalidad (`features/admin`, `features/mensaje`, `features/login`) con contextos globales para la sesión y el estado compartido.
 
-## 4 📁 Instrucciones sobre la carpeta uploads
-Nuestro sistema utiliza una carpeta ubicada en la ruta:
+## Participación
+
+El proyecto fue un trabajo de equipo de principio a fin: los tres integrantes planificaron el sistema, lo desarrollaron repartiéndose paquetes del backend y vistas del frontend, y evaluaron juntos los resultados.
+
+Dentro de ese trabajo, **Santiago Castellanos** participó principalmente en:
+
+- **Backend:** controladores, servicios y capa de persistencia de propiedades y mensajes, y el modelo de la relación entre administradores y mensajes.
+- **Frontend:** el panel de administración (propiedades, formularios por secciones, etiquetas, multimedia, mensajes y perfil), la página de inicio de sesión y los contextos de autenticación y estado global.
+- **Integración:** conexión del frontend con la API y corrección de errores en filtros, mensajes y carga de contenido multimedia.
+
+## Cómo ejecutarlo
+
+Requisitos: Docker y Docker Compose.
+
+1. Copiar `.env.example` como `.env` y completar las contraseñas y el secreto de JWT.
+2. Levantar los servicios en modo local:
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+   ```
+
+3. Abrir `http://localhost:8081`. El frontend redirige las peticiones de `/api` al backend; MySQL queda expuesto en el puerto `3307`.
+
+La base de datos se inicializa con `database/tuFinca.sql`, que trae propiedades y etiquetas de ejemplo y un administrador de demostración (usuario `admin`, contraseña `admin123`). Las imágenes y videos de las propiedades no se incluyen en el repositorio.
+
+En producción, el archivo `docker-compose.yml` agrega Nginx Proxy Manager como proxy inverso con HTTPS.
+
+## Estructura
 
 ```
-/backend/tufinca/uploads
+backend/tuFinca/   API REST en Spring Boot
+frontend/          aplicación React
+database/          script SQL e imagen de MySQL
+docker-compose.yml          despliegue de producción
+docker-compose.local.yml    ejecución local
 ```
-![image](https://github.com/user-attachments/assets/fa63a64b-0c6b-4857-a028-2aed92f524f3)
-
-En esta carpeta se almacenan los archivos que los usuarios suben, como imágenes asociadas a propiedades.
-
-### ⚠️ Importante: esta carpeta no se debe subir al repositorio
-Contiene muchos archivos (imágenes), lo cual puede afectar el rendimiento y peso del repositorio.
-
-Está listada en el archivo .gitignore, por lo tanto Git no la rastrea ni la sube.
-
-## 💻 Entorno de desarrollo (local)
-Cada desarrollador debe crear manualmente una carpeta llamada uploads en la ruta mencionada:
-```
-/backend/tufinca/uploads
-```
-Esto permitirá:
-
-- Probar la funcionalidad de carga de imágenes.
-
-- Verificar que las imágenes se estén guardando correctamente de manera local.
-
-- Confirmar que se asocian correctamente en la base de datos con sus respectivas propiedades.
-
-### 🔧 El esquema SQL actual ya está actualizado y contiene dos propiedades sin imágenes para realizar pruebas.
-
-### 🔍 ¿Cómo probar que funciona?
-1. Desde el frontend, edita una propiedad.
-
-2. Añade una o más imágenes.
-
-3. Verifica que:
-
-- Las imágenes se hayan guardado en tu carpeta local uploads.
-
-- Se haya actualizado correctamente la base de datos con las nuevas imágenes asociadas a la propiedad.
-
-### 🚀 Producción
-1. Para el entorno de producción:
-
-- Se subirá una única carpeta uploads que contendrá todas las imágenes asociadas a las propiedades correctamente organizadas.
-
-- Esta carpeta será administrada según las necesidades del despliegue y almacenamiento.
-
-
-
-
-
-

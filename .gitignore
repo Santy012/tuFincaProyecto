@@ -50,3 +50,17 @@ data/
 *.env
 backend/tuFinca/src/main/resources/application.properties
 
+
+# Datos y archivos de despliegue que no se versionan
+.env
+data/
+letsencrypt/
+**/uploads/*
+!**/uploads/.gitkeep
+*.sql
+!database/tuFinca.sql
+!database/sql/tufinca_schema.sql
+
+# Archivos privados del proyecto original (solo en local)
+_privado/
+backend/tuFinca/src/main/resources/application.properties

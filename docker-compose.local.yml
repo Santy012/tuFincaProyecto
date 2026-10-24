@@ -1,0 +1,8 @@
+# Ejecución local: publica el frontend en el puerto 8081 y desactiva el proxy de producción.
+# Uso: docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+services:
+  frontend:
+    ports:
+      - "8081:80"
+  proxy:
+    profiles: ["produccion"]
