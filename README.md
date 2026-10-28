@@ -15,10 +15,7 @@ Aplicación web para publicar y administrar propiedades rurales. Los visitantes 
 
 ## Arquitectura
 
-```
-frontend (React + Nginx)  ──HTTP──▶  backend (Spring Boot)  ──JPA──▶  MySQL
-                                        controllers → services → DAO / repositories → models
-```
+![Arquitectura: frontend React, API Spring Boot en capas y MySQL, detrás de un proxy con HTTPS](docs/img/arquitectura.png)
 
 El backend separa controladores, servicios (interfaz e implementación), una capa DAO sobre los repositorios de Spring Data y especificaciones para los filtros. El frontend se organiza por funcionalidad (`features/admin`, `features/mensaje`, `features/login`) con contextos globales para la sesión y el estado compartido.
 

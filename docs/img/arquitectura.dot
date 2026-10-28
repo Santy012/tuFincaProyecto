@@ -1,0 +1,13 @@
+digraph G { rankdir=LR; bgcolor="white"; pad=0.3; nodesep=0.35; ranksep=0.5;
+  node [shape=box, style="rounded,filled", fontname="DejaVu Sans", fontsize=12, color="#5b6b7f", fillcolor="#eef2f7", margin="0.18,0.08"];
+  edge [fontname="DejaVu Sans", fontsize=10, color="#5b6b7f", fontcolor="#3a4656"];
+  U [label="Visitante /\nadministrador", fillcolor="#e3f1e6", color="#4e8a5c"];
+  P [label="Nginx Proxy Manager\nHTTPS"];
+  subgraph cluster_f { label="Frontend"; fontname="DejaVu Sans Bold"; fontsize=12; style="rounded,dashed"; color="#9aa7b6";
+    F [label="React 19 + Vite\nservido por Nginx"]; FX [label="features/admin · mensaje · login\ncontextos de sesión y estado"]; }
+  subgraph cluster_b { label="Backend · Spring Boot 3.4"; fontname="DejaVu Sans Bold"; fontsize=12; style="rounded,dashed"; color="#9aa7b6";
+    C [label="Controladores REST\nSpring Security + JWT", fillcolor="#fde9cf", color="#c98a2b"]; S [label="Servicios\n(interfaz + implementación)"]; DA [label="DAO + repositorios\nSpring Data · especificaciones"]; }
+  DB [label="MySQL", shape=cylinder];
+  U -> P -> F; F -> FX [style=dashed, arrowhead=none];
+  F -> C [label="/api (Axios)"]; C -> S -> DA -> DB;
+}
